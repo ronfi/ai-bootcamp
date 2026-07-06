@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 革命进行时 · 第一讲</title>
+</head>
+<body>
+<title>AI 革命进行时 · 培训幻灯片</title>
+<style>
+  :root{
+    --bg:#0A0F1E;
+    --panel:#10182E;
+    --panel-2:#0D1426;
+    --line:#1E2A47;
+    --ink:#E9EDF7;
+    --ink-2:#98A4C0;
+    --ink-3:#5E6B8C;
+    --us:#56C8F5;      /* 文本高亮·美国/数据 */
+    --us-bar:#1E9BD2;  /* 图表填充·美国 */
+    --cn:#F5A340;      /* 文本高亮·中国 */
+    --cn-bar:#C97A15;  /* 图表填充·中国 */
+    --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+    font-size:clamp(17px,1.65vw,36px);line-height:1.6;overflow:hidden;
+  }
+  /* ---------- 幻灯机制 ---------- */
+  .deck{position:fixed;inset:0}
+  .slide{
+    position:absolute;inset:0;padding:3.5vh 3vw 6vh;overflow-y:auto;
+    opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .38s ease,transform .38s ease,visibility 0s linear .38s;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  @media (prefers-reduced-motion:reduce){
+    .slide{transition:none;transform:none}
+  }
+  .inner{max-width:94vw;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+  #bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--us-bar),var(--us));z-index:10;transition:width .3s ease}
+  #hud{position:fixed;right:2.2vw;bottom:2.4vh;z-index:10;display:flex;align-items:center;gap:14px;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+  #hud button{
+    background:var(--panel);border:1px solid var(--line);color:var(--ink-2);
+    width:34px;height:34px;border-radius:8px;font-size:15px;cursor:pointer;
+  }
+  #hud button:hover{color:var(--ink);border-color:var(--ink-3)}
+  #hud button:focus-visible{outline:2px solid var(--us);outline-offset:2px}
+
+  /* ---------- 排版 ---------- */
+  .eyebrow{
+    font-size:clamp(13px,1vw,21px);letter-spacing:.22em;color:var(--ink-3);text-transform:uppercase;
+    margin-bottom:1.6em;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--ink-3)}
+  h1{font-size:clamp(44px,6.5vw,124px);line-height:1.15;margin:0 0 .3em;font-weight:800;letter-spacing:.01em;text-wrap:balance}
+  h2{font-size:clamp(30px,3.6vw,74px);line-height:1.25;margin:0 0 .8em;font-weight:700;text-wrap:balance}
+  h3{font-size:1.05em;margin:0 0 .5em;font-weight:700}
+  p{margin:.4em 0}
+  .lead{color:var(--ink-2);font-size:1.06em;max-width:34em}
+  .num{font-variant-numeric:tabular-nums}
+  .hl-us{color:var(--us);font-weight:700}
+  .hl-cn{color:var(--cn);font-weight:700}
+  .src{margin-top:auto;padding-top:2em;font-size:clamp(12px,.85vw,18px);color:var(--ink-3);line-height:1.6}
+  .note{font-size:.85em;color:var(--ink-2);background:var(--panel-2);border-left:3px solid var(--cn-bar);padding:.7em 1em;border-radius:0 8px 8px 0;margin-top:1.2em}
+
+  /* ---------- 组件 ---------- */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media (max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.15em 1.25em}
+  .card h3{display:flex;align-items:baseline;gap:.5em;flex-wrap:wrap}
+  .card p{font-size:.92em;color:var(--ink-2)}
+  .card .big{font-size:2.1em;font-weight:800;line-height:1.15;letter-spacing:-.01em}
+  .tag{font-size:clamp(12px,.8vw,17px);padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2);letter-spacing:.06em;white-space:nowrap;font-weight:500}
+  .tag.us{color:var(--us);border-color:rgba(86,200,245,.4)}
+  .tag.cn{color:var(--cn);border-color:rgba(245,163,64,.4)}
+  .tag.warn{color:#F58A8A;border-color:rgba(245,138,138,.4)}
+  .tag.ok{color:#6FD9A6;border-color:rgba(111,217,166,.4)}
+
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.2em 1.3em}
+  .stat .v{font-size:clamp(36px,4.6vw,92px);font-weight:800;line-height:1.1;letter-spacing:-.015em}
+  .stat .l{color:var(--ink-2);font-size:.9em;margin-top:.45em}
+  .stat .s{color:var(--ink-3);font-size:.78em;margin-top:.3em}
+
+  table{border-collapse:collapse;width:100%;font-size:.92em}
+  th{color:var(--ink-3);font-weight:600;text-align:left;letter-spacing:.05em;font-size:.85em}
+  th,td{padding:.62em .8em;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:700}
+  .tblwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.4em .6em}
+
+  /* 条形图 */
+  .hbar{display:grid;grid-template-columns:7.5em 1fr;gap:.55em 1em;align-items:center}
+  .hbar .n{text-align:right;color:var(--ink-2);font-size:.92em}
+  .hbar .t{height:1.05em;border-radius:0 4px 4px 0;position:relative;background:var(--us-bar);min-width:3px;transition:filter .15s}
+  .hbar .t:hover{filter:brightness(1.25)}
+  .hbar .t.cn{background:var(--cn-bar)}
+  .hbar .t span{position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink);white-space:nowrap;font-weight:600}
+  .legend{display:flex;gap:1.4em;font-size:.82em;color:var(--ink-2);margin:.8em 0 .2em}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+  /* 点图（Elo） */
+  .dotplot{position:relative;height:clamp(160px,13vw,250px);margin:1.4em 0 0}
+  .dotplot .axis{position:absolute;left:0;right:0;bottom:28px;height:1px;background:var(--line)}
+  .dotplot .tick{position:absolute;bottom:0;font-size:clamp(12px,.85vw,18px);color:var(--ink-3);transform:translateX(-50%)}
+  .dotplot .tick::before{content:"";position:absolute;left:50%;bottom:22px;width:1px;height:6px;background:var(--line)}
+  .dotplot .dot{position:absolute;bottom:22px;width:clamp(13px,.9vw,19px);height:clamp(13px,.9vw,19px);border-radius:50%;transform:translateX(-50%);border:2px solid var(--bg)}  .dotplot .dl{position:absolute;font-size:clamp(13px,.95vw,20px);color:var(--ink-2);transform:translateX(-50%);white-space:nowrap}
+
+  /* 引语 */
+  blockquote{
+    margin:0;font-size:clamp(24px,3vw,58px);line-height:1.55;font-weight:700;text-wrap:balance;
+    padding-left:.85em;border-left:4px solid var(--us-bar);
+  }
+  blockquote .en{display:block;font-size:.52em;font-weight:400;color:var(--ink-2);margin-top:.9em;line-height:1.6}
+  cite{display:block;font-style:normal;color:var(--ink-3);font-size:clamp(14px,1vw,21px);margin-top:1.4em}
+
+  /* 章节页 */
+  .divider .no{font-size:clamp(70px,11vw,210px);font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);letter-spacing:.02em}
+  .divider h2{font-size:clamp(36px,5.2vw,100px);margin:.25em 0 .4em}
+  .divider .lead{font-size:1.15em}
+
+  .cover{position:relative}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%}
+  .cover .inner{position:relative;align-items:center;text-align:center}
+  .cover .eyebrow::after{content:"";width:22px;height:1px;background:var(--ink-3)}
+  .sub{font-size:clamp(18px,2vw,38px);color:var(--ink-2);font-weight:400;letter-spacing:.12em}
+  .hint{margin-top:5em;color:var(--ink-3);font-size:clamp(13px,.9vw,19px)}
+  kbd{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-family:inherit;font-size:.92em}
+
+  .steps{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+  .steps .st{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);padding:1em 1.1em;position:relative}
+  .steps .st:first-child{border-radius:12px 0 0 12px}
+  .steps .st:last-child{border-radius:0 12px 12px 0}
+  .steps .st+.st{border-left:none}
+  .steps .k{font-size:.78em;color:var(--us);letter-spacing:.15em;font-weight:700}
+  .steps .st p{font-size:.85em;color:var(--ink-2)}
+
+  .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch}
+  @media (max-width:820px){.vs{grid-template-columns:1fr}}
+  .vs .mid{display:flex;align-items:center;color:var(--ink-3);font-weight:800;font-size:1.3em}
+  .flag{font-size:.8em;letter-spacing:.2em;font-weight:700;margin-bottom:.6em}
+  .panel-us{border-top:3px solid var(--us-bar)}
+  .panel-cn{border-top:3px solid var(--cn-bar)}
+
+  /* 紧凑页：内容密度高的页面用，整体略缩 */
+  .dense{font-size:.88em}
+  .dense h2{font-size:clamp(26px,3vw,58px);margin-bottom:.6em}
+  .dense .grid{gap:12px}
+  .dense .card{padding:.85em 1em}
+  .dense .stat{padding:.9em 1.1em}
+  .dense .stat .v{font-size:clamp(28px,3.4vw,52px)}
+  .dense .note{margin-top:.8em;padding:.55em .9em}
+  .dense .src{padding-top:1.2em}
+
+  ul.tight{margin:.3em 0;padding-left:1.2em}
+  ul.tight li{margin:.42em 0;color:var(--ink-2)}
+  ul.tight li b{color:var(--ink)}
+</style>
+
+<div id="bar"></div>
+<div class="deck" id="deck">
+
+<!-- 1 封面 -->
+<section class="slide cover">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">AI 通识与工具实战培训 · 2026 年 7 月</div>
+    <h1>AI 革命进行时</h1>
+    <p class="sub">看懂格局 &nbsp;·&nbsp; 用好工具 &nbsp;·&nbsp; 亲手实战</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> 或空格翻页 &nbsp;·&nbsp; <kbd>F</kbd> 全屏 &nbsp;·&nbsp; 共 36 页</p>
+  </div>
+</section>
+
+<!-- 2 路线图 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">今天的路线</div>
+    <h2>90 分钟，看清一场革命的全貌</h2>
+    <div class="grid g3">
+      <div class="card"><h3><span class="hl-us num">01</span> 真实的革命</h3><p>AI 的增速有多快？马斯克到底预测了什么？</p></div>
+      <div class="card"><h3><span class="hl-us num">02</span> 国运之赌</h3><p>中美两国如何把 AI 当作国家战略押上未来</p></div>
+      <div class="card"><h3><span class="hl-us num">03</span> 模型之战</h3><p>中美大模型短兵相接：差距还剩多少？</p></div>
+      <div class="card"><h3><span class="hl-us num">04</span> 资本市场</h3><p>刚上市与即将上市的 AI 公司 · 中国"六小虎"分化</p></div>
+      <div class="card"><h3><span class="hl-us num">05</span> Agent 智能体</h3><p>AI 怎么替你干活：Claude Code、龙虾、Hermes 三个案例</p></div>
+      <div class="card"><h3><span class="hl-us num">06</span> 动手实战</h3><p>几个练习，把今天学到的立刻用起来</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 章节 01 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">01</div>
+    <h2>一场真实正在发生的技术革命</h2>
+    <p class="lead">不是概念炒作，不是资本故事。判断一场革命是否真实，看三样东西：普及速度、能力增速、真金白银。</p>
+  </div>
+</section>
+
+<!-- 3b 四次革命并列 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · 真实的革命 · 把 AI 放进历史坐标系</div>
+    <h2>第四次了：每一次革命，都重排了大国座次</h2>
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="card">
+        <div style="font-size:2.6em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);line-height:1.2">Ⅰ</div>
+        <h3>蒸汽革命 <span class="tag num">1760s–</span></h3>
+        <p>蒸汽机 · 纺织机 · 铁路</p>
+        <p>机器第一次替代<b style="color:var(--ink)">人的肌肉</b></p>
+        <p style="color:var(--ink-3)">领跑者：英国 —— 成就"日不落帝国"；错过者：闭关中的清朝</p>
+      </div>
+      <div class="card">
+        <div style="font-size:2.6em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);line-height:1.2">Ⅱ</div>
+        <h3>电气革命 <span class="tag num">1870s–</span></h3>
+        <p>电力 · 内燃机 · 流水线</p>
+        <p>能源与制造<b style="color:var(--ink)">规模化</b>，现代工业成形</p>
+        <p style="color:var(--ink-3)">领跑者：美国、德国 —— 新列强崛起，英国霸权松动</p>
+      </div>
+      <div class="card">
+        <div style="font-size:2.6em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);line-height:1.2">Ⅲ</div>
+        <h3>信息革命 <span class="tag num">1950s–</span></h3>
+        <p>计算机 · 互联网 · 智能手机</p>
+        <p>机器替代<b style="color:var(--ink)">信息的计算与传递</b></p>
+        <p style="color:var(--ink-3)">领跑者：美国确立科技霸权；中国在末班车上追平应用层</p>
+      </div>
+      <div class="card" style="border-color:rgba(86,200,245,.5)">
+        <div style="font-size:2.6em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--us);line-height:1.2">Ⅳ</div>
+        <h3>智能革命 <span class="tag us">2020s · 正在发生</span></h3>
+        <p>大模型 · 智能体 · 机器人</p>
+        <p>机器第一次替代<b class="hl-us">人的大脑</b>——认知、判断与创造</p>
+        <p style="color:var(--ink-3)">领跑者：中美双雄，胜负未分——这正是两国都赌上国运的原因</p>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">两点不同以往：前三次替代的是肌肉和双手，这一次替代的是<b>大脑本身</b>，影响范围上不封顶；前三次普及以数十年计，这一次以<b>月</b>计——下一页见。</div>
+  </div>
+</section>
+
+<!-- 4 渗透速度 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · 真实的革命</div>
+    <h2>历史上从没有一种技术，普及得这么快</h2>
+    <div class="grid g2" style="align-items:center">
+      <div>
+        <p class="lead" style="margin-bottom:1em">达到 5000 万用户所用的时间（年）</p>
+        <div class="hbar" role="img" aria-label="电话50年、手机12年、互联网7年、Facebook 4年、微信1年">
+          <div class="n">电话</div><div class="t" style="width:72%"><span class="num">50 年</span></div>
+          <div class="n">手机</div><div class="t" style="width:17.3%"><span class="num">12 年</span></div>
+          <div class="n">互联网</div><div class="t" style="width:10.1%"><span class="num">7 年</span></div>
+          <div class="n">Facebook</div><div class="t" style="width:5.8%"><span class="num">4 年</span></div>
+          <div class="n">微信</div><div class="t" style="width:1.4%"><span class="num">1 年</span></div>
+        </div>
+      </div>
+      <div class="stat" style="border-color:rgba(86,200,245,.35)">
+        <div class="v num hl-us">2 个月</div>
+        <div class="l"><b>ChatGPT 达到 1 亿月活用户</b>所用的时间（2022.11–2023.1），当时史上最快的消费级应用</div>
+        <div class="s">TikTok 用了 9 个月，Instagram 用了 2 年半</div>
+      </div>
+    </div>
+    <p class="src">来源：Statista / HBR《The Pace of Technology Adoption is Speeding Up》；UBS 分析（Reuters，2023-02）</p>
+  </div>
+</section>
+
+<!-- 5 指数曲线 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · 真实的革命</div>
+    <h2>关键的不是"AI 很强"，而是它变强的<span class="hl-us">速度还在加快</span></h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">4–5×</div><div class="l">前沿模型<b>训练算力每年</b>增长的倍数，已持续十余年</div><div class="s">Epoch AI，2010–2024 趋势</div></div>
+      <div class="stat"><div class="v num">7 个月 → 4 个月</div><div class="l">AI 能独立完成的任务时长，翻一倍所需的时间——<b>翻倍速度本身也在变快</b></div><div class="s">METR 时间地平线研究，2026-01 更新；当前前沿模型约可完成 12–14 小时的任务</div></div>
+      <div class="stat"><div class="v num">1.7% → 80%+</div><div class="l">SWE-bench（真实软件工程任务）得分：GPT-4（2023）到 2026 年前沿模型，<b>该基准已接近饱和被弃用</b></div><div class="s">Epoch AI / OpenAI，2026</div></div>
+    </div>
+    <div class="note">标志性时刻：2025 年 7 月，OpenAI 与 Google DeepMind 的通用模型双双达到<b>国际数学奥林匹克（IMO）金牌线</b>——当届 630 名人类选手中只有 11% 做到。</div>
+    <p class="src">来源：epoch.ai/trends · metr.org/time-horizons · Axios 2025-07-21 · DeepMind 官方博客</p>
+  </div>
+</section>
+
+<!-- 6 马斯克 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · 真实的革命 · 掌舵者们自己怎么说</div>
+    <blockquote>
+      "到今年年底，我们可能就会有比<b class="hl-us">任何一个人类</b>都聪明的 AI……大概到 2030 或 2031 年——从现在算起约五年——AI 将比<b class="hl-us">全人类加在一起</b>还聪明。"
+      <span class="en">"AI that is smarter than any human by the end of this year… by 2030 or 2031, AI will be smarter than all of humanity collectively." — 马斯克，达沃斯世界经济论坛，2026-01-22</span>
+    </blockquote>
+    <cite>同月他在 X 上写道："我们已经进入奇点。"（We have entered the Singularity）；6 月 21 日再次发帖："AI 大概会在 4 到 5 年内超过全人类智慧的总和。"</cite>
+    <div class="grid g2" style="margin-top:1.6em">
+      <div class="card"><h3>Sam Altman · OpenAI CEO <span class="tag">2025.06</span></h3><p>"我们已越过事件视界，起飞已经开始。"（We are past the event horizon; the takeoff has started.）——博客《温和的奇点》</p></div>
+      <div class="card"><h3>Dario Amodei · Anthropic CEO <span class="tag">2024.10–2025</span></h3><p>最早 <b style="color:var(--ink)">2026–2027 年</b>就会出现"强大 AI"——相当于"把一整个天才国度装进数据中心"（a country of geniuses in a datacenter）。——《Machines of Loving Grace》及达沃斯访谈</p></div>
+    </div>
+    <p class="src">来源：Rev 达沃斯对谈逐字稿 · Euronews 2026-01-22 · X@elonmusk 2026-06-21 · OpenAI 博客《The Gentle Singularity》2025-06 · Anthropic《Machines of Loving Grace》2024-10</p>
+  </div>
+</section>
+
+<!-- 7 真金白银 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · 真实的革命</div>
+    <h2>真金白银不会撒谎</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">$7,250 亿</div><div class="l">微软、谷歌、Meta、亚马逊四巨头 <b>2026 年 AI 资本开支</b>合计，比 2025 年猛增 77%</div><div class="s">分析师预计 2027 年突破 1 万亿美元</div></div>
+      <div class="stat"><div class="v num">500×</div><div class="l">Anthropic 年化收入两年半的增长：<b>2024 初 $0.87 亿 → 2026 年 5 月超 $440 亿</b></div><div class="s">Series H 官方口径；已超过 OpenAI（约 $250 亿）</div></div>
+      <div class="stat"><div class="v num">48%</div><div class="l">2026 年一季度科技业 7.86 万裁员中<b>归因于 AI/自动化</b>的比例——就业结构已被真实改写</div><div class="s">主要冲击初级岗位招聘；也有反例：IBM 将初级招聘扩至三倍</div></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">小结：普及最快、增速还在加快、钱以万亿计地进场——<b>这不是又一轮炒作周期，而是一条指数曲线的早期。</b>你们正站在曲线还平缓的位置上。</div>
+    <p class="src">来源：Tom's Hardware / CNBC 2026-02 · VentureBeat 2026-04 · Goldman Sachs 研究 · CBS News</p>
+  </div>
+</section>
+
+<!-- 7b 普通人的翅膀 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · 真实的革命 · 这场革命对个人意味着什么</div>
+    <h2>AI 给普通人插上了<span class="hl-us">天使的翅膀</span></h2>
+    <div class="grid g2" style="align-items:center;gap:36px">
+      <div class="card" style="padding:1.4em 1.5em">
+        <svg viewBox="0 0 900 430" width="100%" role="img" aria-label="示意图：一个普通人插上由光点连成的翅膀，飞过标着旧上限的虚线天花板，头顶的箭头指向未知的新上限">
+          <!-- 新上限 -->
+          <line x1="450" y1="132" x2="450" y2="86" stroke="#56C8F5" stroke-width="3" stroke-linecap="round"/>
+          <path d="M450 78 l-11 16 h22 z" fill="#56C8F5"/>
+          <text x="450" y="52" text-anchor="middle" font-size="21" font-weight="700" fill="#56C8F5">新上限：？</text>
+          <!-- 旧天花板（中间被飞破） -->
+          <line x1="60" y1="300" x2="348" y2="300" stroke="#5E6B8C" stroke-width="2" stroke-dasharray="9 7"/>
+          <line x1="552" y1="300" x2="840" y2="300" stroke="#5E6B8C" stroke-width="2" stroke-dasharray="9 7"/>
+          <text x="60" y="330" font-size="16.5" fill="#5E6B8C">旧上限：由训练年限决定的天花板</text>
+          <!-- 翅膀（右） -->
+          <g stroke="#56C8F5" stroke-width="3" fill="none" stroke-linecap="round">
+            <path d="M455 215 Q560 130 680 120" opacity=".9"/>
+            <path d="M455 220 Q570 165 660 170" opacity=".65"/>
+            <path d="M455 225 Q560 200 630 215" opacity=".45"/>
+            <path d="M455 230 Q540 230 600 255" opacity=".3"/>
+            <!-- 翅膀（左） -->
+            <path d="M445 215 Q340 130 220 120" opacity=".9"/>
+            <path d="M445 220 Q330 165 240 170" opacity=".65"/>
+            <path d="M445 225 Q340 200 270 215" opacity=".45"/>
+            <path d="M445 230 Q360 230 300 255" opacity=".3"/>
+          </g>
+          <g fill="#56C8F5">
+            <circle cx="680" cy="120" r="5" opacity=".9"/><circle cx="660" cy="170" r="4" opacity=".65"/><circle cx="630" cy="215" r="3.5" opacity=".45"/><circle cx="600" cy="255" r="3" opacity=".3"/>
+            <circle cx="220" cy="120" r="5" opacity=".9"/><circle cx="240" cy="170" r="4" opacity=".65"/><circle cx="270" cy="215" r="3.5" opacity=".45"/><circle cx="300" cy="255" r="3" opacity=".3"/>
+          </g>
+          <!-- 人 -->
+          <g stroke="#E9EDF7" stroke-width="5.5" stroke-linecap="round" fill="none">
+            <circle cx="450" cy="180" r="13" fill="#E9EDF7" stroke="none"/>
+            <path d="M450 196 V245"/>
+            <path d="M450 208 L423 231 M450 208 L477 231"/>
+            <path d="M450 245 L431 284 M450 245 L469 284"/>
+          </g>
+          <text x="450" y="322" text-anchor="middle" font-size="17" font-weight="700" fill="#E9EDF7">普通人 × AI</text>
+          <!-- 上升气流 -->
+          <g stroke="#56C8F5" stroke-width="2.5" stroke-linecap="round" opacity=".35">
+            <path d="M420 355 V385 M450 348 V392 M480 355 V385"/>
+          </g>
+        </svg>
+        <p style="font-size:.85em;color:var(--ink-2);margin:.8em 0 0">旧天花板由训练年限决定，新天花板由想象力决定。</p>
+      </div>
+      <div style="display:grid;gap:16px">
+        <div class="card"><h3>一个人，第一次能"长出"一支团队</h3><p>写文案、写代码、做设计、跑数据、懂法律、通外语——过去每一样都要数年训练，现在只要你能说清楚<b style="color:var(--ink)">要什么、什么算好</b>。木桶效应被反转了：过去短板决定你的下限，如今 AI 替你补齐所有短板，<b style="color:var(--ink)">你只需要一块足够长的长板</b>。</p></div>
+        <div class="card">
+          <p style="font-size:.95em">"计算机是人类思想的自行车。"<br><span style="color:var(--ink-3);font-size:.82em">—— 史蒂夫·乔布斯，1980。四十多年后，AI 把自行车换成了翅膀。</span></p>
+          <p style="font-size:.95em;margin-top:1em">"现在，人人都是程序员——未来的编程语言，是人类的语言。"<br><span style="color:var(--ink-3);font-size:.82em">—— 黄仁勋，英伟达 CEO，2023 Computex</span></p>
+          <p style="font-size:.95em;margin-top:1em">"以后不会再有'程序员'这种职业了——只要会说话，人人都具备程序员的能力。"<br><span style="color:var(--ink-3);font-size:.82em">—— 李彦宏，百度 CEO，2024</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 章节 02 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">02</div>
+    <h2>国运之赌：中美双双 All in</h2>
+    <p class="lead">历史上很少有一项技术，让世界前两大经济体在同一时间、以国家意志的强度下注。这一次，两边都赌上了未来。</p>
+  </div>
+</section>
+
+<!-- 9 美国 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 国运之赌 · <span class="hl-us">美国</span></div>
+    <h2>算力、能源、管制：一场总体战</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>《美国 AI 行动计划》<span class="tag">2025.07</span></h3><p>《赢得竞赛》：90 余项联邦行动，三大支柱——加速创新（削减监管）、建设 AI 基础设施（数据中心/电网快速审批）、主导国际 AI 秩序（向盟友输出"全栈 AI 出口包"）。</p></div>
+      <div class="card panel-us"><h3>星际之门 Stargate <span class="tag">目标 $5,000 亿</span></h3><p>OpenAI × 软银 × Oracle × MGX。到 2025 年底已承诺投资<b class="hl-us">超 $4,500 亿</b>、规划算力超 8 GW；得州 Abilene 旗舰园区约 1.2 GW 已投运。</p></div>
+      <div class="card panel-us"><h3>能源即国力 <span class="tag">2025–2026</span></h3><p>行政令加速数据中心联邦审批；能源部"Genesis Mission"把 AI 接入 17 个国家实验室，目标"十年内让美国科研生产力翻倍"；2030 年数据中心将占美国新增电力需求的 25%。</p></div>
+      <div class="card panel-us"><h3>对华芯片管制的拉锯 <span class="tag">武器化</span></h3><p>2025.4 禁售 H20 → 8 月"上缴 15% 销售收入换许可"的罕见协议 → 中方转向国产芯片、H20 遇冷 → 12 月 H200 逐案放行。芯片成了两国博弈的筹码。</p></div>
+    </div>
+    <p class="src">来源：whitehouse.gov 2025-07-23 · OpenAI 官方公告 2025-09 · energy.gov（Genesis Mission，2025-11-24）· NPR/Fortune 2025-08 · BIS 2025-12</p>
+  </div>
+</section>
+
+<!-- 10 中国 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 国运之赌 · <span class="hl-cn">中国</span></div>
+    <h2>"人工智能+"写进国家日程表</h2>
+    <div class="grid g2">
+      <div class="card panel-cn"><h3>国务院"人工智能+"行动 <span class="tag">2025.08</span></h3><p>三步走：<b class="hl-cn">2027 年</b>智能终端/智能体普及率超 70% → <b class="hl-cn">2030 年</b>超 90%、智能经济成重要增长极 → 2035 年全面进入智能社会。</p></div>
+      <div class="card panel-cn"><h3>十五五规划 + "智能经济" <span class="tag">2025.10–2026.03</span></h3><p>AI 定位为新质生产力主战场；2026 年《政府工作报告》首提"智能经济"，部署超大规模智算集群、算电协同。AI 核心产业规模已超 1.2 万亿元。</p></div>
+      <div class="card panel-cn"><h3>算力自主化 <span class="tag">昇腾路线图</span></h3><p>华为首次公开三年芯片路线：950PR（2026Q1）→ 970（2028），配自研 HBM；据路透社报道，获国家资金的新建数据中心<b>只准用国产 AI 芯片</b>。国资已向 AI 数据中心投入超千亿美元。</p></div>
+      <div class="card panel-cn"><h3>开源作为国家战略 <span class="tag">DeepSeek 效应</span></h3><p>开源开放写入"人工智能+"意见。截至 2025 年 8 月，中国开放权重模型占全球下载量 <b class="hl-cn">17.1%</b>，首次反超美国（15.86%）。</p></div>
+    </div>
+    <p class="src">来源：gov.cn 2025-08-26 · 新华社/人民网 2026-03-13 · 华为全联接大会 2025-09 · Reuters 2025-11 · USCC 报告 2026-03</p>
+  </div>
+</section>
+
+<!-- 11 对比 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 国运之赌</div>
+    <h2>两种打法，一个惊人的结果</h2>
+    <div class="vs">
+      <div class="stat" style="text-align:right"><div class="v num hl-us">23×</div><div class="l">美国 2025 年 AI 私人投资是中国的倍数<br>（$2,859 亿 vs $124 亿）</div></div>
+      <div class="mid">但</div>
+      <div class="stat"><div class="v num hl-cn">2.7%</div><div class="l">中美最强模型的基准性能差距<br>（2023 年 5 月还是 17.5–31.6 个百分点）</div></div>
+    </div>
+    <div class="tblwrap" style="margin-top:16px">
+      <table>
+        <tr><th></th><th style="color:var(--us)">美国</th><th style="color:var(--cn)">中国</th></tr>
+        <tr><td>核心打法</td><td>算力 + 资本 + 闭源尖端</td><td>工程效率 + 开源生态 + 应用落地</td></tr>
+        <tr><td>国家角色</td><td>松绑监管、加速审批、出口管制</td><td>顶层规划、政府引导基金、渗透率目标</td></tr>
+        <tr><td>2025 知名模型数</td><td class="num">50 个</td><td class="num">30 个（上年 15 个，翻倍）</td></tr>
+        <tr><td>开源下载份额</td><td class="num">15.86%</td><td class="num">17.1%（首次反超）</td></tr>
+      </table>
+    </div>
+    <p class="src">来源：Stanford HAI《2026 AI Index Report》· USCC 2026-03。注：中国政府引导基金等隐性投入未计入"私人投资"口径。</p>
+  </div>
+</section>
+
+<!-- 12 章节 03 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">03</div>
+    <h2>短兵相接：中美大模型之战</h2>
+    <p class="lead">2025 年 1 月之前，主流判断是"中国落后两年"。然后 DeepSeek 出手了。</p>
+  </div>
+</section>
+
+<!-- 12b 原理一:AI是什么 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 模型之战 · 原理一：AI 是什么</div>
+    <h2>大模型的本质：一个学会了"接话"的超大函数</h2>
+    <div class="grid g2" style="align-items:center;gap:30px">
+      <div class="card" style="padding:1.3em 1.4em">
+        <svg viewBox="0 0 900 270" width="100%" role="img" aria-label="示意图：输入中国的首都是，经过万亿参数的神经网络，输出概率分布：北京92%、上海3%、东京1%">
+          <rect x="10" y="95" width="228" height="80" rx="12" fill="none" stroke="#5E6B8C" stroke-width="2"/>
+          <text x="124" y="128" text-anchor="middle" font-size="18" fill="#98A4C0">输入</text>
+          <text x="124" y="156" text-anchor="middle" font-size="20" font-weight="700" fill="#E9EDF7">「中国的首都是＿」</text>
+          <path d="M248 135 h44 m0 0 l-13 -8 m13 8 l-13 8" stroke="#56C8F5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <rect x="306" y="45" width="286" height="180" rx="14" fill="#0D1426" stroke="#1E9BD2" stroke-width="2"/>
+          <g fill="#56C8F5">
+            <circle cx="360" cy="95" r="7" opacity=".85"/><circle cx="360" cy="135" r="7" opacity=".5"/><circle cx="360" cy="175" r="7" opacity=".7"/>
+            <circle cx="449" cy="80" r="7" opacity=".6"/><circle cx="449" cy="118" r="7" opacity=".9"/><circle cx="449" cy="156" r="7" opacity=".4"/><circle cx="449" cy="192" r="7" opacity=".7"/>
+            <circle cx="538" cy="95" r="7" opacity=".5"/><circle cx="538" cy="135" r="7" opacity=".85"/><circle cx="538" cy="175" r="7" opacity=".6"/>
+          </g>
+          <g stroke="#1E9BD2" stroke-width="1.2" opacity=".45">
+            <path d="M367 95 L442 80 M367 95 L442 118 M367 135 L442 118 M367 135 L442 156 M367 175 L442 156 M367 175 L442 192"/>
+            <path d="M456 80 L531 95 M456 118 L531 95 M456 118 L531 135 M456 156 L531 135 M456 156 L531 175 M456 192 L531 175"/>
+          </g>
+          <text x="449" y="252" text-anchor="middle" font-size="17" fill="#98A4C0">万亿参数的神经网络（Transformer）</text>
+          <path d="M602 135 h44 m0 0 l-13 -8 m13 8 l-13 8" stroke="#56C8F5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <text x="664" y="82" font-size="17" fill="#98A4C0">输出：下一个词的概率</text>
+          <rect x="664" y="98" width="170" height="26" rx="5" fill="#1E9BD2"/><text x="672" y="117" font-size="16.5" font-weight="700" fill="#0A0F1E">北京 92%</text>
+          <rect x="664" y="136" width="34" height="26" rx="5" fill="#1E9BD2" opacity=".45"/><text x="706" y="155" font-size="15.5" fill="#98A4C0">上海 3%</text>
+          <rect x="664" y="174" width="16" height="26" rx="5" fill="#1E9BD2" opacity=".3"/><text x="688" y="193" font-size="15.5" fill="#98A4C0">东京 1%</text>
+        </svg>
+        <p style="font-size:.85em;color:var(--ink-2);margin:.8em 0 0">它不查答案，它算概率——你看到的所有"智能"，都来自一次次对下一个词的预测。</p>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>参数 = 万亿个旋钮</h3><p>模型是一张巨大的数学网络，"参数"是网络里可调的旋钮，前沿模型有<b style="color:var(--ink)">上万亿个</b>。所谓训练，就是把这些旋钮拧到正确的位置。</p></div>
+        <div class="card"><h3>Token = 文字的积木</h3><p>模型把文字切成小块处理（"人工智能"≈ 2 个 token）。API 按 token 计费——后面价格页的"每百万 token"就是这么来的。</p></div>
+        <div class="card"><h3>涌现 = 量变到质变</h3><p>规模定律（Scaling Law）：参数、数据、算力一起放大，理解、推理、创造这些能力会<b style="color:var(--ink)">"自己长出来"</b>——这就是全世界疯抢算力的原因。</p></div>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">一句话总结：AI 不是被"编程"出来的，是被"喂"出来的——它从海量文本中学到了语言乃至世界的规律。</div>
+  </div>
+</section>
+
+<!-- 12c 原理二:训练 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">03 · 模型之战 · 原理二：训练是怎么回事</div>
+    <h2>"炼"一个大模型：先读完整个互联网，再教它听话</h2>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① 预训练</div><p>读遍数万亿 token 的文本（≈ 几百万个图书馆），在猜词游戏中学会语言与世界的规律。<b style="color:var(--ink)">算力和钱主要烧在这一步。</b></p></div>
+      <div class="st"><div class="k">② 后训练</div><p>人类示范 + 打分（RLHF 等），教它有用、诚实、守规矩——从"会接话"变成"会干活"。</p></div>
+      <div class="st"><div class="k">③ 推理（使用）</div><p>你每一次提问都是一次"推理"，按 token 计费。<b style="color:var(--ink)">训练一次，服务亿万人。</b></p></div>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <tr><th>模型</th><th>GPU 规模</th><th>耗时</th><th>公开成本口径</th><th>意义</th></tr>
+        <tr><td>GPT-4 · 2023</td><td class="num">约 2.5 万块 A100（据 SemiAnalysis 估算）</td><td class="num">约 3 个月</td><td>Altman 亲口："超过 1 亿美元"</td><td>开启大模型军备竞赛</td></tr>
+        <tr><td>Llama 3.1-405B · 2024</td><td class="num">1.6 万块 H100 · 3,084 万 GPU 小时（官方）</td><td class="num">约 3 个月</td><td>未公布金额（仅电费即千万美元级）</td><td>彼时最强开源模型</td></tr>
+        <tr><td>DeepSeek-V3 · 2024</td><td class="num">2,048 块 H800 · 279 万 GPU 小时</td><td class="num">约 2 个月</td><td class="num">$558 万（官方论文；仅最终训练的 GPU 租金）</td><td>效率革命，引爆"DeepSeek 时刻"</td></tr>
+        <tr><td>2026 前沿（GPT / Claude / Grok）</td><td class="num">xAI Colossus 等集群已达 20 万块 GPU</td><td class="num">数月</td><td>Amodei：单次训练正迈向 <b class="num">100 亿美元</b>量级</td><td>升级为国家级算力竞赛</td></tr>
+      </table>
+    </div>
+    <div class="note">看懂这张账单，就看懂了前两章：训练成本 ≈ 芯片 × 电力 × 时间——所以中美才抢芯片、抢电；也看懂了 DeepSeek 为什么震动世界：用零头的钱，练出了 90 分的模型。</div>
+    <p class="src">来源：Wired 2023（Altman 访谈）· SemiAnalysis 2023-07 · Meta Llama 3.1 模型卡 2024-07 · DeepSeek-V3 技术报告 2024-12 · xAI 官网 · Amodei 播客访谈 2024-06。各家口径不一，金额仅作量级参考。</p>
+  </div>
+</section>
+
+<!-- 13 美国阵营 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 模型之战 · <span class="hl-us">美国阵营</span>（2026 年 7 月在售旗舰）</div>
+    <h2>闭源尖端：五强争霸</h2>
+    <div class="grid g3">
+      <div class="card panel-us"><h3>OpenAI · GPT-5.5 <span class="tag">2026.04</span></h3><p>ChatGPT 全量默认模型；GPT-5.6 系列（Sol/Terra/Luna）已开启预览。年化收入约 $250 亿。</p></div>
+      <div class="card panel-us"><h3>Anthropic · Claude Fable 5 <span class="tag">2026.06</span></h3><p>超越 Opus 的全新 Mythos 级模型。发布三天后被美国政府以国家安全为由暂停对外国用户开放 19 天——<b>模型本身成了地缘政治事件</b>。廉价智能体档 Sonnet 5 随后发布。</p></div>
+      <div class="card panel-us"><h3>Google · Gemini 3.1 Pro <span class="tag">2026.02</span></h3><p>发布时在 18 项基准中 12 项第一；3.5 Flash 主打速度，3.5 Pro 在路上。</p></div>
+      <div class="card panel-us"><h3>xAI · Grok 4.3 <span class="tag">2026.04</span></h3><p>原生视频输入、1M 上下文；传闻中 10 万亿参数的 Grok 5 仍在训练。xAI 已并入 SpaceX 体系。</p></div>
+      <div class="card panel-us"><h3>Meta · Muse Spark <span class="tag">2026.04</span></h3><p>Meta 首个<b>闭源、仅 API</b> 的前沿模型——曾经的开源旗手转身，"Llama 时代"事实上落幕。</p></div>
+      <div class="card" style="display:flex;align-items:center"><p style="font-size:1em;color:var(--ink-2)">共同点：<b style="color:var(--ink)">全部闭源</b>、疯狂堆算力、按 token 收费的尖端路线。</p></div>
+    </div>
+    <p class="src">来源：openai.com · CNBC 2026-06-09/30 · Forbes 2026-06-16 · deepmind.google · x.ai · VentureBeat 2026-04</p>
+  </div>
+</section>
+
+<!-- 14 中国阵营 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 模型之战 · <span class="hl-cn">中国阵营</span>（2026 年 7 月主力模型）</div>
+    <h2>开源军团：便宜、快、够用，而且越来越强</h2>
+    <div class="grid g4">
+      <div class="card panel-cn"><h3>DeepSeek V4 <span class="tag cn">开源</span></h3><p>1.6T 参数（激活仅 49B），推理算力降到上代的 27%。外媒评价："几乎到前沿，价格只有零头。"</p></div>
+      <div class="card panel-cn"><h3>阿里 Qwen3.7-Max <span class="tag cn">开源+闭源</span></h3><p>万亿参数 MoE；Qwen 家族衍生模型超 11.3 万个，<b>多于 Google 与 Meta 之和</b>。</p></div>
+      <div class="card panel-cn"><h3>字节豆包 Seed 2.0</h3><p>面向亿级用户，推理成本降 90%；2026.3 SuperCLUE 中文测评国内第一。</p></div>
+      <div class="card panel-cn"><h3>智谱 GLM-5.2 <span class="tag cn">MIT 开源</span></h3><p>754B 参数，特意选在 Fable 5 被禁当晚发布，口号："前沿智能属于每一个人。"</p></div>
+      <div class="card panel-cn"><h3>月之暗面 Kimi K2.6 <span class="tag cn">开源</span></h3><p>编码能力大涨；2.5T+ 参数的 K3 计划三季度发布。</p></div>
+      <div class="card panel-cn"><h3>MiniMax M3</h3><p>SWE-bench Pro 59%，宣称超 GPT-5.5；单 token 计算量为上代 1/20。</p></div>
+      <div class="card panel-cn"><h3>百度 ERNIE 5.1</h3><p>2.4T 原生多模态；官方称以同级 6% 的预训练成本达到领先性能。</p></div>
+      <div class="card panel-cn"><h3>腾讯混元</h3><p>快慢融合 MoE，295B 激活 21B，主打 Agent 场景。</p></div>
+    </div>
+    <p class="src">来源：DeepSeek API 公告 2026-04-24 · simonwillison.net · 阿里云峰会 2026-05 · 财新 2026-02 · OSCHINA 2026-06 · ERNIE 官方博客 2026-05</p>
+  </div>
+</section>
+
+<!-- 15 差距量化 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 模型之战</div>
+    <h2>差距还剩多少？三把尺子一起量</h2>
+    <div class="card" style="padding-bottom:1.6em">
+      <h3 style="font-size:.95em;color:var(--ink-2);font-weight:600">LMArena 全球盲测榜（Elo，2026-07-01）—— 前 10 名全是美国模型，但身后已经贴上来了</h3>
+      <div class="legend"><span><i style="background:var(--us-bar)"></i>美国</span><span><i style="background:var(--cn-bar)"></i>中国</span></div>
+      <div class="dotplot" role="img" aria-label="Fable 5 1509分，Opus 4.6 Thinking 1504分，Muse Spark 1487分，Gemini 3.1 Pro 1486分，GPT-5.5 High 1481分，Qwen3.7-Max 1475分，GLM-5.1 1472分，GLM-5.2 1469分">
+        <div class="axis"></div>
+        <div class="tick" style="left:0%">1460</div><div class="tick" style="left:33.3%">1480</div><div class="tick" style="left:66.7%">1500</div><div class="tick" style="left:100%">1520</div>
+        <div class="dot" style="left:81.7%;background:var(--us-bar)" title="Claude Fable 5 · 1509 · 第1名"></div><div class="dl" style="left:81.7%;bottom:62%">Fable 5 <b class="num">1509</b></div>
+        <div class="dot" style="left:73.3%;background:var(--us-bar)" title="Claude Opus 4.6 Thinking · 1504 · 第2名"></div><div class="dl" style="left:73.3%;bottom:38%">Opus 4.6 <b class="num">1504</b></div>
+        <div class="dot" style="left:45%;background:var(--us-bar)" title="Muse Spark · 1487 · 第6名"></div><div class="dl" style="left:46%;bottom:62%">Muse Spark <b class="num">1487</b></div>
+        <div class="dot" style="left:43.3%;background:var(--us-bar)" title="Gemini 3.1 Pro · 1486 · 第7名"></div><div class="dl" style="left:38%;bottom:38%">Gemini 3.1 <b class="num">1486</b></div>
+        <div class="dot" style="left:35%;background:var(--us-bar)" title="GPT-5.5 High · 1481 · 第10名"></div><div class="dl" style="left:31%;bottom:62%">GPT-5.5 <b class="num">1481</b></div>
+        <div class="dot" style="left:25%;background:var(--cn-bar)" title="Qwen3.7-Max · 1475 · 第15名 · 中国最高"></div><div class="dl" style="left:24%;bottom:38%;color:var(--cn)">Qwen3.7 <b class="num">1475</b></div>
+        <div class="dot" style="left:20%;background:var(--cn-bar)" title="GLM-5.1 · 1472 · 第22名"></div><div class="dl" style="left:14%;bottom:62%;color:var(--cn)">GLM-5.1 <b class="num">1472</b></div>
+        <div class="dot" style="left:15%;background:var(--cn-bar)" title="GLM-5.2 · 1469 · 第26名"></div><div class="dl" style="left:9%;bottom:38%;color:var(--cn)">GLM-5.2 <b class="num">1469</b></div>
+      </div>
+      <p style="font-size:.85em;color:var(--ink-2);margin-top:.4em">榜首与中国最强模型仅差 <b class="num" style="color:var(--ink)">34 分</b> Elo；斯坦福 AI 指数口径：性能差距 <b class="num" style="color:var(--ink)">2.7%</b>；Epoch AI 时间口径：约落后 <b class="num" style="color:var(--ink)">7 个月</b>。注：GPT-5.6 与 GLM-5.2 均为 6 月最新发布——GPT-5.6 尚在封闭预览、未进入盲测榜；相邻模型分差在置信区间内互有重叠。</p>
+    </div>
+    <div class="note">回看"DeepSeek 时刻"（2025-01-27）：DeepSeek 公布 V3 最终训练 GPU 成本仅约 560 万美元（注意口径：不含研发与硬件），当天英伟达单日蒸发 <b class="num">5,890 亿美元</b>市值——美股史上最大单日损失。"中国落后两年"的叙事就此终结。</div>
+    <p class="src">来源：arena.ai/leaderboard（2026-07-01 抓取）· Stanford HAI 2026 · epoch.ai · CNBC/Bloomberg 2025-01-27</p>
+  </div>
+</section>
+
+<!-- 16 开源与价格 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 模型之战</div>
+    <h2>格局定型：美国霸榜尖端，中国占领生态</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="card">
+        <h3 style="font-size:.95em;color:var(--ink-2);font-weight:600">API 输入价格（美元 / 百万 token，2026-07 官方牌价）</h3>
+        <div class="legend"><span><i style="background:var(--us-bar)"></i>美国</span><span><i style="background:var(--cn-bar)"></i>中国</span></div>
+        <div class="hbar" style="grid-template-columns:9.5em 1fr">
+          <div class="n">Claude Fable 5</div><div class="t" style="width:74%"><span class="num">$10.00</span></div>
+          <div class="n">GPT-5.5</div><div class="t" style="width:37%"><span class="num">$5.00</span></div>
+          <div class="n">Claude Sonnet 5</div><div class="t" style="width:14.8%"><span class="num">$2.00</span></div>
+          <div class="n">智谱 GLM-5.2</div><div class="t cn" style="width:10.4%"><span class="num">$1.40</span></div>
+          <div class="n">DeepSeek V4-Pro</div><div class="t cn" style="width:3.3%"><span class="num">$0.44</span></div>
+          <div class="n">DeepSeek V4-Flash</div><div class="t cn" style="width:1%"><span class="num">$0.14</span></div>
+        </div>
+        <p style="font-size:.85em;color:var(--ink-2);margin-top:.9em">中国开源旗舰的牌价，从美国旗舰的几分之一（GLM-5.2）一直杀到 <b style="color:var(--ink)" class="num">1/35 ~ 1/100</b>（DeepSeek）——图上那几条短短的橙线，就是全球开发者用脚投票的原因。</p>
+      </div>
+      <div>
+        <div class="stat" style="margin-bottom:16px"><div class="v num hl-cn">41%</div><div class="l">过去一年 Hugging Face 全球模型下载量中<b>中国模型的占比</b>；最受欢迎开源模型已从 Llama 换成 DeepSeek-R1</div><div class="s">Hugging Face 官方报告，2026-03</div></div>
+        <div class="stat"><div class="v num hl-us">前 10 全闭源</div><div class="l">LMArena 榜单前十被美国闭源模型包揽；Meta 弃 Llama 转闭源后，<b>开源阵地几乎整体让给了中国</b></div><div class="s">arena.ai · VentureBeat 2026-04</div></div>
+      </div>
+    </div>
+    <p class="src">来源：DeepSeek / Anthropic / z.ai 官方定价页（2026-07 抓取）· GPT-5.5 价格据第三方汇总 · huggingface.co 春季报告 2026-03-17 · SCMP</p>
+  </div>
+</section>
+
+<!-- 17 章节 04 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">04</div>
+    <h2>资本市场：钱往哪里流</h2>
+    <p class="lead">2026 年，AI 公司集体涌向交易所——美国酝酿史上最大 IPO，中国大模型公司抢先敲钟。</p>
+  </div>
+</section>
+
+<!-- 18 美国已上市 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 资本市场 · <span class="hl-us">美国 · 已上市</span></div>
+    <h2>王座与新贵</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>英伟达 NVDA <span class="tag ok">王座</span></h3><p class="big num">≈ $4.8 万亿</p><p>全球市值第一的公司。卖铲子的仍然是最大赢家。</p></div>
+      <div class="card panel-us"><h3>Cerebras CBRS <span class="tag ok">2026.05 IPO</span></h3><p class="big num">募资 $55 亿</p><p>AI 芯片挑战者，2026 年迄今最大科技 IPO；定价 $185，首日一度 +108%。手握 OpenAI $100 亿算力合同。</p></div>
+      <div class="card panel-us"><h3>CoreWeave CRWV <span class="tag">2025.03 IPO</span></h3><p class="big num">$40 → ≈$82</p><p>GPU 云第一股，较发行价翻倍，但已从高点 $163 回落一半——市场开始区分故事与现金流。</p></div>
+      <div class="card panel-us"><h3>SpaceX（含 xAI）<span class="tag ok">2026.06 IPO</span></h3><p class="big num">$1.25 万亿体系</p><p>2026 年 2 月合并 xAI 后上市；敲钟数日即宣布以 <b class="num">$600 亿</b>全股票收购 AI 编程工具 Cursor。</p></div>
+    </div>
+    <p class="src">来源：CompaniesMarketCap 2026-07 · TechCrunch 2026-05-14 · StockAnalysis（CRWV，2026-07-03）· Bloomberg/Fortune 2026-06-16</p>
+  </div>
+</section>
+
+<!-- 19 美国未上市 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 资本市场 · <span class="hl-us">美国 · 排队上市</span></div>
+    <h2>史上最大 IPO 正在路上</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>OpenAI <span class="tag warn">已秘密递交 S-1</span></h3><p class="big num">$8,520 亿</p><p>2026 年 3 月融资 $1,220 亿后的估值；2026 年 6 月被曝已向 SEC 秘密递交上市申请，传闻目标 IPO 估值 <b class="num">$1 万亿</b>，时间或推迟至 2027。</p></div>
+      <div class="card panel-us"><h3>Anthropic <span class="tag warn">已秘密递交 S-1</span></h3><p class="big num">$9,650 亿</p><p>2026 年 5 月 Series H 融资 $650 亿后的投后估值（2 月还是 $3,800 亿，一季度翻了 2.5 倍）；<b>6 月 1 日已向 SEC 秘密递交 S-1</b>，传今年 10 月登陆纳斯达克、募资超 $600 亿。年化收入超 $440 亿。</p></div>
+      <div class="card panel-us"><h3>SSI（Ilya Sutskever）</h3><p class="big num">$320 亿</p><p>OpenAI 联创出走创办，无产品、无收入，累计融资 $60 亿——市场为"纯智力"给出的定价。</p></div>
+      <div class="card panel-us"><h3>Databricks</h3><p class="big num">$1,340 亿</p><p>数据+AI 平台，新融 $50 亿，2026–27 热门 IPO 候选。</p></div>
+    </div>
+    <p class="src">来源：CNBC 2026-06-08 · Reuters 2026-06 · Anthropic 官方公告（Series H 2026-05 · S-1 递交声明 2026-06-01）· PitchBook / Sacra</p>
+  </div>
+</section>
+
+<!-- 19b 字节跳动专题 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">04 · 资本市场 · <span class="hl-cn">中国</span> · 字节跳动专题</div>
+    <h2>字节跳动：营收最大的未上市科技公司</h2>
+    <div class="grid g3" style="margin-bottom:16px">
+      <div class="stat"><div class="v num">$1,860 亿</div><div class="l">2025 年营收（+20%），<b>约为 OpenAI 的 7 倍</b>——按营收是全球最大的未上市科技公司，且大幅盈利</div><div class="s">36氪/Sacra 2026-06；海外收入占比首破 30%</div></div>
+      <div class="stat"><div class="v num">≈$5,500 亿</div><div class="l">最新估值（2026-02 二级市场老股交易口径），按估值居全球未上市公司第二、次于 OpenAI</div><div class="s">PE Insights 2026-02；整体 IPO 无时间表，据报道董事会主动推迟</div></div>
+      <div class="stat"><div class="v num hl-cn">1,600 亿元+</div><div class="l">2026 年 AI 资本开支预算（过半用于买芯片），据 Bloomberg 报道正讨论上探 <b class="num">$700 亿</b></div><div class="s">Bloomberg 2026-05-27；芯片"英伟达+华为+自研"三路并进</div></div>
+    </div>
+    <div class="grid g3" style="margin-bottom:16px">
+      <div class="card panel-cn"><h3>豆包 App <span class="tag cn">用户第一</span></h3><p>MAU <b class="num" style="color:var(--ink)">3.45 亿</b>居中国 AI 应用第一（第二名千问 1.66 亿），DAU 破 1 亿；全球仅次于 ChatGPT。</p></div>
+      <div class="card panel-cn"><h3>豆包大模型 × 火山引擎 <span class="tag cn">调用第一 · 云第一</span></h3><p>日均调用 <b class="num" style="color:var(--ink)">180 万亿 token</b>，两年增长约 1500 倍；中国大模型公有云份额 <b class="num" style="color:var(--ink)">49.5%</b> 第一。</p></div>
+      <div class="card panel-cn"><h3>即梦 AI · Seedance 2.0 <span class="tag cn">全球第一</span></h3><p>视频生成模型盲测榜（Video Arena）<b style="color:var(--ink)">全球登顶</b>，超越 Google Veo 3 与 OpenAI Sora 2，上线火爆到排队 8 小时。</p></div>
+      <div class="card panel-cn"><h3>扣子 Coze</h3><p>Agent 开发平台，2025 年 7 月以 Apache 2.0 <b style="color:var(--ink)">全面开源</b>（48 小时 9000+ 星），已服务上万家企业、数百万开发者。</p></div>
+      <div class="card panel-cn"><h3>TRAE · AI 编程</h3><p>上线不到一年全球用户 <b class="num" style="color:var(--ink)">600 万</b>，累计生成近千亿行代码；字节内部 92% 的工程师在用。</p></div>
+      <div class="card panel-cn"><h3>Seed Edge · AGI 野心</h3><p>2025 年初启动的 AGI 长期研究计划，宽松考核、长周期投入；<b style="color:var(--ink)">张一鸣亲自回归一线</b>读论文、面试顶级研究员。</p></div>
+    </div>
+    <div class="note">媒体口径："<b>从 App 工厂到 AI 工厂</b>"——2023 年 8 月才推出豆包、起步慢半拍，靠"钞能力 + 赛马机制 + 全栈布局（模型—云—App—芯片）"两年做到用户、token 调用、云份额三个第一。注：TikTok 美国业务已于 2026 年 1 月交割给美资主导的合资公司，字节保留 19.9%——它同时也是中美博弈最直接的承压者。</div>
+    <p class="src">来源：36氪/Sacra 2026-06 · PE Insights 2026-02 · Bloomberg 2026-05-27 · QuestMobile 2026Q1 · 火山引擎 FORCE 大会 2026-06-23（引 IDC）· Artificial Analysis Video Arena 2026-02 · 量子位 2025-07 · 极客公园 2025-12 · 晚点 2025-01 · CNBC 2026-01。估值/营收均为媒体或二级市场口径，字节官方从未确认。</p>
+  </div>
+</section>
+
+<!-- 20 中国上市潮 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 资本市场 · <span class="hl-cn">中国 · 2026 年 1 月，一周双响</span></div>
+    <h2>大模型第一股，花落港交所</h2>
+    <div class="grid g2">
+      <div class="card panel-cn">
+        <h3>智谱 · 2513.HK <span class="tag ok">2026-01-08 上市</span></h3>
+        <p class="big num">市值 ≈ 7,994 亿港元</p>
+        <p>"全球大模型第一股"，首日市值 570 亿港元，<b>半年涨了约 13 倍</b>（股价 1,793 港元，2026-07-04）。已启动科创板"A+H"，拟再募 <b class="num">150 亿元</b>。MaaS 平台年化收入 12 个月增长 60 倍。</p>
+      </div>
+      <div class="card panel-cn">
+        <h3>MiniMax · 0100.HK <span class="tag ok">2026-01-09 上市</span></h3>
+        <p class="big num">市值 ≈ 1,087 亿港元</p>
+        <p>公开发售<b>超购 1,837 倍</b>破快手纪录，大模型公司史上最大募资（55.4 亿港元）；首日盘中即成全球首个千亿港元市值大模型公司。现价 346.6 港元（2026-07-04），较发行价 +110%，但较 6 月高点 553 港元已回落近四成。</p>
+      </div>
+    </div>
+    <div class="note">插曲：2 月解禁期两只股票均现巨震（云知声更曾暴涨暴跌）——<b>资本市场的热情是真的，泡沫的风险也是真的。</b>对投资者与从业者，波动都是这个时代的一部分。</div>
+    <p class="src">来源：证券时报/量子位 2026-01-08/09 · 观察者网 2026-01-09 · 新浪财经 2026-06-03 · 澎湃 2026-02 · 市值/股价为 2026-07-04 行情跟踪数据</p>
+  </div>
+</section>
+
+<!-- 21 六小虎 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 资本市场 · 中国"六小虎"</div>
+    <h2>两年前同一起跑线，今天已不在同一场比赛</h2>
+    <div class="tblwrap">
+      <table>
+        <tr><th>公司</th><th>现状</th><th>最新估值 / 市值</th><th>代表产品</th><th>2026 走向</th></tr>
+        <tr><td>智谱</td><td><span class="tag ok">已上市</span></td><td class="num">约 7,994 亿港元（2026-07-04）</td><td>GLM 系列 · MaaS</td><td>基座 + ToB，冲刺"A+H"双平台</td></tr>
+        <tr><td>MiniMax</td><td><span class="tag ok">已上市</span></td><td class="num">约 1,087 亿港元（2026-07-04）</td><td>M3 · 海螺 AI · Talkie</td><td>全模态 + 全球化 C 端</td></tr>
+        <tr><td>月之暗面</td><td><span class="tag cn">融资最猛</span></td><td class="num">投前 $300 亿（半年涨近 7 倍）</td><td>Kimi · K2.6</td><td>坚持 AGI 主线，筹备港股 IPO</td></tr>
+        <tr><td>阶跃星辰</td><td><span class="tag cn">冲刺 IPO</span></td><td class="num">Pre-IPO 轮近 $25 亿，目标估值 $100 亿</td><td>Step 多模态系列</td><td>押注"AI+终端"：OPPO/荣耀旗舰机装机超 4,200 万</td></tr>
+        <tr><td>百川智能</td><td><span class="tag warn">转型</span></td><td class="num">无 2025 后新公开估值</td><td>Baichuan-M3 医疗大模型</td><td>All in 医疗 AI，退出通用基座竞赛</td></tr>
+        <tr><td>零一万物</td><td><span class="tag warn">转型</span></td><td class="num">无 2025 后新公开估值</td><td>Yi 系列（已停训超大模型）</td><td>转型企业级 AI 部署服务商</td></tr>
+      </table>
+    </div>
+    <p class="src">来源：36氪《智谱与 MiniMax 上市后，"六小虎"路径分化》· 财新 2026-05-08 · 新浪财经 2026-06-09 · 《财经》2026-05</p>
+  </div>
+</section>
+
+<!-- 22 分化小结 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 资本市场</div>
+    <h2>牌桌正在收敛</h2>
+    <div class="grid g3">
+      <div class="card"><h3><span class="tag ok">上岸</span></h3><p style="font-size:1em"><b style="color:var(--ink)">智谱、MiniMax</b></p><p>拿到公开市场融资通道，用股民的钱继续烧基座模型。</p></div>
+      <div class="card"><h3><span class="tag cn">留在牌桌</span></h3><p style="font-size:1em"><b style="color:var(--ink)">月之暗面、阶跃星辰</b></p><p>一个靠融资额中国之最（半年 $39 亿），一个靠绑定手机终端产业链。</p></div>
+      <div class="card"><h3><span class="tag warn">换赛道</span></h3><p style="font-size:1em"><b style="color:var(--ink)">百川智能、零一万物</b></p><p>承认基座竞赛烧不起，转向医疗、企业服务等垂直纵深。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">给你们的启示：<b>基座模型是巨头和国家队的游戏，但应用层的机会正在指数级展开</b>——下一节我们就看一个应用层的代表作。</div>
+  </div>
+</section>
+
+<!-- 23 章节 05 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">05</div>
+    <h2>Agent：AI 不再只是聊天</h2>
+    <p class="lead">从"给你一段回答"到"替你完成任务"——智能体（Agent）是 2025–2026 年最大的范式转变。以 Claude Code 为主案例，再看两个新面孔。</p>
+  </div>
+</section>
+
+<!-- 24 范式转变 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agent</div>
+    <h2>三年三级跳：补全 → 对话 → 智能体</h2>
+    <div class="steps" style="margin-bottom:20px">
+      <div class="st"><div class="k">2021 · 补全</div><p>GitHub Copilot：你写一半，它猜下一行。</p></div>
+      <div class="st"><div class="k">2022 · 对话</div><p>ChatGPT：你问它答，复制粘贴还得靠自己。</p></div>
+      <div class="st"><div class="k">2025 · 智能体</div><p>Claude Code：给它一个目标，它自己动手干完。</p></div>
+    </div>
+    <h3 style="margin-top:1em">Claude Code 在终端里的工作循环</h3>
+    <div class="steps">
+      <div class="st"><div class="k">① 理解</div><p>自己读代码库、查文档，搞清现状。</p></div>
+      <div class="st"><div class="k">② 计划</div><p>拆解任务，列出方案，重大操作先征求同意。</p></div>
+      <div class="st"><div class="k">③ 执行</div><p>写代码、改文件、跑命令、装依赖，多步连续作业。</p></div>
+      <div class="st"><div class="k">④ 验证</div><p>自己运行测试、检查报错、修到通过为止。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">关键区别：出错时它<b>不是把报错丢给你</b>，而是读懂报错、改完再试——这正是"工具"与"同事"的分界线。</div>
+  </div>
+</section>
+
+<!-- 25 数据 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agent · 案例 · Claude Code：市场用数字投票</div>
+    <h2>史上增长最快的开发工具品类</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">$25 亿+</div><div class="l"><b>Claude Code 年化收入</b>（2026.2）：上线 6 个月破 $10 亿，Anthropic 史上增长最快的产品，企业订阅占一半以上</div><div class="s">Anthropic 官方，2026-02</div></div>
+      <div class="stat"><div class="v num">$600 亿</div><div class="l">SpaceX 收购 AI 编程工具 <b>Cursor</b> 的价格（2026.6）；其 ARR 17 个月从 $1 亿涨到 $40 亿</div><div class="s">TechCrunch / Bloomberg 2026-06-16</div></div>
+      <div class="stat"><div class="v num">100%</div><div class="l">Anthropic 与 OpenAI 多位工程师公开表示：本人提交的代码<b>已全部由 AI 生成</b>；微软仓库约 20–30%（Nadella）</div><div class="s">Fortune 2026-01-29 · LlamaCon 2025-04</div></div>
+    </div>
+    <div class="note">连"写 AI 的人"都不再手写代码了——这就是工具成熟度最硬的证据。</div>
+    <p class="src">来源：Anthropic Series G 公告 2026-02-12 · Fortune 2026-01-29 · TechCrunch 2026-04/06</p>
+  </div>
+</section>
+
+<!-- 26 案例 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agent · 案例 · Claude Code 三个典型工作流（现场可演示）</div>
+    <h2>一句话任务，它能走多远</h2>
+    <div class="grid g3">
+      <div class="card">
+        <h3>案例一 · 从零建站</h3>
+        <p style="color:var(--us);font-size:.9em">"帮我做一个班级活动报名网页，能填名字、选场次、导出名单。"</p>
+        <p>它会：搭页面 → 写表单逻辑 → 加数据存储 → 本地跑起来给你看。传统上要学几周 HTML/JS 才能做的事，<b style="color:var(--ink)">20 分钟出可用版本</b>。</p>
+      </div>
+      <div class="card">
+        <h3>案例二 · 接手陌生项目修 Bug</h3>
+        <p style="color:var(--us);font-size:.9em">"这个开源项目跑起来报这个错，帮我修好。"（贴上报错）</p>
+        <p>它会：读报错 → 在几万行代码里定位根因 → 修改 → 跑测试确认。<b style="color:var(--ink)">看懂别人的烂代码</b>恰恰是 AI 最省你命的地方。</p>
+      </div>
+      <div class="card">
+        <h3>案例三 · 数据分析自动化</h3>
+        <p style="color:var(--us);font-size:.9em">"这份问卷 Excel，帮我清洗数据、做交叉分析、生成图表报告。"</p>
+        <p>它会：写脚本清洗 → 统计分析 → 出图 → 生成一页网页报告。<b style="color:var(--ink)">不用会 Python</b>，但你要会判断结论对不对。</p>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">共同点：你的角色从"操作者"变成"<b>提需求、做判断、验收结果</b>的人"——这三件事，就是接下来练习要练的。</div>
+  </div>
+</section>
+
+<!-- 26b 龙虾 OpenClaw -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agent · 案例 · "龙虾" OpenClaw</div>
+    <h2>一只开源"龙虾"，掀起全民养 Agent 热潮</h2>
+    <div class="grid g2" style="align-items:start">
+      <div style="display:grid;gap:16px">
+        <div class="card"><h3>它是什么 <span class="tag ok">开源 · 免费</span></h3><p>常驻<b style="color:var(--ink)">你自己电脑</b>上的全能个人助理：用微信 / Telegram / WhatsApp 发条消息指挥它——整理文件、写邮件、填表格、跑数据、控制设备，7×24 待命。奥地利开发者 Peter Steinberger 2025 年 11 月开源，吉祥物是一只龙虾 🦞，中文社区把部署调教它叫"<b style="color:var(--ink)">养龙虾</b>"。</p></div>
+        <div class="card"><h3>为什么火</h3><p><b style="color:var(--ink)">技能即文件</b>：会做的事沉淀成 SKILL.md 文档，可积累、可分享，复旦大学还上线了"百万技能库"；<b style="color:var(--ink)">模型无关</b>：Claude、GPT、DeepSeek 都能当它的大脑；网易有道基于它推出国产版 <b style="color:var(--ink)">LobsterAI（有道龙虾）</b>。</p></div>
+      </div>
+      <div style="display:grid;gap:16px">
+        <div class="stat"><div class="v num">38 万+</div><div class="l">GitHub 星标——<b>史上增长最快的开源项目之一</b>：上线一周破 10 万星、200 万访客</div><div class="s">GitHub 实查 2026-07-04：381,646 星</div></div>
+        <div class="stat"><div class="v num">3 个名字</div><div class="l">Clawdbot → Moltbot → OpenClaw：因 Anthropic 商标投诉，三个月内两度改名；作者本人 2026 年 2 月被 OpenAI 招入，组建 Agent 基础设施团队</div><div class="s">腾讯新闻 2026-02 · CNBC 2026-03</div></div>
+      </div>
+    </div>
+    <div class="note">"龙虾悖论"（新华网）：它能干活是因为权限大，权限大就有风险——提示注入、技能投毒争议不断，政府机构与银行被限制使用，科技园区却在扶持其生态。<b>工具越强，越要懂边界。</b></div>
+    <p class="src">来源：GitHub API 实查 2026-07-04 · 维基百科 OpenClaw 词条 · 新华网 2026-03-23 · 腾讯新闻 2026-02-02 · 量子位 2026-02</p>
+  </div>
+</section>
+
+<!-- 26c Hermes Agent -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agent · 案例 · Hermes Agent</div>
+    <h2>Hermes：会自我进化的智能体</h2>
+    <div class="grid g2" style="align-items:start">
+      <div style="display:grid;gap:16px">
+        <div class="card"><h3>它是什么 <span class="tag ok">MIT 开源</span></h3><p>Nous Research（开源模型 Hermes 系列同门）2026 年 2 月发布的通用个人 Agent，口号"<b style="color:var(--ink)">The agent that grows with you</b>"。部署在自己的服务器上，强调数据主权；一个网关接入 20+ 聊天平台（微信/钉钉/飞书/Telegram…），兼容 200+ 大模型；6 月刚推出对新手友好的桌面版。</p></div>
+        <div class="card"><h3>和"龙虾"最大的不同 <span class="tag us">自我进化</span></h3><p>龙虾的技能靠人预先写好；Hermes 把<b style="color:var(--ink)">每次做成的任务自动沉淀为技能文档，并在使用中自我改进</b>，配上跨会话的持久记忆——越用越懂你。媒体的共同口径：两者"互补而非替代"。</p></div>
+      </div>
+      <div style="display:grid;gap:16px">
+        <div class="stat"><div class="v num">21 万</div><div class="l">GitHub 星标，只用了 4 个月——36氪 4 月还在问"是不是下一个龙虾"，如今已连续霸榜 GitHub 全球趋势第一</div><div class="s">GitHub 实查 2026-07-04：208,890 星</div></div>
+        <div class="stat"><div class="v num">200+ / 20+</div><div class="l">兼容的大模型数 / 可接入的聊天平台数——一个 Agent，装进你所有的对话框</div><div class="s">官方文档 · NVIDIA 官方博客推介</div></div>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">赛道背景：Agent 已是兵家必争——商业侧 Manus（年收入超 $1 亿）被 Meta 以逾 $20 亿收购、又遭中国安全审查叫停；OpenAI 挖走"龙虾"作者；字节、阿里、腾讯全线压上。<b>开源的龙虾与 Hermes，是普通人现在就能免费上手的那一份。</b></div>
+    <p class="src">来源：GitHub API 实查 2026-07-04 · 36氪 2026-04-10 · Decrypt 2026-06-03 · 界面新闻 2025-12-31 · 观察者网 2026-04-28</p>
+  </div>
+</section>
+
+<!-- 27 意义 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agent</div>
+    <h2>对普通人来说，这意味着什么</h2>
+    <div class="grid g2" style="align-items:center;gap:36px">
+      <ul class="tight" style="font-size:1.05em">
+        <li><b>编程门槛消失了，但工程判断没有。</b>AI 替你写代码，不替你决定"该做什么、做成什么样、对不对"。</li>
+        <li><b>被替代的不是"工程师"，是"不会用 AI 的人"。</b>会拆解问题、会精确提需求、会验证结果，是新的核心竞争力。</li>
+        <li><b>提问质量 = 产出质量。</b>模糊的要求得到模糊的结果；说清目标、约束、验收标准，产出立刻不同。</li>
+        <li><b>普通人几乎没有"经验劣势"。</b>这套工作方式 2025 年才出现、2026 年才真正普及，你和从业十年的人站在几乎同一条起跑线上——这在历史上极少发生。</li>
+      </ul>
+      <div class="card" style="padding:1.4em 1.5em">
+        <svg viewBox="0 0 880 300" width="100%" role="img" aria-label="示意图：从业十年的工程师与今天的你，在 2026 智能体元年这条新起跑线上并排站立，面前是同样长的新赛道">
+          <!-- 新起跑线 -->
+          <line x1="300" y1="30" x2="300" y2="252" stroke="#56C8F5" stroke-width="2" stroke-dasharray="7 6"/>
+          <text x="300" y="285" text-anchor="middle" font-size="19" font-weight="700" fill="#56C8F5">2026 · 智能体元年 = 新起跑线</text>
+          <!-- 赛道一：老工程师 -->
+          <text x="20" y="76" font-size="18" fill="#98A4C0">从业十年的工程师</text>
+          <line x1="20" y1="106" x2="292" y2="106" stroke="#5E6B8C" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+          <text x="150" y="134" text-anchor="middle" font-size="14.5" fill="#5E6B8C">十年积累的旧跑道</text>
+          <circle cx="300" cy="106" r="10" fill="#1E9BD2" stroke="#0A0F1E" stroke-width="2.5"/>
+          <line x1="318" y1="106" x2="828" y2="106" stroke="#1E9BD2" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M828 106 l-15 -8 v16 z" fill="#1E9BD2"/>
+          <!-- 赛道二：你 -->
+          <text x="20" y="192" font-size="18" fill="#98A4C0">今天的你</text>
+          <circle cx="300" cy="222" r="10" fill="#C97A15" stroke="#0A0F1E" stroke-width="2.5"/>
+          <line x1="318" y1="222" x2="828" y2="222" stroke="#C97A15" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M828 222 l-15 -8 v16 z" fill="#C97A15"/>
+          <!-- 右侧终点 -->
+          <text x="845" y="170" text-anchor="middle" font-size="15" fill="#98A4C0" transform="rotate(90 845 170)">AI 时代</text>
+        </svg>
+        <p style="font-size:.85em;color:var(--ink-2);margin:.8em 0 0">旧赛道的里程，带不进新赛道——两条前进的路，一样长。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 练习 -->
+<section class="slide">
+  <div class="inner">
+    <div class="no num" style="font-size:clamp(50px,7vw,100px);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3)">06</div>
+    <h2>实战练习</h2>
+    <p class="lead" style="margin-bottom:1.2em">五道题，每道都按同一个框架推进：</p>
+    <div class="steps" style="margin-bottom:20px">
+      <div class="st"><div class="k">目标</div><p>用一句话说清要做出什么</p></div>
+      <div class="st"><div class="k">工具</div><p>选用哪个 AI / 怎么开工</p></div>
+      <div class="st"><div class="k">交付物</div><p>做完后拿什么东西验收</p></div>
+      <div class="st"><div class="k">复盘</div><p>哪句提示词最关键？AI 错在哪？</p></div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>练习一 · 数据基建</h3><p>让 Agent 搭一条"自动抓取 → 清洗 → 入库"的数据管道（行情 / 新闻 / 天气任选其一），能重复运行。<br><b style="color:var(--ink)">交付物</b>：跑通的脚本 + 一份干净的数据文件。</p></div>
+      <div class="card"><h3>练习二 · 投资分析</h3><p>选一家今天讲过的 AI 公司（智谱 / MiniMax / 英伟达…），让 AI 联网核实数据后产出一页投资简报：业务、估值、风险。<br><b style="color:var(--ink)">交付物</b>：一页可分享的网页或文档简报。</p></div>
+      <div class="card"><h3>练习三 · 视频转写</h3><p>把一段演讲或课程视频交给 AI：转文字稿 → 整理成带小标题、金句摘录的结构化笔记。<br><b style="color:var(--ink)">交付物</b>：一份可直接发布的图文笔记。</p></div>
+      <div class="card"><h3>练习四 · Hermes 工具</h3><p>在自己电脑上部署 Hermes Agent，接入一个聊天软件，指挥它完成一个任务并沉淀为技能。<br><b style="color:var(--ink)">交付物</b>：成功对话的截图 + 沉淀下来的技能文档。</p></div>
+      <div class="card"><h3>练习五 · 自选题</h3><p>用今天学到的任何工具，解决一个你自己学习 / 生活里的真实问题。唯一要求：<b style="color:var(--ink)">开工前说清目标和验收标准</b>，做完后复盘 AI 错在哪。</p></div>
+      <div class="card" style="border-style:dashed;display:flex;align-items:center"><p style="color:var(--ink-2)">提示：练习不比谁做得快，比谁<b style="color:var(--ink)">说得清、验得准</b>——提问质量 = 产出质量。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 29 结尾 -->
+<section class="slide">
+  <div class="inner" style="text-align:center;align-items:center">
+    <p class="sub" style="letter-spacing:.3em;margin-bottom:2em">最后一页</p>
+    <h1 style="font-size:clamp(30px,4.2vw,58px)">预测未来最好的方式，<br>是<span class="hl-us">动手创造</span>它。</h1>
+    <p class="lead" style="margin:2em auto 0;max-width:30em">曲线还在早期。现在，打开终端，开始第一个练习。</p>
+  </div>
+</section>
+
+</div>
+
+<div id="hud">
+  <span id="pg" class="num" aria-live="polite"></span>
+  <button id="first" aria-label="首页" title="首页">«</button>
+  <button id="prev" aria-label="上一页" title="上一页">‹</button>
+  <button id="next" aria-label="下一页" title="下一页">›</button>
+  <button id="last" aria-label="末页" title="末页">»</button>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),
+      bar=document.getElementById('bar'),pg=document.getElementById('pg'),
+      i=Math.min(Math.max((parseInt(location.hash.slice(1),10)||1)-1,0),slides.length-1);
+  function show(n){
+    n=Math.min(Math.max(n,0),slides.length-1);
+    slides[i].classList.remove('active');
+    i=n;slides[i].classList.add('active');slides[i].scrollTop=0;
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    pg.textContent=String(i+1).padStart(2,'0')+' / '+slides.length;
+    history.replaceState(null,'','#'+(i+1));
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(slides.length-1);}
+    else if(e.key==='f'||e.key==='F'){
+      if(document.fullscreenElement)document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(function(){});
+    }
+  });
+  document.getElementById('next').addEventListener('click',function(){show(i+1)});
+  document.getElementById('prev').addEventListener('click',function(){show(i-1)});
+  document.getElementById('first').addEventListener('click',function(){show(0)});
+  document.getElementById('last').addEventListener('click',function(){show(slides.length-1)});
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+  document.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>60)show(i+(dx<0?1:-1));
+    tx=null;
+  });
+  show(i);
+
+  /* 封面背景：缓慢漂移的节点网络 */
+  var cv=document.getElementById('fx');
+  if(cv&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var ctx=cv.getContext('2d'),W,H,pts=[],running=true,seed=7;
+    function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+    function size(){W=cv.width=cv.offsetWidth*devicePixelRatio;H=cv.height=cv.offsetHeight*devicePixelRatio;}
+    size();addEventListener('resize',size);
+    for(var k=0;k<46;k++)pts.push({x:rnd()*1.2-.1,y:rnd()*1.2-.1,vx:(rnd()-.5)*.0004,vy:(rnd()-.5)*.0004});
+    (function tick(){
+      if(slides[i]&&slides[i].classList.contains('cover')){
+        ctx.clearRect(0,0,W,H);
+        for(var a=0;a<pts.length;a++){
+          var p=pts[a];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-.15||p.x>1.15)p.vx*=-1;if(p.y<-.15||p.y>1.15)p.vy*=-1;
+          for(var b=a+1;b<pts.length;b++){
+            var q=pts[b],dx=(p.x-q.x)*W,dy=(p.y-q.y)*H,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<W*.11){ctx.strokeStyle='rgba(86,200,245,'+(0.09*(1-d/(W*.11)))+')';
+              ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x*W,p.y*H);ctx.lineTo(q.x*W,q.y*H);ctx.stroke();}
+          }
+          ctx.fillStyle='rgba(86,200,245,.35)';
+          ctx.beginPath();ctx.arc(p.x*W,p.y*H,1.6*devicePixelRatio,0,7);ctx.fill();
+        }
+      }
+      requestAnimationFrame(tick);
+    })();
+  }
+})();
+</script>
+
+</body>
+</html>

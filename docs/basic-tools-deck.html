@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>基础工具培训 · 第二讲</title>
+</head>
+<body>
+<title>基础工具培训 · 培训幻灯片</title>
+<style>
+  :root{
+    --bg:#0A0F1E; --panel:#10182E; --panel-2:#0D1426; --line:#1E2A47;
+    --ink:#E9EDF7; --ink-2:#98A4C0; --ink-3:#5E6B8C;
+    --us:#56C8F5; --us-bar:#1E9BD2; --cn:#F5A340; --cn-bar:#C97A15;
+    --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+    font-size:clamp(17px,1.65vw,36px);line-height:1.6;overflow:hidden}
+  .deck{position:fixed;inset:0}
+  .slide{position:absolute;inset:0;padding:3.5vh 3vw 6vh;overflow-y:auto;
+    opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .38s ease,transform .38s ease,visibility 0s linear .38s}
+  .slide.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  @media (prefers-reduced-motion:reduce){.slide{transition:none;transform:none}}
+  .inner{max-width:94vw;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+  #bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--us-bar),var(--us));z-index:10;transition:width .3s ease}
+  #hud{position:fixed;right:2.2vw;bottom:2.4vh;z-index:10;display:flex;align-items:center;gap:14px;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+  #hud button{background:var(--panel);border:1px solid var(--line);color:var(--ink-2);width:34px;height:34px;border-radius:8px;font-size:15px;cursor:pointer}
+  #hud button:hover{color:var(--ink);border-color:var(--ink-3)}
+  #hud button:focus-visible{outline:2px solid var(--us);outline-offset:2px}
+
+  .eyebrow{font-size:clamp(13px,1vw,21px);letter-spacing:.22em;color:var(--ink-3);text-transform:uppercase;margin-bottom:1.6em;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--ink-3)}
+  h1{font-size:clamp(44px,6.5vw,124px);line-height:1.15;margin:0 0 .3em;font-weight:800;letter-spacing:.01em;text-wrap:balance}
+  h2{font-size:clamp(30px,3.6vw,74px);line-height:1.25;margin:0 0 .8em;font-weight:700;text-wrap:balance}
+  h3{font-size:1.05em;margin:0 0 .5em;font-weight:700}
+  p{margin:.4em 0}
+  .lead{color:var(--ink-2);font-size:1.06em;max-width:34em}
+  .num{font-variant-numeric:tabular-nums}
+  .hl-us{color:var(--us);font-weight:700}
+  .hl-cn{color:var(--cn);font-weight:700}
+  code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:.08em .4em;color:var(--us)}
+  .src{margin-top:auto;padding-top:2em;font-size:clamp(12px,.85vw,18px);color:var(--ink-3);line-height:1.6}
+  .note{font-size:.85em;color:var(--ink-2);background:var(--panel-2);border-left:3px solid var(--cn-bar);padding:.7em 1em;border-radius:0 8px 8px 0;margin-top:1.2em}
+
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media (max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.15em 1.25em}
+  .card h3{display:flex;align-items:baseline;gap:.5em;flex-wrap:wrap}
+  .card p{font-size:.92em;color:var(--ink-2)}
+  .tag{font-size:clamp(12px,.8vw,17px);padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2);letter-spacing:.06em;white-space:nowrap;font-weight:500}
+  .tag.us{color:var(--us);border-color:rgba(86,200,245,.4)}
+  .tag.cn{color:var(--cn);border-color:rgba(245,163,64,.4)}
+  .tag.warn{color:#F58A8A;border-color:rgba(245,138,138,.4)}
+  .tag.ok{color:#6FD9A6;border-color:rgba(111,217,166,.4)}
+
+  table{border-collapse:collapse;width:100%;font-size:.92em}
+  th{color:var(--ink-3);font-weight:600;text-align:left;letter-spacing:.05em;font-size:.85em}
+  th,td{padding:.62em .8em;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:700}
+  td code{white-space:nowrap}
+  .tblwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.4em .6em}
+
+  /* 仿终端窗口 */
+  .term{background:#060A13;border:1px solid var(--line);border-radius:12px;padding:.9em 1.2em 1.1em;font-family:var(--mono);font-size:.8em;line-height:1.8;overflow-x:auto}
+  .term .bar{display:flex;gap:7px;margin-bottom:.7em}
+  .term .bar i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+  .term .bar i:first-child{background:#E0655A}.term .bar i:nth-child(2){background:#E0A33E}.term .bar i:nth-child(3){background:#5FBF6B}
+  .term pre{margin:0;font-family:inherit;white-space:pre}
+  .term .p{color:var(--us);font-weight:700}
+  .term .o{color:var(--ink-2)}
+  .term .cm{color:var(--ink-3)}
+  .term .k{color:var(--cn)}
+
+  blockquote{margin:0;font-size:clamp(24px,3vw,58px);line-height:1.55;font-weight:700;text-wrap:balance;padding-left:.85em;border-left:4px solid var(--us-bar)}
+  cite{display:block;font-style:normal;color:var(--ink-3);font-size:clamp(14px,1vw,21px);margin-top:1.4em}
+
+  .divider .no{font-size:clamp(70px,11vw,210px);font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);letter-spacing:.02em}
+  .divider h2{font-size:clamp(36px,5.2vw,100px);margin:.25em 0 .4em}
+  .divider .lead{font-size:1.15em}
+
+  .cover{position:relative}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%}
+  .cover .inner{position:relative;align-items:center;text-align:center}
+  .cover .eyebrow::after{content:"";width:22px;height:1px;background:var(--ink-3)}
+  .sub{font-size:clamp(18px,2vw,38px);color:var(--ink-2);font-weight:400;letter-spacing:.12em}
+  .hint{margin-top:5em;color:var(--ink-3);font-size:clamp(13px,.9vw,19px)}
+  kbd{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-family:var(--mono);font-size:.85em}
+
+  .steps{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+  .steps .st{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);padding:1em 1.1em;position:relative}
+  .steps .st:first-child{border-radius:12px 0 0 12px}
+  .steps .st:last-child{border-radius:0 12px 12px 0}
+  .steps .st+.st{border-left:none}
+  .steps .k{font-size:.78em;color:var(--us);letter-spacing:.15em;font-weight:700}
+  .steps .st p{font-size:.85em;color:var(--ink-2)}
+
+  .dense{font-size:.88em}
+  .dense h2{font-size:clamp(26px,3vw,58px);margin-bottom:.6em}
+  .dense .grid{gap:12px}
+  .dense .card{padding:.85em 1em}
+  .dense .note{margin-top:.8em;padding:.55em .9em}
+  .dense .src{padding-top:1.2em}
+
+  ul.tight{margin:.3em 0;padding-left:1.2em}
+  ul.tight li{margin:.42em 0;color:var(--ink-2)}
+  ul.tight li b{color:var(--ink)}
+</style>
+
+<div id="bar"></div>
+<div class="deck" id="deck">
+
+<!-- 1 封面 -->
+<section class="slide cover">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">AI 培训系列 · 第二讲 · 2026 年 7 月</div>
+    <h1>基础工具培训</h1>
+    <p class="sub">终端 · 持久会话 · Git · AI 智能体</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> 或空格翻页 · <kbd>F</kbd> 全屏 · 共 39 页</p>
+  </div>
+</section>
+
+<!-- 2 路线图 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">今天的路线 · 一条递进链</div>
+    <h2>为什么 2026 年了，反而更要学终端？</h2>
+    <p class="lead" style="margin-bottom:1em">因为 AI 智能体都住在终端里。终端是你指挥 AI 的驾驶舱——今天这五章，是一条环环相扣的链：</p>
+    <div class="steps">
+      <div class="st"><div class="k">01 · Terminal</div><p>会和电脑"说话"：十几个保命命令</p></div>
+      <div class="st"><div class="k">02 · tmux</div><p>会话不断线：关掉电脑，工作还在跑</p></div>
+      <div class="st"><div class="k">03 · Git / GitHub</div><p>代码时光机：敢让 AI 大改的安全网</p></div>
+      <div class="st"><div class="k">04 · Claude Code</div><p>指挥编程智能体，手机远程接管</p></div>
+      <div class="st"><div class="k">05 · Hermes</div><p>部署一个 7×24 常驻的私人 Agent</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">本课全程实操：右边出现<b>黑色终端窗口</b>的页面，都建议跟着敲一遍。所有命令以 Linux / macOS 为准（Windows 同学第 5 页装好 WSL 后完全通用）。</div>
+  </div>
+</section>
+
+<!-- 3 D01 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">01</div>
+    <h2>Terminal：学会和电脑说话</h2>
+    <p class="lead">图形界面是给"用户"的，终端是给"指挥官"的。GUI 里你只能做开发者预设的事，终端里你能说出任何指令——而且 AI 听得懂。</p>
+  </div>
+</section>
+
+<!-- 4 终端是什么 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal</div>
+    <h2>终端 = 文字对话框，Shell = 听懂人话的翻译官</h2>
+    <div class="grid g2" style="align-items:center">
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>终端（Terminal）</h3><p>一个用<b style="color:var(--ink)">打字代替点鼠标</b>的窗口。你输入命令，它返回结果——就这么简单。</p></div>
+        <div class="card"><h3>Shell（命令解释器）</h3><p>终端里真正干活的程序：Linux 常用 <code>bash</code>，macOS 默认 <code>zsh</code>，Windows 是 <code>PowerShell</code>。它们像不同方言，核心语法相通。</p></div>
+        <div class="card"><h3>为什么值得学</h3><p>① 精确——一条命令就是一句无歧义的指令；② 可复制——发给别人照跑就行；③ 服务器没有图形界面；④ <b style="color:var(--ink)">它是 AI 智能体的母语</b>。</p></div>
+      </div>
+      <div class="term" role="img" aria-label="终端演示：输入 echo 和 ls 命令并得到输出">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> echo "你好，终端"
+<span class="o">你好，终端</span>
+<span class="p">$</span> ls
+<span class="o">training  stock-report  notes.txt</span>
+<span class="p">$</span> <span class="cm"># 井号后面是注释，解释这条命令在干嘛</span>
+<span class="p">$</span> <span class="k">▌</span></pre>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">心理建设：终端不会因为你打错命令就坏掉——大多数错误只是提示"找不到命令"。<b>大胆敲。</b></div>
+  </div>
+</section>
+
+<!-- 5 平台入口+WSL -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 各平台怎么打开</div>
+    <h2>三大平台的入口，Windows 请直接装 WSL</h2>
+    <div class="grid g3" style="margin-bottom:16px">
+      <div class="card"><h3>macOS <span class="tag ok">自带</span></h3><p><kbd>⌘ + 空格</kbd> 搜 "Terminal"（终端）回车即得，默认 shell 是 zsh。进阶可装 iTerm2。</p></div>
+      <div class="card"><h3>Linux <span class="tag ok">自带</span></h3><p>桌面版按 <kbd>Ctrl+Alt+T</kbd>；云服务器 ssh 进去就是终端本体。</p></div>
+      <div class="card"><h3>Windows <span class="tag cn">建议 WSL</span></h3><p>自带 PowerShell 能用（第 13 页有对照表），但强烈建议装 <b style="color:var(--ink)">WSL</b>——在 Windows 里跑一个真正的 Linux。</p></div>
+    </div>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># 以管理员身份打开 PowerShell，一行命令：</span>
+<span class="p">PS&gt;</span> wsl --install
+<span class="o">正在安装: Ubuntu ...</span>
+<span class="cm"># 重启电脑后，开始菜单会出现 "Ubuntu"</span>
+<span class="cm"># 打开它 = 拥有一个完整的 Linux 终端</span></pre>
+      </div>
+      <div class="card"><h3>为什么值得这一步</h3><p>装完 WSL，今天后面所有章节（tmux / git / Claude Code / Hermes）的命令你都能<b style="color:var(--ink)">原样照抄</b>；全球服务器 95% 以上跑 Linux，学它就是学"通用语"。</p></div>
+    </div>
+    <p class="src">WSL = Windows Subsystem for Linux，微软官方功能，Windows 10 1809+ / Windows 11 可用</p>
+  </div>
+</section>
+
+<!-- 6 文件系统 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 先看地图再走路</div>
+    <h2>文件系统是一棵树，你永远站在树上某个节点</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="card" style="padding:1.3em 1.5em">
+        <svg viewBox="0 0 760 360" width="100%" role="img" aria-label="目录树示意：根目录下有 home 和 etc，home 下是用户目录 tom，里面有 training 和 stock-report 两个文件夹">
+          <g font-family="ui-monospace,Consolas,monospace" font-size="21">
+            <text x="40" y="48" fill="#56C8F5" font-weight="700">/</text><text x="70" y="48" fill="#5E6B8C" font-size="17">← 根目录，一切的起点</text>
+            <path d="M52 62 v40 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="100" y="110" fill="#E9EDF7">home/</text>
+            <path d="M52 62 v100 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="100" y="170" fill="#98A4C0">etc/</text><text x="168" y="170" fill="#5E6B8C" font-size="17">← 系统配置</text>
+            <path d="M118 122 v40 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="166" y="230" fill="#F5A340" font-weight="700">tom/</text><text x="268" y="230" fill="#5E6B8C" font-size="17">← 你的家 = ~</text>
+            <path d="M118 122 v96 h36" stroke="#1E2A47" stroke-width="2" fill="none" opacity="0"/>
+            <path d="M184 242 v40 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="232" y="290" fill="#E9EDF7">training/</text>
+            <path d="M184 242 v96 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="232" y="346" fill="#E9EDF7">stock-report/</text>
+          </g>
+        </svg>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>绝对路径：从根说起</h3><p><code>/home/tom/training</code>——从 <code>/</code> 出发的完整地址，在任何位置都有效。</p></div>
+        <div class="card"><h3>相对路径：从脚下说起</h3><p>站在 <code>~</code> 时，<code>training</code> 就是它；<code>..</code> = 上一级，<code>.</code> = 当前位置。</p></div>
+        <div class="card"><h3>波浪号 <code>~</code> = 家目录</h3><p>你的私人领地（<code>/home/你的用户名</code>），迷路了就 <code>cd ~</code> 回家。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 pwd/ls/cd -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 命令组一：走路看路</div>
+    <h2><code style="font-size:.9em">pwd</code> 我在哪 · <code style="font-size:.9em">ls</code> 有什么 · <code style="font-size:.9em">cd</code> 去哪里</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> pwd                <span class="cm"># print working directory 我在哪</span>
+<span class="o">/home/tom</span>
+<span class="p">$</span> ls                 <span class="cm"># list 列出这里有什么</span>
+<span class="o">training  stock-report  notes.txt</span>
+<span class="p">$</span> ls -l              <span class="cm"># 加 -l 看详情（大小/时间/权限）</span>
+<span class="p">$</span> ls -a              <span class="cm"># 加 -a 连隐藏文件一起看</span>
+<span class="p">$</span> cd training        <span class="cm"># change directory 进入文件夹</span>
+<span class="p">$</span> pwd
+<span class="o">/home/tom/training</span>
+<span class="p">$</span> cd ..              <span class="cm"># 回上一级</span>
+<span class="p">$</span> cd ~               <span class="cm"># 一键回家</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>迷路三连</h3><p>任何时候不知道自己在哪、有什么、怎么走——<code>pwd</code> → <code>ls</code> → <code>cd</code>，三下就清醒。</p></div>
+        <div class="card"><h3>Tab 补全 = 半个命令</h3><p>敲 <code>cd tr</code> 再按 <kbd>Tab</kbd>，自动补成 <code>training/</code>。<b style="color:var(--ink)">路径几乎从不手打全名。</b></p></div>
+        <div class="card"><h3>↑ 箭头 = 历史</h3><p>按 <kbd>↑</kbd> 翻出刚才敲过的命令，改两个字再回车。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 看文件 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 命令组二：看文件</div>
+    <h2><code style="font-size:.9em">cat</code> 全倒出来 · <code style="font-size:.9em">less</code> 慢慢翻 · <code style="font-size:.9em">tail -f</code> 盯着看</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> cat notes.txt      <span class="cm"># 把整个文件打印出来（适合短文件）</span>
+<span class="o">今天要做的事：装 WSL、学 tmux...</span>
+<span class="p">$</span> more notes.txt     <span class="cm"># 一页页翻：空格下一页，q 退出</span>
+<span class="p">$</span> less big.log       <span class="cm"># more 的升级版：↑↓ 滚动，/ 搜索，q 退出</span>
+<span class="p">$</span> head -5 big.log    <span class="cm"># 只看开头 5 行</span>
+<span class="p">$</span> tail -5 big.log    <span class="cm"># 只看结尾 5 行</span>
+<span class="p">$</span> tail -f agent.log  <span class="cm"># 实时追踪新增内容（Ctrl+C 停）</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>怎么选</h3><p>短文件 <code>cat</code>；长文件 <code>less</code>（记住 <kbd>q</kbd> 退出）；只关心两头用 <code>head</code> / <code>tail</code>。</p></div>
+        <div class="card"><h3><code>tail -f</code> 是盯 Agent 干活的神器</h3><p>Claude Code、Hermes 跑长任务时都在写日志——<code>tail -f</code> 就是它们的"实时弹幕"。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 造与搬 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 命令组三：造、搬、删</div>
+    <h2><code style="font-size:.9em">mkdir</code> 造 · <code style="font-size:.9em">cp</code> 抄 · <code style="font-size:.9em">mv</code> 搬 · <code style="font-size:.9em">rm</code> 删（小心）</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> mkdir demo             <span class="cm"># make directory 新建文件夹</span>
+<span class="p">$</span> mkdir -p a/b/c         <span class="cm"># -p 一口气建出三层</span>
+<span class="p">$</span> touch todo.txt         <span class="cm"># 新建一个空文件</span>
+<span class="p">$</span> cp todo.txt backup.txt <span class="cm"># copy 复制</span>
+<span class="p">$</span> cp -r demo demo2       <span class="cm"># 复制文件夹要加 -r</span>
+<span class="p">$</span> mv todo.txt done.txt   <span class="cm"># move 兼具改名与搬家</span>
+<span class="p">$</span> mv done.txt demo/      <span class="cm"># 挪进文件夹</span>
+<span class="p">$</span> rm demo/done.txt       <span class="cm"># remove 删文件</span>
+<span class="p">$</span> rm -r demo2            <span class="cm"># 删文件夹加 -r</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ rm 没有回收站 <span class="tag warn">刻进 DNA</span></h3><p>删了就是删了。删除前先 <code>ls</code> 确认目标；<b style="color:var(--ink)">永远、永远不要跑网上抄来的 <code>rm -rf /</code> 之类命令</b>——让 AI 帮你检查一遍再执行。</p></div>
+        <div class="card"><h3>习惯：重要目录先备份</h3><p>动手前 <code>cp -r 项目 项目.bak</code>，五秒钟买个后悔药——第三章的 git 是这件事的终极方案。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 vi -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 命令组四：vi 生存指南</div>
+    <h2>vi：不求会用，只求能活着出来</h2>
+    <p class="lead" style="margin-bottom:1em">场景：ssh 到服务器改一行配置，那里往往只有 vi。它有"编辑"和"命令"两种模式，新手的一切恐慌都来自不知道自己在哪个模式。</p>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① 打开</div><p><code>vi 文件名</code>——此刻在<b>命令模式</b>，打字没反应是正常的</p></div>
+      <div class="st"><div class="k">② 进入编辑</div><p>按 <kbd>i</kbd>（insert），底部出现 <code>-- INSERT --</code>，现在能正常打字了</p></div>
+      <div class="st"><div class="k">③ 退出编辑</div><p>按 <kbd>Esc</kbd> 回到命令模式（多按几下不吃亏）</p></div>
+      <div class="st"><div class="k">④ 保存 / 逃跑</div><p><code>:wq</code> 保存退出；<code>:q!</code> 不保存硬退——<b>逃跑专用</b></p></div>
+    </div>
+    <div class="grid g2">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> vi config.txt
+<span class="cm"># 按 i → 修改内容 → 按 Esc → 输入 :wq 回车</span>
+<span class="p">$</span> <span class="cm"># 改完了，毫发无伤</span></pre>
+      </div>
+      <div class="card"><h3>记不住？正常</h3><p>把这四招存进手机就够了。日常编辑交给 AI（下一章的 Claude Code 改文件比你快得多），vi 只用来<b style="color:var(--ink)">救急</b>。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 ssh -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 命令组五：ssh 远程登录</div>
+    <h2>ssh：把千里之外的服务器，变成眼前这个窗口</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> ssh tom@203.0.113.7      <span class="cm"># 用户名@服务器地址</span>
+<span class="o">Are you sure ...? </span><span class="k">yes</span><span class="cm">        # 首次连接输 yes</span>
+<span class="o">tom@203.0.113.7's password:</span> <span class="cm"># 输密码（不显示是正常的）</span>
+<span class="o">Welcome to Ubuntu 24.04 LTS</span>
+<span class="p">tom@server:~$</span>              <span class="cm"># 提示符变了 = 你已在服务器上</span>
+
+<span class="cm"># —— 免密登录（一次配置，终身受益）——</span>
+<span class="p">$</span> ssh-keygen                  <span class="cm"># 生成密钥对（一路回车）</span>
+<span class="p">$</span> ssh-copy-id tom@203.0.113.7  <span class="cm"># 把公钥送上服务器</span>
+
+<span class="cm"># —— 传文件 ——</span>
+<span class="p">$</span> scp 本地文件 tom@203.0.113.7:~/   <span class="cm"># 上传</span>
+<span class="p">$</span> scp tom@203.0.113.7:~/远端文件 .  <span class="cm"># 下载</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>看提示符认位置</h3><p>提示符从 <code>本机$</code> 变成 <code>tom@server:~$</code>，说明你的每条命令都在<b style="color:var(--ink)">服务器上</b>执行；<code>exit</code> 回到本机。</p></div>
+        <div class="card"><h3>手机也能 ssh</h3><p>装 Termius 等 App，地铁上也能连服务器——这是后面"远程指挥 Agent"的钥匙。</p></div>
+        <div class="card" style="border-color:rgba(245,163,64,.45)"><h3>埋个钩子 🪝</h3><p>ssh 一断线，远端正在跑的程序<b style="color:var(--ink)">跟着一起死</b>。怎么办？下一章。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11b ssh 进阶 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · ssh 进阶：钥匙与通讯录</div>
+    <h2>公钥是锁，私钥是钥匙，config 是通讯录</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> ssh-keygen -t ed25519       <span class="cm"># 生成一对钥匙（可设密码短语）</span>
+<span class="p">$</span> ls ~/.ssh
+<span class="o">id_ed25519  id_ed25519.pub  config  known_hosts</span>
+<span class="cm">#  ↑私钥=钥匙，绝不外传   ↑公钥=锁，随便给</span>
+<span class="p">$</span> cat ~/.ssh/id_ed25519.pub   <span class="cm"># 公钥长这样：</span>
+<span class="o">ssh-ed25519 AAAAC3Nza... tom@laptop</span>
+<span class="cm"># ssh-copy-id 干的事 = 把这行追加到服务器的
+#   ~/.ssh/authorized_keys（"允许进门的锁清单"）</span>
+
+<span class="p">$</span> cat ~/.ssh/config           <span class="cm"># SSH 的通讯录：</span>
+<span class="o">Host work
+    HostName 203.0.113.7
+    User tom
+    IdentityFile ~/.ssh/id_ed25519</span>
+<span class="p">$</span> ssh work                    <span class="cm"># 从此四个字母上服务器</span>
+<span class="p">$</span> ssh-add                     <span class="cm"># 私钥有口令？钥匙圈替你记住</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>一对钥匙的分工</h3><p><b style="color:var(--ink)">公钥（.pub）＝锁</b>：装到服务器的 <code>authorized_keys</code> 门上；<b style="color:var(--ink)">私钥＝钥匙</b>：只留在你电脑里开门。给别人公钥没风险，<b style="color:var(--ink)">私钥离开电脑就等于把家门钥匙发到了群里</b>。</p></div>
+        <div class="card"><h3><code>~/.ssh/config</code> ＝ 通讯录</h3><p>给每台服务器起外号，地址、用户名、用哪把钥匙一次写清——之后 <code>ssh work</code>、<code>scp 文件 work:~/</code> 全都认它。<b style="color:var(--ink)">管两台以上服务器的必备品</b>。</p></div>
+        <div class="card"><h3><code>ssh-add</code> ＝ 钥匙圈</h3><p>私钥设了密码短语更安全，但每次连接都要输？<code>ssh-add</code> 把私钥交给 ssh-agent 保管，<b style="color:var(--ink)">开机后只输一次</b>；<code>ssh-add -l</code> 看圈上挂了哪些钥匙。</p></div>
+      </div>
+    </div>
+    <div class="note">反向理解 <code>authorized_keys</code>：往里加一行公钥 ＝ 给对方配一把你家钥匙。所以第 30 页让 Claude Code 帮忙改配置时，<b>动这个文件的操作要亲自审批</b>。</div>
+  </div>
+</section>
+
+<!-- 12 求救 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 命令组六：求救三招</div>
+    <h2>记不住命令不丢人，会求救才是本事</h2>
+    <div class="grid g3">
+      <div class="card"><h3>第一招：<code>--help</code></h3><p>几乎所有命令都认：<code>ls --help</code>、<code>tmux --help</code>——一屏速览用法。</p></div>
+      <div class="card"><h3>第二招：<code>man</code></h3><p><code>man ls</code> 打开完整说明书（manual），<kbd>q</kbd> 退出。经典但啰嗦。</p></div>
+      <div class="card"><h3>第三招：问 AI <span class="tag us">2026 正确姿势</span></h3><p>把<b style="color:var(--ink)">报错原文</b>整段贴给 AI；或直接说目标："帮我把这个文件夹里所有 mp4 转成 mp3"——命令让它写，你负责看懂再回车。</p></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> claude -p "用一条命令统计当前目录下有多少个 txt 文件"
+<span class="o">ls *.txt | wc -l</span></pre>
+      </div>
+      <div class="note" style="margin-top:0;border-left-color:var(--us-bar)">新的分工：<b>你描述目标 + 审查命令，AI 负责记忆语法。</b>唯一红线：不理解的删除/系统级命令，先让 AI 解释每个参数再执行。</div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 PowerShell 对照 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Windows 同学专页</div>
+    <h2>PowerShell 对照表：其实你已经会一半了</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="tblwrap">
+        <table>
+          <tr><th>Linux / macOS</th><th>PowerShell</th><th>作用</th></tr>
+          <tr><td><code>ls</code></td><td><code>ls</code> / <code>dir</code></td><td>列目录（别名直接可用）</td></tr>
+          <tr><td><code>cd</code> · <code>pwd</code></td><td><code>cd</code> · <code>pwd</code></td><td>完全一样</td></tr>
+          <tr><td><code>cat</code></td><td><code>cat</code> / <code>type</code></td><td>看文件</td></tr>
+          <tr><td><code>mkdir</code></td><td><code>mkdir</code></td><td>建文件夹</td></tr>
+          <tr><td><code>cp</code> · <code>mv</code></td><td><code>copy</code> · <code>move</code></td><td>复制 · 移动</td></tr>
+          <tr><td><code>rm</code></td><td><code>del</code> / <code>rm</code></td><td>删除（同样没有回收站）</td></tr>
+          <tr><td><code>ssh</code> · <code>scp</code></td><td><code>ssh</code> · <code>scp</code></td><td>Windows 10+ 已内置</td></tr>
+          <tr><td><code>clear</code></td><td><code>cls</code> / <code>clear</code></td><td>清屏</td></tr>
+        </table>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>好消息</h3><p>PowerShell 给常用 Linux 命令都配了<b style="color:var(--ink)">别名</b>，日常六成命令直接照敲。</p></div>
+        <div class="card"><h3>但仍然建议 WSL</h3><p>tmux、以及很多开源工具只在 Linux 生态里最顺。<b style="color:var(--ink)">PowerShell 用来应急，WSL 用来干活。</b></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 速查小抄 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · 本章小抄（建议截图存手机）</div>
+    <h2>20 条命令速查表</h2>
+    <div class="grid g2">
+      <div class="tblwrap">
+        <table>
+          <tr><td><code>pwd</code></td><td>我在哪</td></tr>
+          <tr><td><code>ls -la</code></td><td>列出全部内容+详情</td></tr>
+          <tr><td><code>cd 目录</code> / <code>cd ..</code> / <code>cd ~</code></td><td>进入 / 上一级 / 回家</td></tr>
+          <tr><td><code>cat 文件</code></td><td>打印整个文件</td></tr>
+          <tr><td><code>less 文件</code></td><td>翻页看大文件（q 退出）</td></tr>
+          <tr><td><code>head/tail -n 20 文件</code></td><td>看头 / 尾 20 行</td></tr>
+          <tr><td><code>tail -f 日志</code></td><td>实时盯日志</td></tr>
+          <tr><td><code>mkdir -p a/b</code></td><td>建目录（含多层）</td></tr>
+          <tr><td><code>touch 文件</code></td><td>新建空文件</td></tr>
+          <tr><td><code>cp -r 源 目标</code></td><td>复制（-r 含文件夹）</td></tr>
+        </table>
+      </div>
+      <div class="tblwrap">
+        <table>
+          <tr><td><code>mv 旧 新</code></td><td>移动 / 改名</td></tr>
+          <tr><td><code>rm -r 目标</code></td><td>删除 ⚠️ 无回收站</td></tr>
+          <tr><td><code>ssh 用户@主机</code></td><td>远程登录</td></tr>
+          <tr><td><code>scp 文件 用户@主机:~/</code></td><td>传文件</td></tr>
+          <tr><td><code>vi 文件</code></td><td>救急编辑（i 改 Esc :wq）</td></tr>
+          <tr><td><code>grep "关键词" 文件</code></td><td>在文件里搜文字</td></tr>
+          <tr><td><code>history</code></td><td>看敲过的命令</td></tr>
+          <tr><td><code>man 命令</code> / <code>命令 --help</code></td><td>看说明书</td></tr>
+          <tr><td><code>clear</code></td><td>清屏</td></tr>
+          <tr><td><kbd>Tab</kbd> · <kbd>↑</kbd> · <kbd>Ctrl+C</kbd></td><td>补全 · 历史 · 强停当前命令</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">这 20 条覆盖日常 90% 场景，剩下 10% ——问 AI。</div>
+  </div>
+</section>
+
+<!-- 15 D02 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">02</div>
+    <h2>tmux：关掉电脑，工作还在跑</h2>
+    <p class="lead">上一章埋的钩子：ssh 一断，远端程序就死。tmux 让你的会话常驻服务器——断线只是"暂时不看"，不是"全部重来"。</p>
+  </div>
+</section>
+
+<!-- 16 tmux 概念 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · tmux · 为什么与是什么</div>
+    <h2>把会话寄存在服务器上的"保险箱"</h2>
+    <div class="grid g2" style="align-items:center">
+      <div style="display:grid;gap:14px">
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>没有 tmux 的惨剧</h3><p>你 ssh 到服务器让 Agent 跑一个 3 小时的任务 → 进电梯，Wi-Fi 断了 3 秒 → <b style="color:var(--ink)">任务当场死亡，从头再来</b>。</p></div>
+        <div class="card" style="border-color:rgba(111,217,166,.4)"><h3>有 tmux 的日常</h3><p>任务跑在 tmux 会话里 → 断线、关电脑、回家睡觉都无所谓 → 第二天 <code>tmux attach</code>，<b style="color:var(--ink)">现场原样还在</b>。</p></div>
+        <div class="card"><h3>三层结构</h3><p><b style="color:var(--ink)">Session</b>（会话）＞ <b style="color:var(--ink)">Window</b>（窗口，像浏览器标签页）＞ <b style="color:var(--ink)">Pane</b>（窗格，一屏切几块）。新手记住 Session 就够。</p></div>
+      </div>
+      <div class="card" style="padding:1.3em 1.5em">
+        <svg viewBox="0 0 760 380" width="100%" role="img" aria-label="tmux 三层结构示意：服务器上有一个 session，内含窗口，窗口可分成多个窗格；你的电脑和手机都可以随时接入或断开">
+          <rect x="20" y="20" width="720" height="250" rx="14" fill="none" stroke="#1E2A47" stroke-width="2"/>
+          <text x="40" y="56" font-size="19" fill="#5E6B8C">云服务器（24 小时不关机）</text>
+          <rect x="46" y="76" width="668" height="170" rx="10" fill="#0D1426" stroke="#1E9BD2" stroke-width="2"/>
+          <text x="66" y="108" font-size="18" fill="#56C8F5" font-weight="700">tmux session: ai</text>
+          <rect x="66" y="124" width="380" height="100" rx="6" fill="none" stroke="#1E2A47" stroke-width="1.5"/>
+          <text x="82" y="152" font-size="15.5" fill="#98A4C0" font-family="ui-monospace,Consolas,monospace">pane 1: claude （跑了 6 小时）</text>
+          <rect x="66" y="164" width="380" height="0" fill="none"/>
+          <text x="82" y="182" font-size="15.5" fill="#98A4C0" font-family="ui-monospace,Consolas,monospace">pane 2: tail -f agent.log</text>
+          <rect x="470" y="124" width="224" height="100" rx="6" fill="none" stroke="#1E2A47" stroke-width="1.5"/>
+          <text x="486" y="152" font-size="15.5" fill="#98A4C0" font-family="ui-monospace,Consolas,monospace">window 2: hermes</text>
+          <path d="M180 330 L260 274" stroke="#56C8F5" stroke-width="2.5" stroke-dasharray="7 6"/>
+          <path d="M560 330 L480 274" stroke="#F5A340" stroke-width="2.5" stroke-dasharray="7 6"/>
+          <text x="120" y="362" font-size="17" fill="#56C8F5">💻 你的电脑（可随时断开）</text>
+          <text x="500" y="362" font-size="17" fill="#F5A340">📱 手机 ssh（可随时接管）</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 tmux 操作 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · tmux · 四个保命操作</div>
+    <h2>只需四招：开、挂、列、接</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> sudo apt install tmux   <span class="cm"># 装（Mac: brew install tmux）</span>
+<span class="p">$</span> tmux new -s ai          <span class="cm"># ① 开一个叫 ai 的会话</span>
+<span class="cm"># ……在里面启动你的长任务……</span>
+<span class="cm"># ② 挂起：按 Ctrl+b 松手，再按 d（detach）</span>
+<span class="o">[detached (from session ai)]</span>
+<span class="p">$</span> tmux ls                 <span class="cm"># ③ 列出所有会话</span>
+<span class="o">ai: 1 windows (created Fri Jul  4 10:02)</span>
+<span class="p">$</span> tmux attach -t ai       <span class="cm"># ④ 接回现场，原样如初</span>
+
+<span class="cm"># 加分项：分屏</span>
+<span class="cm"># Ctrl+b %  左右分屏 | Ctrl+b "  上下分屏</span>
+<span class="cm"># Ctrl+b 方向键  在窗格间移动</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>指挥键 <kbd>Ctrl+b</kbd></h3><p>tmux 所有快捷键都是"先按 <kbd>Ctrl+b</kbd> 松手，再按一个键"。今天只需记住 <kbd>d</kbd>（挂起）。</p></div>
+        <div class="card"><h3>挂起 ≠ 关闭</h3><p><code>detach</code> 后程序继续跑；在会话里敲 <code>exit</code> 才是真正关闭。</p></div>
+        <div class="card"><h3>命名好习惯</h3><p>会话按用途取名：<code>tmux new -s claude</code>、<code>-s hermes</code>——回来时一眼认出。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 tmux 点题 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · tmux · 本章点题</div>
+    <h2>tmux 是 Agent 的宿舍：住进去，就不下班</h2>
+    <div class="grid g3">
+      <div class="card"><h3>白天 · 办公室</h3><p>ssh 上服务器，<code>tmux new -s cc</code>，让 Claude Code 开始重构项目。</p></div>
+      <div class="card"><h3>傍晚 · 地铁上</h3><p><kbd>Ctrl+b</kbd> <kbd>d</kbd> 挂起、合上电脑。任务在服务器上继续跑。手机想看进度？Termius ssh 上去 <code>tmux attach</code>。</p></div>
+      <div class="card"><h3>深夜 · 家里</h3><p>打开家里电脑 <code>tmux attach -t cc</code>——下午的现场一秒回来，Agent 已经干完了。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">一句话：<b>ssh 给你"到场"的能力，tmux 给你"离场"的自由。</b>第四章 Claude Code 的官方 Remote Control 会把这套体验再升一级。</div>
+  </div>
+</section>
+
+<!-- 19 D03 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">03</div>
+    <h2>Git / GitHub：代码的时光机</h2>
+    <p class="lead">rm 没有回收站，但 git 有——而且是全宇宙最强的那种。它还是全球程序员的协作协议，和你未来最好看的一份简历。</p>
+  </div>
+</section>
+
+<!-- 20 为什么 git -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · 为什么人人都该会</div>
+    <h2>四个理由，一个比一个现实</h2>
+    <div class="grid g2">
+      <div class="card"><h3>① 时光机 <span class="tag ok">后悔药</span></h3><p>每次 <code>commit</code>（提交）都是一个存档点。改崩了？<b style="color:var(--ink)">一条命令回到任意存档</b>。写论文都想要的功能。</p></div>
+      <div class="card"><h3>② 协作协议 <span class="tag">全球通用</span></h3><p>几万人共写一个项目而不打架，靠的就是 git 的分支与合并。全球程序员的"普通话"。</p></div>
+      <div class="card"><h3>③ AI 时代的安全网 <span class="tag us">本课重点</span></h3><p>你敢让 Claude Code 大刀阔斧改代码，<b style="color:var(--ink)">底气就是 git</b>：AI 改的每一步都有记录，不满意一键回滚。没有 git 的项目，AI 也不敢放开手脚。</p></div>
+      <div class="card"><h3>④ GitHub = 新简历 <span class="tag cn">对学生最实际</span></h3><p>雇主越来越先看 GitHub 再看简历。你做过的练习、写过的项目，push 上去就是<b style="color:var(--ink)">可验证的作品集</b>。</p></div>
+    </div>
+    <div class="note">概念一句话：<b>git</b> 是装在你电脑上的版本管理工具；<b>GitHub</b> 是把仓库托管到云端的网站（还有 Gitee、GitLab 等同类）。</div>
+  </div>
+</section>
+
+<!-- 21 git 概念图 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · 心智模型</div>
+    <h2>三步走：改 → 存档 → 上云</h2>
+    <div class="card" style="padding:1.4em 1.6em;margin-bottom:16px">
+      <svg viewBox="0 0 1200 240" width="100%" role="img" aria-label="git 流程：工作区经 git add 到暂存区，经 git commit 到本地仓库，经 git push 到 GitHub 远程仓库；git pull 反向拉回">
+        <g font-size="20" font-weight="700">
+          <rect x="20" y="60" width="220" height="90" rx="12" fill="none" stroke="#5E6B8C" stroke-width="2"/>
+          <text x="130" y="98" text-anchor="middle" fill="#E9EDF7">工作区</text>
+          <text x="130" y="128" text-anchor="middle" fill="#5E6B8C" font-size="15" font-weight="400">你正在改的文件</text>
+          <rect x="330" y="60" width="220" height="90" rx="12" fill="none" stroke="#5E6B8C" stroke-width="2"/>
+          <text x="440" y="98" text-anchor="middle" fill="#E9EDF7">暂存区</text>
+          <text x="440" y="128" text-anchor="middle" fill="#5E6B8C" font-size="15" font-weight="400">打包待存档的改动</text>
+          <rect x="640" y="60" width="220" height="90" rx="12" fill="#0D1426" stroke="#1E9BD2" stroke-width="2"/>
+          <text x="750" y="98" text-anchor="middle" fill="#56C8F5">本地仓库</text>
+          <text x="750" y="128" text-anchor="middle" fill="#5E6B8C" font-size="15" font-weight="400">存档点 v1·v2·v3…</text>
+          <rect x="950" y="60" width="220" height="90" rx="12" fill="#0D1426" stroke="#C97A15" stroke-width="2"/>
+          <text x="1060" y="98" text-anchor="middle" fill="#F5A340">GitHub 远程</text>
+          <text x="1060" y="128" text-anchor="middle" fill="#5E6B8C" font-size="15" font-weight="400">云端备份 + 展示</text>
+        </g>
+        <g font-family="ui-monospace,Consolas,monospace" font-size="16.5" fill="#98A4C0">
+          <path d="M244 105 h78" stroke="#56C8F5" stroke-width="2.5"/><path d="M322 105 l-13 -8 v16 z" fill="#56C8F5"/>
+          <text x="283" y="88" text-anchor="middle">git add</text>
+          <path d="M554 105 h78" stroke="#56C8F5" stroke-width="2.5"/><path d="M632 105 l-13 -8 v16 z" fill="#56C8F5"/>
+          <text x="593" y="88" text-anchor="middle">git commit</text>
+          <path d="M864 92 h78" stroke="#56C8F5" stroke-width="2.5"/><path d="M942 92 l-13 -8 v16 z" fill="#56C8F5"/>
+          <text x="903" y="76" text-anchor="middle">git push</text>
+          <path d="M942 122 h-78" stroke="#C97A15" stroke-width="2.5"/><path d="M864 122 l13 -8 v16 z" fill="#C97A15"/>
+          <text x="903" y="148" text-anchor="middle">git pull</text>
+        </g>
+      </svg>
+    </div>
+    <div class="grid g3">
+      <div class="card"><p><b style="color:var(--ink)">add</b> = 把改动放进"待存档"篮子</p></div>
+      <div class="card"><p><b style="color:var(--ink)">commit</b> = 咔嚓一声存档，附一句说明</p></div>
+      <div class="card"><p><b style="color:var(--ink)">push / pull</b> = 和云端同步：推上去 / 拉下来</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 git 日常 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · 日常五连</div>
+    <h2>一个仓库的一天</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> git init                 <span class="cm"># 把当前文件夹变成 git 仓库（一次性）</span>
+<span class="p">$</span> git status               <span class="cm"># 口头禅：现在什么状态？</span>
+<span class="o">modified: index.html</span>
+<span class="p">$</span> git add .                <span class="cm"># 把所有改动放进暂存区</span>
+<span class="p">$</span> git commit -m "完成报名表单"  <span class="cm"># 存档 + 一句人话说明</span>
+<span class="p">$</span> git log --oneline        <span class="cm"># 看存档历史</span>
+<span class="o">a3f9c21 完成报名表单
+9b2d1e0 初始版本</span>
+<span class="p">$</span> git diff                 <span class="cm"># 看看这次到底改了什么</span>
+<span class="p">$</span> git checkout a3f9c21 -- index.html  <span class="cm"># 后悔药：取回旧版</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>口头禅：<code>git status</code></h3><p>任何时候心里没底，先 <code>status</code>——它会告诉你现在在哪、改了啥、下一步能干嘛。</p></div>
+        <div class="card"><h3>commit 说明写"为什么"</h3><p>"改了 index.html" ❌（git 自己知道）；"修复手机端按钮点不到" ✅（未来的你会感谢）。</p></div>
+        <div class="card"><h3>多小算一次提交？</h3><p>完成一个说得清的小目标就存档一次。<b style="color:var(--ink)">小步快存</b>，时光机才好用。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23 GitHub -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · 上云三件事</div>
+    <h2>GitHub：备份、展示、协作，一站全包</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># ① 克隆别人的项目（比如龙虾）</span>
+<span class="p">$</span> git clone https://github.com/openclaw/openclaw.git
+<span class="o">Cloning into 'openclaw'...</span>
+
+<span class="cm"># ② 把自己的仓库推上云（在 GitHub 网页先建空仓库）</span>
+<span class="p">$</span> git remote add origin https://github.com/你/my-site.git
+<span class="p">$</span> git push -u origin main   <span class="cm"># 首次推送；之后只需 git push</span>
+
+<span class="cm"># ③ 换台电脑继续干 / 同步队友的改动</span>
+<span class="p">$</span> git pull</pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>注册即拥有</h3><p>github.com 免费账号 = 无限公开仓库。用户名认真取，<b style="color:var(--ink)">它会出现在你的简历里</b>。</p></div>
+        <div class="card"><h3>README.md 是门面</h3><p>仓库首页自动展示 README：项目是什么、怎么跑、效果截图。<b style="color:var(--ink)">写好 README 的仓库才算作品</b>。</p></div>
+        <div class="card"><h3>星标 = 收藏 + 点赞</h3><p>上一讲里龙虾 38 万星、Hermes 21 万星，就是这个星。给你用过的好项目点个星，也是圈内社交。</p></div>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">进阶彩蛋 🥚：GitHub 官方命令行工具 <code>gh</code>——网页上的操作全能在终端完成。<code>gh auth login</code> 登录一次，之后 <code>gh repo create my-site --public --source . --push</code> 一条命令搞定"建仓库 + 关联 + 推送"三件事，发 PR 用 <code>gh pr create</code>。等左边三件事玩顺了，再来解锁它。</div>
+  </div>
+</section>
+
+<!-- 24 AI 时代的 git -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · 本章点题</div>
+    <h2>AI 时代，git 反而更重要了</h2>
+    <div class="grid g3">
+      <div class="card"><h3>AI 的安全绳</h3><p>让 Claude Code 放手重构的前提是"随时可回滚"。<b style="color:var(--ink)">先 commit，再让 AI 动手</b>——这是 AI 协作第一守则。</p></div>
+      <div class="card"><h3>AI 的原生语言</h3><p>Claude Code 本来就用 git 干活：自动建分支、写提交说明、发 PR。你懂 git，才看得懂它在干什么、拦得住它跑偏。</p></div>
+      <div class="card"><h3>你的复利资产</h3><p>从今天的练习开始，每个作品都 push 上 GitHub。一年后你会拥有别人补不出来的东西：<b style="color:var(--ink)">带时间戳的成长记录</b>。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">git 学到这个深度就够用了——分支、合并、PR 这些进阶概念，等你需要时让 AI 现场教你，十分钟的事。</div>
+  </div>
+</section>
+
+<!-- 25 D04 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">04</div>
+    <h2>Claude Code：终端里的编程搭档</h2>
+    <p class="lead">前三章的所有技能在这里合流：你在终端里指挥它，它用命令和 git 干活，tmux 让它跑个通宵——而且现在，手机就能接管。</p>
+  </div>
+</section>
+
+<!-- 26 CC 安装 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · 安装与启动</div>
+    <h2>一行命令安装，一个 <code style="font-size:.85em">claude</code> 启动</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># macOS / Linux / WSL：</span>
+<span class="p">$</span> curl -fsSL https://claude.ai/install.sh | bash
+
+<span class="cm"># Windows PowerShell（不用 WSL 也能装）：</span>
+<span class="p">PS&gt;</span> irm https://claude.ai/install.ps1 | iex
+
+<span class="cm"># 启动：进入你的项目文件夹，然后——</span>
+<span class="p">$</span> cd my-project
+<span class="p">$</span> claude
+<span class="o">按提示在浏览器完成登录 ✓</span>
+<span class="p">&gt;</span> <span class="k">帮我看看这个项目是干什么的▌</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>登录方式</h3><p>Claude Pro / Max 订阅账号直接 OAuth 登录（推荐）；或用 API key。<code>/login</code> 可随时重新登录。</p></div>
+        <div class="card"><h3>三种打开方式</h3><p><code>claude</code> 交互会话；<code>claude -c</code> 继续上次会话；<code>claude -p "问题"</code> 无头模式——问完即走，适合写进脚本。</p></div>
+        <div class="card"><h3>第一件事</h3><p>在项目里输入 <code>/init</code>，让它生成 <b style="color:var(--ink)">CLAUDE.md</b>（后面第 29 页专讲）。</p></div>
+      </div>
+    </div>
+    <p class="src">安装命令与支持平台来自官方文档 code.claude.com/docs（2026-07 核实）：macOS 13+ / Ubuntu 20.04+ / Windows 10 1809+</p>
+  </div>
+</section>
+
+<!-- 27 CC 核心操作 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · 日常核心操作</div>
+    <h2>六个动作，覆盖每天 90% 的使用</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="tblwrap">
+        <table>
+          <tr><th>动作</th><th>怎么做</th></tr>
+          <tr><td>提需求</td><td>直接打字说人话，越具体越好</td></tr>
+          <tr><td>打断它</td><td><kbd>Esc</kbd> ——说错了、跑偏了随时喊停</td></tr>
+          <tr><td>翻历史</td><td><kbd>↑</kbd> <kbd>↓</kbd> 箭头</td></tr>
+          <tr><td>切权限模式</td><td><kbd>Shift+Tab</kbd> 循环：逐条确认 → 自动接受编辑 → 计划模式</td></tr>
+          <tr><td>直跑 shell</td><td><code>!ls</code> ——叹号开头，绕过 AI 直接执行</td></tr>
+          <tr><td>喂图片</td><td>截图直接粘贴进对话（报错截图、设计稿都行）</td></tr>
+        </table>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>权限模式是安全带</h3><p>默认<b style="color:var(--ink)">每个危险操作都先问你</b>；熟练后用"自动接受编辑"；让它先出方案再动手，用<b style="color:var(--ink)">计划模式（plan）</b>。</p></div>
+        <div class="card"><h3>好需求的三要素</h3><p>目标 + 约束 + 验收标准："给报名页加一个导出 CSV 按钮，不改现有样式，导出后能用 Excel 打开。"</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 CC 斜杠命令 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · 高频斜杠命令</div>
+    <h2>输入 <code style="font-size:.85em">/</code> 呼出命令面板，这 8 个最常用</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="tblwrap">
+        <table>
+          <tr><td><code>/init</code></td><td>扫描项目，生成 CLAUDE.md 项目说明</td></tr>
+          <tr><td><code>/help</code></td><td>看所有可用命令</td></tr>
+          <tr><td><code>/clear</code></td><td>清空对话重新开始（项目记忆保留）</td></tr>
+          <tr><td><code>/model</code></td><td>切换模型（快活儿用小模型，硬活儿用大模型）</td></tr>
+          <tr><td><code>/plan</code></td><td>进入计划模式：先出方案，批准了才动手</td></tr>
+          <tr><td><code>/resume</code></td><td>恢复之前的会话，接着上次干</td></tr>
+          <tr><td><code>/memory</code></td><td>查看 / 编辑它记住的东西</td></tr>
+          <tr><td><code>/permissions</code></td><td>管理它能自动做什么、必须问什么</td></tr>
+        </table>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>省钱小知识</h3><p>对话越长越贵（每次都要"重读"上下文）。一个任务干完就 <code>/clear</code>，换任务换会话。</p></div>
+        <div class="card"><h3>会话不怕丢</h3><p>意外关掉终端？<code>claude -c</code> 继续最近会话，<code>claude --resume</code> 挑历史会话——像 tmux 一样有"存档"。</p></div>
+      </div>
+    </div>
+    <p class="src">命令清单来自官方文档 code.claude.com/docs/en/commands（2026-07 核实）</p>
+  </div>
+</section>
+
+<!-- 29 CLAUDE.md -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · 项目记忆</div>
+    <h2>CLAUDE.md：写给 AI 的"项目说明书"</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> cat CLAUDE.md
+<span class="o"># training — AI 培训幻灯片项目
+
+## 设计系统（改动时必须遵守）
+- 深色科技风，色板 token 在 :root
+- 美国=青蓝 #56C8F5，中国=暖橙 #F5A340
+- 字号必须随屏幕缩放，禁止固定 px 上限
+- 所有数据必须联网核实并标注来源+日期 ...</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>它是什么</h3><p>放在项目根目录的 Markdown 文件，<b style="color:var(--ink)">每次启动会话自动读取</b>。写什么：构建命令、代码规范、设计规则、踩过的坑。</p></div>
+        <div class="card"><h3>真实案例：你们看过的那份 PPT</h3><p>左边就是第一讲幻灯片项目的真实 CLAUDE.md 节选——因为有它，<b style="color:var(--ink)">任何一次新会话都能接着改</b>，不会忘记"字号要随屏幕缩放"这种教训。</p></div>
+        <div class="card"><h3>经验</h3><p>短小精悍（200 行以内最有效）；每次 AI 犯了同样的错，就往里加一条规矩——<b style="color:var(--ink)">它是你和 AI 的共同备忘录</b>。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 30 Remote Control -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · Remote Control（官方远程遥控）</div>
+    <h2>电脑上开跑，手机上接管</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># 方式一：给现有会话开启远程（在会话里输入）</span>
+<span class="p">&gt;</span> /remote-control 我的项目
+<span class="o">✓ 已开启 · 出示二维码 · claude.ai/code 可见</span>
+
+<span class="cm"># 方式二：启动时就带远程</span>
+<span class="p">$</span> claude --remote-control "重构任务"
+
+<span class="cm"># 方式三：纯服务器模式（多设备连接）</span>
+<span class="p">$</span> claude remote-control
+<span class="o">Session URL: https://claude.ai/code/session/...
+[空格键显示二维码]</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>手机怎么接</h3><p>Claude 官方 App（iOS/Android）<b style="color:var(--ink)">扫码即接管</b>：看进度、发指令、批准操作；或任何浏览器打开会话 URL。</p></div>
+        <div class="card"><h3>推送通知</h3><p><code>/config</code> 里开启 "Push when actions required"——<b style="color:var(--ink)">AI 需要你拍板时，手机弹通知</b>，像外卖到了一样。</p></div>
+        <div class="card" style="border-color:rgba(245,163,64,.45)"><h3>唯一前提</h3><p>本地进程必须活着（关终端 = 会话结束）——所以它和 <b style="color:var(--ink)">tmux 是天生一对</b>，下一页组合拳。</p></div>
+      </div>
+    </div>
+    <p class="src">功能与命令来自官方文档 code.claude.com/docs/en/remote-control（2026-07 核实）；另有 Telegram/Discord 消息触发（Channels）、定时任务（Routines）等入口</p>
+  </div>
+</section>
+
+<!-- 31 组合拳 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · 终极形态：三章合体</div>
+    <h2>云服务器 + tmux + Remote Control = 永不下班的工程师</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># 早上，笔记本：</span>
+<span class="p">$</span> ssh tom@203.0.113.7        <span class="cm"># ① 上服务器（第1章）</span>
+<span class="p">$</span> tmux new -s cc               <span class="cm"># ② 开持久会话（第2章）</span>
+<span class="p">$</span> cd my-project && git commit -am "开工前存档"  <span class="cm"># ③ 系安全绳（第3章）</span>
+<span class="p">$</span> claude --remote-control "网站改版"  <span class="cm"># ④ 开跑（第4章）</span>
+<span class="cm"># Ctrl+b d 挂起，合盖出门 ——</span>
+
+<span class="cm"># 下午，手机：</span>
+<span class="o">📱 通知：Claude 请求批准运行测试 → 点"允许"</span>
+
+<span class="cm"># 晚上，家里电脑：</span>
+<span class="p">$</span> ssh tom@203.0.113.7 && tmux attach -t cc
+<span class="o">✓ 改版完成，测试通过，git log 里 12 个新提交</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>这就是今天前四章的全部意义</h3><p>ssh 让你<b style="color:var(--ink)">到场</b>，tmux 让你<b style="color:var(--ink)">离场</b>，git 让你<b style="color:var(--ink)">敢放手</b>，Remote Control 让你<b style="color:var(--ink)">随时插手</b>。</p></div>
+        <div class="card"><h3>顺便：自动化入口</h3><p>无头模式 <code>claude -p</code> 可写进定时脚本；GitHub Actions 里也能跑——AI 从"工具"变成"值班同事"。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 32 D05 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">05</div>
+    <h2>Hermes Agent：部署你的常驻管家</h2>
+    <p class="lead">Claude Code 是"编程搭档"，Hermes 是"生活管家"——装在服务器上 7×24 待命，微信里发句话就干活，而且越用越懂你。</p>
+  </div>
+</section>
+
+<!-- 33 Hermes 安装 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Hermes Agent · 安装部署（v0.18，2026-07）</div>
+    <h2>一条命令，把 Hermes 请进服务器</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># 先给它安排宿舍（第 2 章学的）：</span>
+<span class="p">$</span> ssh tom@203.0.113.7
+<span class="p">$</span> tmux new -s hermes
+
+<span class="cm"># 官方一键安装（Linux / macOS / WSL2 通用）：</span>
+<span class="p">$</span> curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+<span class="o">✓ Python · Node.js · ffmpeg 等依赖自动装好
+✓ 全局命令 hermes 已可用</span>
+<span class="p">$</span> hermes doctor      <span class="cm"># 体检：环境有没有装好</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>脚本包办一切</h3><p>依赖（Python、Node、ffmpeg…）全部自动安装，官方口径"<b style="color:var(--ink)">两分钟跑起来</b>"。无头服务器可加 <code>--skip-browser</code>。</p></div>
+        <div class="card"><h3>平台支持</h3><p>macOS / Windows / Linux / WSL2 / Docker 都是一级支持；<b style="color:var(--ink)">云服务器（Linux）正是官方推荐姿势</b>。Windows 原生用 <code>iex (irm …/install.ps1)</code>。</p></div>
+        <div class="card"><h3>为什么装在服务器</h3><p>管家要 7×24 值班——跑在 tmux 里的云服务器上，你的电脑关不关机都不影响它上班。</p></div>
+      </div>
+    </div>
+    <p class="src">命令来自官方文档 hermes-agent.nousresearch.com/docs（2026-07-04 核实）· 开源仓库 github.com/nousresearch/hermes-agent（MIT）</p>
+  </div>
+</section>
+
+<!-- 34 Hermes 配置 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Hermes Agent · 首次配置与接入</div>
+    <h2>三步：接上大脑 → 启动网关 → 连上微信</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> hermes setup            <span class="cm"># ① 交互式向导：跟着答题就配好</span>
+<span class="p">$</span> hermes model            <span class="cm"># 选"大脑"：支持 30+ 家模型</span>
+<span class="o">  Anthropic Claude / OpenAI / DeepSeek / Qwen ...</span>
+
+<span class="p">$</span> hermes gateway setup    <span class="cm"># ② 配置要接入的聊天平台</span>
+<span class="p">$</span> hermes gateway start    <span class="cm"># 启动常驻网关（在 tmux 里！）</span>
+
+<span class="cm"># ③ 手机上给你的 bot 发第一条消息 → 把自己的
+#    用户 ID 加进允许名单 → 重启网关，开始使唤它</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>中文平台原生支持</h3><p><b style="color:var(--ink)">微信、企业微信、飞书、钉钉、QQ</b>，加上 Telegram / Discord / Slack / 邮件——共 20+ 平台，一个网关全接住。</p></div>
+        <div class="card"><h3>文件都在哪</h3><p>配置 <code>~/.hermes/config.yaml</code>；API key 放 <code>~/.hermes/.env</code>（记得 <code>chmod 600</code>）。</p></div>
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ 安全三条，一条别破</h3><p>① 永远不开"允许所有人"（<code>ALLOW_ALL_USERS</code>）；② 危险操作保持默认的人工审批，别图省事开 <code>/yolo</code>；③ 别用 root 跑网关。</p></div>
+      </div>
+    </div>
+    <p class="src">来源：官方 Quickstart / CLI Reference / Weixin 接入文档 / Security 文档（2026-07-04 核实）</p>
+  </div>
+</section>
+
+<!-- 35 Hermes 技能记忆 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Hermes Agent · 技能与记忆</div>
+    <h2>看着它一天天变聪明</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> hermes --tui            <span class="cm"># 推荐的终端界面</span>
+<span class="p">&gt;</span> <span class="k">/skills</span>                 <span class="cm"># 看它已经学会的技能</span>
+<span class="o">  ├─ 整理下载文件夹
+  ├─ 每晚备份 stock-report
+  └─ 生成周报</span>
+<span class="p">&gt;</span> <span class="k">/usage</span>                  <span class="cm"># 看 token 花费，防超支</span>
+
+<span class="p">$</span> ls ~/.hermes/skills/    <span class="cm"># 技能 = 一个个文件夹，看得见摸得着</span>
+<span class="p">$</span> cat ~/.hermes/memories/MEMORY.md  <span class="cm"># 它对你的记忆，也是明文 md</span>
+<span class="p">$</span> hermes skills           <span class="cm"># 浏览/安装/发布社区技能</span>
+<span class="p">$</span> hermes cron             <span class="cm"># 给它排定时任务：每晚 11 点干活</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>"自我进化"落地的样子</h3><p>你让它做成一件复杂的事，它自动写成技能文档存进 <code>skills/</code>——<b style="color:var(--ink)">下次同类任务直接调用，还会越用越顺</b>。这就是第一讲说的"与你共同成长"。</p></div>
+        <div class="card"><h3>记忆全透明</h3><p>它记住的一切都在 <code>MEMORY.md / USER.md</code> 两个明文文件里，<b style="color:var(--ink)">可以直接编辑或删除</b>——你的管家，你做主。</p></div>
+        <div class="card"><h3>技能可以"进货"</h3><p><code>hermes skills install</code> 安装社区技能（兼容开放技能标准）——站在全球用户的肩膀上养管家。</p></div>
+      </div>
+    </div>
+    <p class="src">来源：官方 CLI Reference / Persistent Memory / Skills 文档（2026-07-04 核实）</p>
+  </div>
+</section>
+
+<!-- 36 分工 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Hermes Agent · 双 Agent 分工</div>
+    <h2>一个管代码，一个管生活</h2>
+    <div class="grid g2">
+      <div class="card" style="border-top:3px solid var(--us-bar)"><h3>Claude Code <span class="tag us">编程搭档</span></h3><p>开在<b style="color:var(--ink)">项目里</b>，任务制：写代码、修 bug、重构、数据分析。干完一票结一票，用 git 交作业。</p></div>
+      <div class="card" style="border-top:3px solid var(--cn-bar)"><h3>Hermes <span class="tag cn">常驻管家</span></h3><p>开在<b style="color:var(--ink)">服务器上</b>，值班制：定时任务、整理文件、查资料、盯消息。在聊天软件里随叫随到，技能越攒越多。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">它们不冲突，而是<b>互相成就</b>：让 Hermes 盯着日程杂务，把整块时间留给你和 Claude Code 做真正的创造。两个都跑在 tmux 里、都用 git 留痕——今天学的一切在此闭环。</div>
+  </div>
+</section>
+
+<!-- 37 作业 -->
+<section class="slide">
+  <div class="inner">
+    <div class="no num" style="font-size:clamp(50px,7vw,100px);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3)">✓</div>
+    <h2>回家作业：六件事，一周内打完卡</h2>
+    <div class="grid g3">
+      <div class="card"><h3>① 终端热身</h3><p>打开终端（Windows 先装 WSL），把第 14 页小抄的 20 条命令各敲一遍。</p></div>
+      <div class="card"><h3>② 连上服务器</h3><p>ssh 登录云服务器，配好免密登录，手机装 Termius 也连一次。</p></div>
+      <div class="card"><h3>③ tmux 实验</h3><p>开一个会话跑 <code>tail -f</code>，断开 ssh 再连回来，确认现场还在。</p></div>
+      <div class="card"><h3>④ GitHub 开户</h3><p>注册账号，建第一个仓库，把练习作品 push 上去、写好 README。</p></div>
+      <div class="card"><h3>⑤ Claude Code 初体验</h3><p>安装登录，在一个项目里 <code>/init</code>，让它完成一个小任务，手机扫码远程接管一次。</p></div>
+      <div class="card"><h3>⑥ 部署 Hermes</h3><p>在服务器 tmux 里装好 Hermes，接上一个聊天软件，发出第一条指令。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">打完这六个卡，你就拥有了：一台随身服务器、一位编程搭档、一名私人管家——<b>和第一讲练习题需要的全部装备</b>。</div>
+  </div>
+</section>
+
+<!-- 38 结尾 -->
+<section class="slide">
+  <div class="inner" style="text-align:center;align-items:center">
+    <p class="sub" style="letter-spacing:.3em;margin-bottom:2em">最后一页</p>
+    <h1 style="font-size:clamp(30px,4.2vw,58px)">终端是驾驶舱，<br>现在<span class="hl-us">钥匙在你手里</span>。</h1>
+    <p class="lead" style="margin:2em auto 0;max-width:30em">工具已经就位。回到第一讲的五道练习题——开跑。</p>
+  </div>
+</section>
+
+</div>
+
+<div id="hud">
+  <span id="pg" class="num" aria-live="polite"></span>
+  <button id="first" aria-label="首页" title="首页">«</button>
+  <button id="prev" aria-label="上一页" title="上一页">‹</button>
+  <button id="next" aria-label="下一页" title="下一页">›</button>
+  <button id="last" aria-label="末页" title="末页">»</button>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),
+      bar=document.getElementById('bar'),pg=document.getElementById('pg'),
+      i=Math.min(Math.max((parseInt(location.hash.slice(1),10)||1)-1,0),slides.length-1);
+  function show(n){
+    n=Math.min(Math.max(n,0),slides.length-1);
+    slides[i].classList.remove('active');
+    i=n;slides[i].classList.add('active');slides[i].scrollTop=0;
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    pg.textContent=String(i+1).padStart(2,'0')+' / '+slides.length;
+    history.replaceState(null,'','#'+(i+1));
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(slides.length-1);}
+    else if(e.key==='f'||e.key==='F'){
+      if(document.fullscreenElement)document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(function(){});
+    }
+  });
+  document.getElementById('next').addEventListener('click',function(){show(i+1)});
+  document.getElementById('prev').addEventListener('click',function(){show(i-1)});
+  document.getElementById('first').addEventListener('click',function(){show(0)});
+  document.getElementById('last').addEventListener('click',function(){show(slides.length-1)});
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+  document.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>60)show(i+(dx<0?1:-1));
+    tx=null;
+  });
+  show(i);
+
+  var cv=document.getElementById('fx');
+  if(cv&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var ctx=cv.getContext('2d'),W,H,pts=[],seed=7;
+    function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+    function size(){W=cv.width=cv.offsetWidth*devicePixelRatio;H=cv.height=cv.offsetHeight*devicePixelRatio;}
+    size();addEventListener('resize',size);
+    for(var k=0;k<46;k++)pts.push({x:rnd()*1.2-.1,y:rnd()*1.2-.1,vx:(rnd()-.5)*.0004,vy:(rnd()-.5)*.0004});
+    (function tick(){
+      if(slides[i]&&slides[i].classList.contains('cover')){
+        ctx.clearRect(0,0,W,H);
+        for(var a=0;a<pts.length;a++){
+          var p=pts[a];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-.15||p.x>1.15)p.vx*=-1;if(p.y<-.15||p.y>1.15)p.vy*=-1;
+          for(var b=a+1;b<pts.length;b++){
+            var q=pts[b],dx=(p.x-q.x)*W,dy=(p.y-q.y)*H,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<W*.11){ctx.strokeStyle='rgba(86,200,245,'+(0.09*(1-d/(W*.11)))+')';
+              ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x*W,p.y*H);ctx.lineTo(q.x*W,q.y*H);ctx.stroke();}
+          }
+          ctx.fillStyle='rgba(86,200,245,.35)';
+          ctx.beginPath();ctx.arc(p.x*W,p.y*H,1.6*devicePixelRatio,0,7);ctx.fill();
+        }
+      }
+      requestAnimationFrame(tick);
+    })();
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,13 +1,15 @@
 # AI Bootcamp — AI 通识与工具实战培训
 
-面向大学生的 AI 培训系列课程幻灯片。目标：看懂这场正在发生的技术革命，并亲手用上驱动它的工具。
+面向学生的 AI 培训系列课程幻灯片。目标：看懂这场正在发生的技术革命，并亲手用上驱动它的工具。
+
+**📽 在线演示：https://ronfi.github.io/ai-bootcamp/**
 
 ## 课程列表
 
 | # | 讲次 | 在线演示 | 源文件 | 页数 |
 |---|------|----------|--------|------|
-| 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 在线播放](https://claude.ai/code/artifact/65fad3da-f2cc-44ad-9876-91f5bb0ca794) | [`ai-training-deck.html`](ai-training-deck.html) | 36 |
-| 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 在线播放](https://claude.ai/code/artifact/6b39bfd4-4956-4bd2-974f-8b8db64a42f5) | [`basic-tools-deck.html`](basic-tools-deck.html) | 39 |
+| 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 在线播放](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) | [`ai-training-deck.html`](ai-training-deck.html) | 36 |
+| 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 在线播放](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) | [`basic-tools-deck.html`](basic-tools-deck.html) | 39 |
 
 ### 第一讲《AI 革命进行时》
 

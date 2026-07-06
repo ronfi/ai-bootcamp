@@ -3,6 +3,7 @@
 面向学生的 AI 通识与工具实战培训。交付物是系列网页幻灯片（单文件 HTML，共用同一设计系统）。
 
 远程仓库：https://github.com/ronfi/ai-bootcamp（public；gh 已装在 `~/.local/bin/gh`，登录账号 suemto）
+对外演示：GitHub Pages https://ronfi.github.io/ai-bootcamp/ （从 `docs/` 目录提供服务；**改完源文件必须跑 `./build-pages.sh` 重新生成 docs/ 再提交**，脚本负责给 Artifact 格式的源文件包上标准 HTML 骨架）
 
 ## 交付物
 
