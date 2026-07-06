@@ -1,6 +1,6 @@
 # training — AI 培训幻灯片项目
 
-面向两名大学生的 AI 通识与工具实战培训。交付物是系列网页幻灯片（单文件 HTML，共用同一设计系统）。
+面向学生的 AI 通识与工具实战培训。交付物是系列网页幻灯片（单文件 HTML，共用同一设计系统）。
 
 远程仓库：https://github.com/ronfi/ai-bootcamp（public；gh 已装在 `~/.local/bin/gh`，登录账号 suemto）
 
