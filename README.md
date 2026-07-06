@@ -11,7 +11,7 @@
 | # | 讲次 | 在线演示 | 源文件 | 页数 |
 |---|------|----------|--------|------|
 | 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) | [`ai-training-deck.html`](ai-training-deck.html) | 46 |
-| 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) | [`basic-tools-deck.html`](basic-tools-deck.html) | 39 |
+| 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) | [`basic-tools-deck.html`](basic-tools-deck.html) | 47 |
 
 ### 第一讲《AI 革命进行时》
 
@@ -32,9 +32,11 @@
 
 1. **Terminal** — 基础命令、WSL、vi 生存指南、ssh 与密钥体系、20 条速查小抄
 2. **tmux** — 会话持久化：关掉电脑，工作还在跑
-3. **Git / GitHub** — 版本控制心智模型与日常命令，AI 时代的"安全绳"
-4. **Claude Code** — 安装、日常操作、CLAUDE.md、官方 Remote Control 手机接管
-5. **Hermes Agent** — 云服务器部署 7×24 常驻管家，接入微信/Telegram
+3. **定时任务** — crontab 语法与"AI 值夜班"的三种姿势
+4. **Git / GitHub** — 版本控制心智模型与日常命令，AI 时代的"安全绳"
+5. **Claude Code** — 安装、日常操作、安全与权限申请、CLAUDE.md、官方 Remote Control 手机接管
+6. **Hermes Agent** — 云服务器部署 7×24 常驻管家，接入微信/Telegram
+7. **AI 日常管理** — 邮件秘书、消息哨兵、内容账号流水线
 
 ## 使用方式
 

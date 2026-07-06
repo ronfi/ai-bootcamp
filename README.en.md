@@ -11,7 +11,7 @@ Slide decks for a student-facing AI training series. The goal: understand the te
 | # | Lecture | Watch online | Source | Slides |
 |---|---------|--------------|--------|--------|
 | 1 | **The AI Revolution, Live** — see the big picture, master the tools | [▶ EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) | [`ai-training-deck.en.html`](ai-training-deck.en.html) | 46 |
-| 2 | **Essential Tools Bootcamp** — terminal · persistent sessions · Git · AI agents | [▶ EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) | [`basic-tools-deck.en.html`](basic-tools-deck.en.html) | 39 |
+| 2 | **Essential Tools Bootcamp** — terminal · persistent sessions · Git · AI agents | [▶ EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) | [`basic-tools-deck.en.html`](basic-tools-deck.en.html) | 47 |
 
 ### Lecture 1 · The AI Revolution, Live
 
@@ -32,9 +32,11 @@ Fully hands-on; every terminal demo can be typed along:
 
 1. **Terminal** — core commands, WSL, a vi survival guide, ssh and key-based auth, a 20-command cheat sheet
 2. **tmux** — session persistence: close your laptop, the work keeps running
-3. **Git / GitHub** — the mental model and daily commands; your safety rope in the AI era
-4. **Claude Code** — install, daily workflow, CLAUDE.md, official Remote Control from your phone
-5. **Hermes Agent** — deploy a 24/7 resident butler agent on a cloud server, hooked into WeChat/Telegram
+3. **Scheduled jobs** — crontab syntax and three ways AI runs the night shift
+4. **Git / GitHub** — the mental model and daily commands; your safety rope in the AI era
+5. **Claude Code** — install, daily workflow, safety & permissions, CLAUDE.md, official Remote Control from your phone
+6. **Hermes Agent** — deploy a 24/7 resident butler agent on a cloud server, hooked into WeChat/Telegram
+7. **AI for daily life** — an email secretary, a message sentry, a content pipeline
 
 ## How to use
 

@@ -13,10 +13,10 @@
 - 源文件：`ai-training-deck.html`
 - 线上版：https://claude.ai/code/artifact/65fad3da-f2cc-44ad-9876-91f5bb0ca794
 
-**第二讲《基础工具培训》**（终端/tmux/Git/Claude Code/Hermes，39 页，favicon 🧰）
+**第二讲《基础工具培训》**（终端/tmux/定时任务/Git/Claude Code/Hermes/AI 日常，47 页，favicon 🧰）
 - 源文件：`basic-tools-deck.html`
 - 线上版：https://claude.ai/code/artifact/6b39bfd4-4956-4bd2-974f-8b8db64a42f5
-- 结构：01 Terminal（含 WSL、vi 生存指南、ssh 进阶：密钥/config/ssh-add、PowerShell 对照、20 条速查小抄）→ 02 tmux → 03 Git/GitHub → 04 Claude Code（安装/斜杠命令/CLAUDE.md/官方 Remote Control/云服务器+tmux 组合拳）→ 05 Hermes（安装/配置接微信/技能记忆，v0.18 口径）→ 回家作业 6 件事
+- 结构：01 Terminal（含 WSL、vi 生存指南、ssh 进阶：密钥/config/ssh-add、PowerShell 对照、20 条速查小抄）→ 02 tmux → 03 定时任务（crontab/cron×AI）→ 04 Git/GitHub → 05 Claude Code（安装/斜杠命令/安全与权限申请页/CLAUDE.md/官方 Remote Control/组合拳）→ 06 Hermes（安装/配置接微信/技能记忆，v0.18 口径）→ 07 AI 日常（邮件/消息社交/内容账号）→ 回家作业 7 件事
 - 新组件：`.term` 仿终端窗口（红黄绿点+`$`提示符青色+注释灰色），实操命令均用它展示；技术命令均经官方文档核实（Claude Code 来自 code.claude.com/docs，Hermes 来自 hermes-agent.nousresearch.com/docs，2026-07-04）
 
 第一讲相关：

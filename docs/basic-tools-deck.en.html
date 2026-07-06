@@ -124,7 +124,7 @@
     <div class="eyebrow">AI Training Series · Session 2 · July 2026</div>
     <h1>Basic Tools Training</h1>
     <p class="sub">Terminal · Persistent Sessions · Git · AI Agents</p>
-    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> or Space to flip · <kbd>F</kbd> fullscreen · 39 slides</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> or Space to flip · <kbd>F</kbd> fullscreen · 47 slides</p>
   </div>
 </section>
 
@@ -133,13 +133,15 @@
   <div class="inner">
     <div class="eyebrow">Today's route · one chain, link by link</div>
     <h2>Why learn the terminal in 2026, of all years?</h2>
-    <p class="lead" style="margin-bottom:1em">Because AI agents live in the terminal. The terminal is the cockpit from which you command AI — today's five chapters form one tightly linked chain:</p>
+    <p class="lead" style="margin-bottom:1em">Because AI agents live in the terminal. The terminal is the cockpit from which you command AI — today's seven chapters form one tightly linked chain:</p>
     <div class="steps">
       <div class="st"><div class="k">01 · Terminal</div><p>Talk to your computer: a dozen survival commands</p></div>
       <div class="st"><div class="k">02 · tmux</div><p>Sessions that never drop: close the laptop, the work keeps running</p></div>
-      <div class="st"><div class="k">03 · Git / GitHub</div><p>A time machine for code: the safety net that lets AI make big changes</p></div>
-      <div class="st"><div class="k">04 · Claude Code</div><p>Command a coding agent, take over from your phone</p></div>
-      <div class="st"><div class="k">05 · Hermes</div><p>Deploy a 24/7 personal agent of your own</p></div>
+      <div class="st"><div class="k">03 · Scheduled jobs</div><p>Put your computer on an alarm clock: work starts on schedule</p></div>
+      <div class="st"><div class="k">04 · Git / GitHub</div><p>A time machine for code: the safety net that lets AI make big changes</p></div>
+      <div class="st"><div class="k">05 · Claude Code</div><p>Command a coding agent, take over from your phone</p></div>
+      <div class="st"><div class="k">06 · Hermes</div><p>Deploy a 24/7 personal agent of your own</p></div>
+      <div class="st"><div class="k">07 · AI for daily life</div><p>Hand your inbox, messages, and content accounts to AI</p></div>
     </div>
     <div class="note" style="border-left-color:var(--us-bar)">This session is fully hands-on: whenever a <b>black terminal window</b> shows up on a slide, type along. All commands assume Linux / macOS (Windows folks: install WSL on slide 5 and everything works verbatim).</div>
   </div>
@@ -310,7 +312,7 @@
       </div>
       <div style="display:grid;gap:14px">
         <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ rm has no recycle bin <span class="tag warn">tattoo it on your DNA</span></h3><p>Deleted means gone. <code>ls</code> the target before deleting; <b style="color:var(--ink)">never, ever run an internet-copied <code>rm -rf /</code>-style command</b> — have AI double-check it first.</p></div>
-        <div class="card"><h3>Habit: back up important folders first</h3><p>Before surgery, <code>cp -r project project.bak</code> — five seconds buys you an undo. Chapter 3's git is the ultimate version of this idea.</p></div>
+        <div class="card"><h3>Habit: back up important folders first</h3><p>Before surgery, <code>cp -r project project.bak</code> — five seconds buys you an undo. Chapter 4's git is the ultimate version of this idea.</p></div>
       </div>
     </div>
   </div>
@@ -402,7 +404,7 @@
         <div class="card"><h3><code>ssh-add</code> = the keychain</h3><p>A passphrase makes the private key safer — but typing it on every connect? <code>ssh-add</code> hands the key to ssh-agent for safekeeping, so <b style="color:var(--ink)">you type it once per boot</b>; <code>ssh-add -l</code> shows what's hanging on the ring.</p></div>
       </div>
     </div>
-    <div class="note">Reading <code>authorized_keys</code> in reverse: adding one public-key line = cutting someone a copy of your house key. So on slide 30, when Claude Code helps edit configs, <b>any change to this file deserves your personal approval</b>.</div>
+    <div class="note">Reading <code>authorized_keys</code> in reverse: adding one public-key line = cutting someone a copy of your house key. So on slide 33, when Claude Code helps edit configs, <b>any change to this file deserves your personal approval</b>.</div>
   </div>
 </section>
 
@@ -575,14 +577,67 @@
       <div class="card"><h3>Evening · on the subway</h3><p><kbd>Ctrl+b</kbd> <kbd>d</kbd> to detach, close the laptop. The task keeps running on the server. Want progress on your phone? Termius ssh in, <code>tmux attach</code>.</p></div>
       <div class="card"><h3>Late night · at home</h3><p>Open your home computer, <code>tmux attach -t cc</code> — the afternoon's scene is back in one second, and the agent is already done.</p></div>
     </div>
-    <div class="note" style="border-left-color:var(--us-bar)">One line: <b>ssh gives you the power to show up; tmux gives you the freedom to walk away.</b> Chapter 4's official Remote Control takes this experience one level higher.</div>
+    <div class="note" style="border-left-color:var(--us-bar)">One line: <b>ssh gives you the power to show up; tmux gives you the freedom to walk away.</b> Chapter 5's official Remote Control takes this experience one level higher.</div>
+  </div>
+</section>
+
+<!-- 18b D03 定时任务 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">03</div>
+    <h2>Scheduled Jobs: Put Your Computer on an Alarm Clock</h2>
+    <p class="lead">tmux solves "you leave, the program stays." cron solves "you're away, the program starts itself." Master it and your server gets a daily routine.</p>
+  </div>
+</section>
+
+<!-- 18c crontab -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Scheduled jobs · crontab syntax</div>
+    <h2>crontab: five numbers, one timetable</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> crontab -e            <span class="cm"># edit my job table (picks an editor first time)</span>
+<span class="cm"># ┌─ min(0-59) ┌─ hour(0-23) ┌─ day ┌─ month ┌─ weekday(0-7)</span>
+<span class="cm">#    │           │            │      │        │</span>
+<span class="o">  0    9    *    *    *   ~/backup.sh >> ~/logs/backup.log 2>&amp;1</span>
+<span class="cm"># ↑ run the backup at 09:00 daily, log output and errors</span>
+<span class="o">*/10   *    *    *    *   ~/fetch-data.sh</span>
+<span class="cm"># ↑ fetch data every 10 minutes</span>
+<span class="o">  0   22    *    *    5   ~/weekly-report.sh</span>
+<span class="cm"># ↑ generate the weekly report every Friday at 22:00</span>
+<span class="o">@reboot  tmux new -d -s hermes 'hermes gateway start'</span>
+<span class="cm"># ↑ bring the butler back up whenever the server reboots</span>
+<span class="p">$</span> crontab -l            <span class="cm"># list scheduled jobs</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>The five-field chant</h3><p><b style="color:var(--ink)">minute · hour · day · month · weekday</b>. <code>*</code> = every, <code>*/10</code> = every 10; commas list, dashes span. Can't remember? Ask AI: "write me a cron line for Mondays at 8 a.m."</p></div>
+        <div class="card"><h3>Logging is not optional</h3><p>End every line with <code>&gt;&gt; logfile 2&gt;&amp;1</code> — otherwise a job that fails at 3 a.m. fails silently forever. Chapter 2's <code>tail -f</code> is exactly what watches it.</p></div>
+        <div class="card" style="border-color:rgba(245,163,64,.45)"><h3>Two rookie traps</h3><p>Cloud servers usually run on <b style="color:var(--ink)">UTC</b> (8 hours behind Beijing time); cron ships with almost no environment variables, so scripts should use <b style="color:var(--ink)">absolute paths</b>.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18d cron 实战 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Scheduled jobs · Where it shines</div>
+    <h2>Scheduled jobs × AI: three ways to run the night shift</h2>
+    <div class="grid g3">
+      <div class="card"><h3>① A data pipeline on a timer</h3><p>Fetch market data after every close, clean it, store it — Exercise 1 from Lecture 1 in its final form; then trigger the analysis script once the data lands.</p></div>
+      <div class="card"><h3>② Summon Claude on schedule</h3><p>Headless mode goes straight into cron: <code>claude -p "read last night's error log, summarize in 3 bullets"</code> — AI works on a schedule with nobody in the room.</p></div>
+      <div class="card"><h3>③ Hermes' calendar</h3><p><code>hermes cron</code> puts your resident butler on a schedule: morning briefings, backups, watching webpages for changes — cron with memory and skills on top.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">The formula: <b>cron decides "when," the script or agent decides "what," and tmux + logs guarantee "you can find out what happened."</b> There's a homework check-in for this one.</div>
   </div>
 </section>
 
 <!-- 19 D03 -->
 <section class="slide divider">
   <div class="inner">
-    <div class="no num">03</div>
+    <div class="no num">04</div>
     <h2>Git / GitHub: a Time Machine for Code</h2>
     <p class="lead">rm has no recycle bin, but git does — the most powerful one in the universe. It's also the collaboration protocol of programmers worldwide, and the best-looking résumé you'll ever own.</p>
   </div>
@@ -591,7 +646,7 @@
 <!-- 20 为什么 git -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · Why everyone should know it</div>
+    <div class="eyebrow">04 · Git / GitHub · Why everyone should know it</div>
     <h2>Four reasons, each more down-to-earth than the last</h2>
     <div class="grid g2">
       <div class="card"><h3>① Time machine <span class="tag ok">the undo button</span></h3><p>Every <code>commit</code> is a save point. Broke something? <b style="color:var(--ink)">One command returns you to any save</b>. The feature you wish essays had.</p></div>
@@ -606,7 +661,7 @@
 <!-- 21 git 概念图 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · Mental model</div>
+    <div class="eyebrow">04 · Git / GitHub · Mental model</div>
     <h2>Three steps: edit → save → sync to the cloud</h2>
     <div class="card" style="padding:1.4em 1.6em;margin-bottom:16px">
       <svg viewBox="0 0 1200 240" width="100%" role="img" aria-label="git flow: the working directory goes to the staging area via git add, to the local repo via git commit, and to the GitHub remote via git push; git pull brings changes back">
@@ -647,7 +702,7 @@
 <!-- 22 git 日常 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · The daily five</div>
+    <div class="eyebrow">04 · Git / GitHub · The daily five</div>
     <h2>A day in the life of a repo</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -675,7 +730,7 @@
 <!-- 23 GitHub -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · Three things in the cloud</div>
+    <div class="eyebrow">04 · Git / GitHub · Three things in the cloud</div>
     <h2>GitHub: backup, showcase, collaboration — one-stop shop</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -704,7 +759,7 @@
 <!-- 24 AI 时代的 git -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · The point of this chapter</div>
+    <div class="eyebrow">04 · Git / GitHub · The point of this chapter</div>
     <h2>In the AI era, git matters more, not less</h2>
     <div class="grid g3">
       <div class="card"><h3>AI's safety rope</h3><p>Letting Claude Code refactor freely requires "can roll back anytime". <b style="color:var(--ink)">Commit first, then let AI loose</b> — rule #1 of AI collaboration.</p></div>
@@ -718,16 +773,16 @@
 <!-- 25 D04 -->
 <section class="slide divider">
   <div class="inner">
-    <div class="no num">04</div>
+    <div class="no num">05</div>
     <h2>Claude Code: Your Programming Partner in the Terminal</h2>
-    <p class="lead">Everything from the first three chapters converges here: you command it in the terminal, it works with commands and git, tmux lets it run all night — and now, your phone can take over.</p>
+    <p class="lead">Everything from the first four chapters converges here: you command it in the terminal, it works with commands and git, tmux lets it run all night — and now, your phone can take over.</p>
   </div>
 </section>
 
 <!-- 26 CC 安装 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · Install and launch</div>
+    <div class="eyebrow">05 · Claude Code · Install and launch</div>
     <h2>One line to install, one word — <code style="font-size:.85em">claude</code> — to launch</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -757,7 +812,7 @@
 <!-- 27 CC 核心操作 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · Daily core moves</div>
+    <div class="eyebrow">05 · Claude Code · Daily core moves</div>
     <h2>Six moves cover 90% of every day</h2>
     <div class="grid g2" style="align-items:start">
       <div class="tblwrap">
@@ -782,7 +837,7 @@
 <!-- 28 CC 斜杠命令 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · High-frequency slash commands</div>
+    <div class="eyebrow">05 · Claude Code · High-frequency slash commands</div>
     <h2>Type <code style="font-size:.85em">/</code> for the command palette — these 8 get the most use</h2>
     <div class="grid g2" style="align-items:start">
       <div class="tblwrap">
@@ -806,10 +861,37 @@
   </div>
 </section>
 
+<!-- 28b CC 安全与权限 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Claude Code · Safety &amp; in-session permission requests</div>
+    <h2>The permission prompt isn't a nuisance — it's the intern raising a hand</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">&gt;</span> <span class="k">clean up the old logs I don't need</span>
+<span class="o">Claude wants to run:
+
+    rm -rf ~/logs/2025/
+
+  [y] Allow once   [a] Always allow this session   [n] Deny</span>
+<span class="cm"># Stop — read the command before you pick. rm -rf</span>
+<span class="cm"># deserves three extra seconds: right folder? collateral damage?</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>When it asks</h3><p>Editing files, running commands, reaching the network — anything "for real" requests approval first; <b style="color:var(--ink)">read-only work (browsing code, searching) never interrupts you</b>.</p></div>
+        <div class="card"><h3>Three rules for approving</h3><p>① <b style="color:var(--ink)">Understand it before you approve it</b> — especially <code>rm</code>, <code>git push</code>, <code>curl | bash</code>; ② money, deletion, anything public-facing: <b style="color:var(--ink)">always approve manually, one by one</b>; ③ safe read-only commands that keep recurring can be allowlisted via <code>/permissions</code> to cut the noise.</p></div>
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ Match the mode to the setting</h3><p>"Auto-accept edits" is plenty for daily coding; <code>--dangerously-skip-permissions</code> (skip everything) belongs only inside a <b style="color:var(--ink)">container or VM</b> — the flag's name is telling you not to.</p></div>
+      </div>
+    </div>
+    <div class="note">One-line principle: <b>treat permissions like package deliveries — read the slip before you sign.</b> The confidence to let AI loose comes from one gate held firmly: dangerous actions always pass through your hands.</div>
+  </div>
+</section>
+
 <!-- 29 CLAUDE.md -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · Project memory</div>
+    <div class="eyebrow">05 · Claude Code · Project memory</div>
     <h2>CLAUDE.md: the "project manual" you write for the AI</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -835,7 +917,7 @@
 <!-- 30 Remote Control -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · Remote Control (official)</div>
+    <div class="eyebrow">05 · Claude Code · Remote Control (official)</div>
     <h2>Start it on your computer, take over from your phone</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -865,7 +947,7 @@
 <!-- 31 组合拳 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · Final form: three chapters combined</div>
+    <div class="eyebrow">05 · Claude Code · Final form: four chapters combined</div>
     <h2>Cloud server + tmux + Remote Control = an engineer who never clocks out</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -873,8 +955,8 @@
 <pre><span class="cm"># Morning, laptop:</span>
 <span class="p">$</span> ssh tom@203.0.113.7        <span class="cm"># ① onto the server (ch. 1)</span>
 <span class="p">$</span> tmux new -s cc               <span class="cm"># ② open a persistent session (ch. 2)</span>
-<span class="p">$</span> cd my-project && git commit -am "checkpoint before work"  <span class="cm"># ③ buckle the safety rope (ch. 3)</span>
-<span class="p">$</span> claude --remote-control "site redesign"  <span class="cm"># ④ go (ch. 4)</span>
+<span class="p">$</span> cd my-project && git commit -am "checkpoint before work"  <span class="cm"># ③ buckle the safety rope (ch. 4)</span>
+<span class="p">$</span> claude --remote-control "site redesign"  <span class="cm"># ④ go (ch. 5)</span>
 <span class="cm"># Ctrl+b d to detach, close the lid, out the door —</span>
 
 <span class="cm"># Afternoon, phone:</span>
@@ -885,7 +967,7 @@
 <span class="o">✓ Redesign done, tests passing, 12 new commits in git log</span></pre>
       </div>
       <div style="display:grid;gap:14px">
-        <div class="card"><h3>This is what the first four chapters were for</h3><p>ssh lets you <b style="color:var(--ink)">show up</b>, tmux lets you <b style="color:var(--ink)">walk away</b>, git lets you <b style="color:var(--ink)">let go</b>, Remote Control lets you <b style="color:var(--ink)">step in anytime</b>.</p></div>
+        <div class="card"><h3>This is what the first five chapters were for</h3><p>ssh lets you <b style="color:var(--ink)">show up</b>, tmux lets you <b style="color:var(--ink)">walk away</b>, git lets you <b style="color:var(--ink)">let go</b>, Remote Control lets you <b style="color:var(--ink)">step in anytime</b>.</p></div>
         <div class="card"><h3>Bonus: the automation door</h3><p>Headless <code>claude -p</code> fits into cron scripts; it runs inside GitHub Actions too — AI goes from "tool" to "colleague on duty".</p></div>
       </div>
     </div>
@@ -895,7 +977,7 @@
 <!-- 32 D05 -->
 <section class="slide divider">
   <div class="inner">
-    <div class="no num">05</div>
+    <div class="no num">06</div>
     <h2>Hermes Agent: Deploy Your Live-in Butler</h2>
     <p class="lead">Claude Code is the "programming partner"; Hermes is the "life butler" — installed on a server, on call 24/7, works whenever you text it in a chat app, and understands you better the more you use it.</p>
   </div>
@@ -904,7 +986,7 @@
 <!-- 33 Hermes 安装 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">05 · Hermes Agent · Install and deploy (v0.18, 2026-07)</div>
+    <div class="eyebrow">06 · Hermes Agent · Install and deploy (v0.18, 2026-07)</div>
     <h2>One command to move Hermes into your server</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -932,7 +1014,7 @@
 <!-- 34 Hermes 配置 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">05 · Hermes Agent · First-time setup and hookup</div>
+    <div class="eyebrow">06 · Hermes Agent · First-time setup and hookup</div>
     <h2>Three steps: attach a brain → start the gateway → connect WeChat</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -960,7 +1042,7 @@
 <!-- 35 Hermes 技能记忆 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">05 · Hermes Agent · Skills and memory</div>
+    <div class="eyebrow">06 · Hermes Agent · Skills and memory</div>
     <h2>Watch it get smarter by the day</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -990,7 +1072,7 @@
 <!-- 36 分工 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">05 · Hermes Agent · Two agents, two jobs</div>
+    <div class="eyebrow">06 · Hermes Agent · Two agents, two jobs</div>
     <h2>One handles the code, one handles the life</h2>
     <div class="grid g2">
       <div class="card" style="border-top:3px solid var(--us-bar)"><h3>Claude Code <span class="tag us">programming partner</span></h3><p>Runs <b style="color:var(--ink)">inside a project</b>, task-based: write code, fix bugs, refactor, analyze data. Finishes a job, closes the tab, hands in its work via git.</p></div>
@@ -1000,20 +1082,77 @@
   </div>
 </section>
 
+<!-- 36b D07 AI 日常 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">07</div>
+    <h2>Run Your Daily Life with AI</h2>
+    <p class="lead">You've learned the tools — now point them at the real battlefield: your inbox, your messages, your content accounts. Outsource the chores to agents; take your time back.</p>
+  </div>
+</section>
+
+<!-- 36c 邮件 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">07 · AI for daily life · Email</div>
+    <h2>Make AI your email secretary</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Read: the morning digest</h3><p>One inbox briefing every morning: <b style="color:var(--ink)">who wants you, for what, and which one is urgent</b> — a hundred emails condensed to three lines. (Hermes supports Email natively; Gmail works via API / MCP.)</p></div>
+      <div class="card"><h3>Write &amp; reply: drafts on demand</h3><p>You dictate the gist; AI drafts it <b style="color:var(--ink)">in your voice</b> straight into the Drafts folder. Routine replies — confirmations, thank-yous, reschedules — come out of templates in seconds.</p></div>
+      <div class="card"><h3>Manage: auto-triage</h3><p>Archiving, labeling, watching key senders, and a nightly sweep of <b style="color:var(--ink)">"awaiting your reply"</b> — never again "forgot to answer the professor."</p></div>
+    </div>
+    <div class="note">Iron rule: <b>AI writes only to Drafts — the Send button stays in your hand.</b> "Public-facing" sits on the must-pass-through-a-human list from the last chapter.</div>
+  </div>
+</section>
+
+<!-- 36d 消息与社交 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">07 · AI for daily life · Messages &amp; social</div>
+    <h2>In the message flood, let an agent stand watch</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Group-chat digests</h3><p>A Hermes already hooked into WeChat/Telegram does this for free: nightly summaries of every group, with <b style="color:var(--ink)">@-mentions flagged separately</b> — 99 idle messages distilled to 3 that matter.</p></div>
+      <div class="card"><h3>The chat box as task manager</h3><p>"Remind me to send my advisor the update tomorrow morning." "Nag me about the weekly report every Sunday night." One casual sentence — the agent remembers and chases you on time.</p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ Social red lines</h3><p>Allowlist yourself only; <b style="color:var(--ink)">never let AI auto-reply to your friends</b> — efficiency can be outsourced, sincerity can't. Platforms police bot automation; crossing the line can cost the account.</p></div>
+    </div>
+    <div class="note">The right posture: the agent does the <b>"reading and organizing,"</b> you do the <b>"replying and deciding"</b> — it's a sentry on watch, not a stand-in for your social life.</div>
+  </div>
+</section>
+
+<!-- 36e 内容与营销账号 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">07 · AI for daily life · Content &amp; marketing accounts</div>
+    <h2>One person + AI = a running content account</h2>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① Topic research</div><p>AI tracks industry news and competitors' hits, <b style="color:var(--ink)">producing a weekly topic list</b> (the knowledge-base playbook)</p></div>
+      <div class="st"><div class="k">② Drafts in bulk</div><p>Five drafts plus image suggestions in one pass; you pick one and <b style="color:var(--ink)">edit the humanity back in</b></p></div>
+      <div class="st"><div class="k">③ Scheduled publishing</div><p>cron / agent posts on time, one piece fanned out to every platform</p></div>
+      <div class="st"><div class="k">④ Weekly review</div><p>Data pulled automatically into a report: what gained followers, which time slots work</p></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>The efficiency is the pipeline</h3><p>Research, drafting, publishing, and review all run themselves; you guard two gates only: <b style="color:var(--ink)">topic judgment + the final edit</b> — 10x the output, still your voice.</p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ Red lines &amp; the floor</h3><p>Platforms require <b style="color:var(--ink)">AI-content labeling</b> — comply; no spam marketing (sockpuppet fleets, fake engagement) — that's bans plus legal risk; authorize accounts through official APIs and <b style="color:var(--ink)">never hand a password to any script</b>.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">This page is Lecture 1's "Pro Workflow" in miniature: knowledge base → production → publishing → data feedback. <b>Get one small account running, and you've run a tiny company.</b></div>
+  </div>
+</section>
+
 <!-- 37 作业 -->
 <section class="slide">
   <div class="inner">
     <div class="no num" style="font-size:clamp(50px,7vw,100px);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3)">✓</div>
-    <h2>Homework: six things, checked off within a week</h2>
+    <h2>Homework: seven things, checked off within a week</h2>
     <div class="grid g3">
-      <div class="card"><h3>① Terminal warm-up</h3><p>Open a terminal (Windows: install WSL first) and type each of the 20 commands from the slide-14 cheat sheet once.</p></div>
+      <div class="card"><h3>① Terminal warm-up</h3><p>Open a terminal (Windows: install WSL first) and type each of the 20 commands from the slide-15 cheat sheet once.</p></div>
       <div class="card"><h3>② Reach a server</h3><p>ssh into a cloud server, set up passwordless login, and install Termius on your phone to connect once too.</p></div>
       <div class="card"><h3>③ tmux experiment</h3><p>Start a session running <code>tail -f</code>, disconnect ssh, reconnect, and confirm the scene survived.</p></div>
       <div class="card"><h3>④ Open a GitHub account</h3><p>Sign up, create your first repo, push your practice work, and write a proper README.</p></div>
       <div class="card"><h3>⑤ First taste of Claude Code</h3><p>Install and log in, <code>/init</code> inside a project, have it finish one small task, and take over from your phone via QR code once.</p></div>
       <div class="card"><h3>⑥ Deploy Hermes</h3><p>Install Hermes in tmux on the server, hook up one chat app, and send the first command.</p></div>
+      <div class="card"><h3>⑦ Set an alarm</h3><p>Write one crontab line: append a line of system status to a log at 8:00 every morning — check tomorrow that it worked.</p></div>
     </div>
-    <div class="note" style="border-left-color:var(--us-bar)">Check off all six and you'll own: a server in your pocket, a programming partner, and a personal butler — <b>everything the session-1 exercises require</b>.</div>
+    <div class="note" style="border-left-color:var(--us-bar)">Check off all seven and you'll own: a server in your pocket, a programming partner, and a personal butler — <b>everything the session-1 exercises require</b>.</div>
   </div>
 </section>
 

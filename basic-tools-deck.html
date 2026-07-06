@@ -116,7 +116,7 @@
     <div class="eyebrow">AI 培训系列 · 第二讲 · 2026 年 7 月</div>
     <h1>基础工具培训</h1>
     <p class="sub">终端 · 持久会话 · Git · AI 智能体</p>
-    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> 或空格翻页 · <kbd>F</kbd> 全屏 · 共 39 页</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> 或空格翻页 · <kbd>F</kbd> 全屏 · 共 47 页</p>
   </div>
 </section>
 
@@ -125,13 +125,15 @@
   <div class="inner">
     <div class="eyebrow">今天的路线 · 一条递进链</div>
     <h2>为什么 2026 年了，反而更要学终端？</h2>
-    <p class="lead" style="margin-bottom:1em">因为 AI 智能体都住在终端里。终端是你指挥 AI 的驾驶舱——今天这五章，是一条环环相扣的链：</p>
+    <p class="lead" style="margin-bottom:1em">因为 AI 智能体都住在终端里。终端是你指挥 AI 的驾驶舱——今天这七章，是一条环环相扣的链：</p>
     <div class="steps">
       <div class="st"><div class="k">01 · Terminal</div><p>会和电脑"说话"：十几个保命命令</p></div>
       <div class="st"><div class="k">02 · tmux</div><p>会话不断线：关掉电脑，工作还在跑</p></div>
-      <div class="st"><div class="k">03 · Git / GitHub</div><p>代码时光机：敢让 AI 大改的安全网</p></div>
-      <div class="st"><div class="k">04 · Claude Code</div><p>指挥编程智能体，手机远程接管</p></div>
-      <div class="st"><div class="k">05 · Hermes</div><p>部署一个 7×24 常驻的私人 Agent</p></div>
+      <div class="st"><div class="k">03 · 定时任务</div><p>给电脑上闹钟：到点自动干活</p></div>
+      <div class="st"><div class="k">04 · Git / GitHub</div><p>代码时光机：敢让 AI 大改的安全网</p></div>
+      <div class="st"><div class="k">05 · Claude Code</div><p>指挥编程智能体，手机远程接管</p></div>
+      <div class="st"><div class="k">06 · Hermes</div><p>部署一个 7×24 常驻的私人 Agent</p></div>
+      <div class="st"><div class="k">07 · AI 日常</div><p>让 AI 接管邮箱、消息与内容账号</p></div>
     </div>
     <div class="note" style="border-left-color:var(--us-bar)">本课全程实操：右边出现<b>黑色终端窗口</b>的页面，都建议跟着敲一遍。所有命令以 Linux / macOS 为准（Windows 同学第 5 页装好 WSL 后完全通用）。</div>
   </div>
@@ -302,7 +304,7 @@
       </div>
       <div style="display:grid;gap:14px">
         <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ rm 没有回收站 <span class="tag warn">刻进 DNA</span></h3><p>删了就是删了。删除前先 <code>ls</code> 确认目标；<b style="color:var(--ink)">永远、永远不要跑网上抄来的 <code>rm -rf /</code> 之类命令</b>——让 AI 帮你检查一遍再执行。</p></div>
-        <div class="card"><h3>习惯：重要目录先备份</h3><p>动手前 <code>cp -r 项目 项目.bak</code>，五秒钟买个后悔药——第三章的 git 是这件事的终极方案。</p></div>
+        <div class="card"><h3>习惯：重要目录先备份</h3><p>动手前 <code>cp -r 项目 项目.bak</code>，五秒钟买个后悔药——第四章的 git 是这件事的终极方案。</p></div>
       </div>
     </div>
   </div>
@@ -394,7 +396,7 @@
         <div class="card"><h3><code>ssh-add</code> ＝ 钥匙圈</h3><p>私钥设了密码短语更安全，但每次连接都要输？<code>ssh-add</code> 把私钥交给 ssh-agent 保管，<b style="color:var(--ink)">开机后只输一次</b>；<code>ssh-add -l</code> 看圈上挂了哪些钥匙。</p></div>
       </div>
     </div>
-    <div class="note">反向理解 <code>authorized_keys</code>：往里加一行公钥 ＝ 给对方配一把你家钥匙。所以第 30 页让 Claude Code 帮忙改配置时，<b>动这个文件的操作要亲自审批</b>。</div>
+    <div class="note">反向理解 <code>authorized_keys</code>：往里加一行公钥 ＝ 给对方配一把你家钥匙。所以第 33 页让 Claude Code 帮忙改配置时，<b>动这个文件的操作要亲自审批</b>。</div>
   </div>
 </section>
 
@@ -567,14 +569,67 @@
       <div class="card"><h3>傍晚 · 地铁上</h3><p><kbd>Ctrl+b</kbd> <kbd>d</kbd> 挂起、合上电脑。任务在服务器上继续跑。手机想看进度？Termius ssh 上去 <code>tmux attach</code>。</p></div>
       <div class="card"><h3>深夜 · 家里</h3><p>打开家里电脑 <code>tmux attach -t cc</code>——下午的现场一秒回来，Agent 已经干完了。</p></div>
     </div>
-    <div class="note" style="border-left-color:var(--us-bar)">一句话：<b>ssh 给你"到场"的能力，tmux 给你"离场"的自由。</b>第四章 Claude Code 的官方 Remote Control 会把这套体验再升一级。</div>
+    <div class="note" style="border-left-color:var(--us-bar)">一句话：<b>ssh 给你"到场"的能力，tmux 给你"离场"的自由。</b>第五章 Claude Code 的官方 Remote Control 会把这套体验再升一级。</div>
+  </div>
+</section>
+
+<!-- 18b D03 定时任务 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">03</div>
+    <h2>定时任务：给电脑上闹钟</h2>
+    <p class="lead">tmux 解决"人走了，程序还在"；cron 解决"人不在，程序自己开工"。掌握它，你的服务器就有了作息表。</p>
+  </div>
+</section>
+
+<!-- 18c crontab -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 定时任务 · crontab 语法</div>
+    <h2>crontab：五个数字，排一张作息表</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> crontab -e            <span class="cm"># 编辑我的任务表（首次会让你选编辑器）</span>
+<span class="cm"># ┌─ 分(0-59) ┌─ 时(0-23) ┌─ 日 ┌─ 月 ┌─ 周(0-7)</span>
+<span class="cm">#    │          │          │     │     │</span>
+<span class="o">  0    9    *    *    *   ~/backup.sh >> ~/logs/backup.log 2>&amp;1</span>
+<span class="cm"># ↑ 每天 09:00 跑备份，输出和报错都记进日志</span>
+<span class="o">*/10   *    *    *    *   ~/fetch-data.sh</span>
+<span class="cm"># ↑ 每 10 分钟抓一次数据</span>
+<span class="o">  0   22    *    *    5   ~/weekly-report.sh</span>
+<span class="cm"># ↑ 每周五 22:00 生成周报</span>
+<span class="o">@reboot  tmux new -d -s hermes 'hermes gateway start'</span>
+<span class="cm"># ↑ 服务器重启后自动把管家拉起来</span>
+<span class="p">$</span> crontab -l            <span class="cm"># 查看已排的任务</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>五段口诀</h3><p><b style="color:var(--ink)">分 · 时 · 日 · 月 · 周</b>。<code>*</code> = 每，<code>*/10</code> = 每 10，逗号列举、连字符表区间。记不住？问 AI："帮我写一条每周一早八点的 cron"。</p></div>
+        <div class="card"><h3>日志是标配</h3><p>结尾接 <code>&gt;&gt; 日志 2&gt;&amp;1</code>——不然任务半夜出错你永远不知道。第二章学的 <code>tail -f</code>，就是用来盯它的。</p></div>
+        <div class="card" style="border-color:rgba(245,163,64,.45)"><h3>两个新手坑</h3><p>云服务器多为 <b style="color:var(--ink)">UTC 时区</b>（比北京时间慢 8 小时）；cron 环境变量极少，脚本里一律用<b style="color:var(--ink)">绝对路径</b>。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18d cron 实战 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 定时任务 · 用在哪</div>
+    <h2>定时任务 × AI：值夜班的三种姿势</h2>
+    <div class="grid g3">
+      <div class="card"><h3>① 定时数据管道</h3><p>每天收盘后自动抓行情、清洗、入库——第一讲练习一的完全体；数据到位后顺手触发分析脚本。</p></div>
+      <div class="card"><h3>② 定时召唤 Claude</h3><p>无头模式进 cron：<code>claude -p "读昨晚的错误日志，总结成 3 条"</code>——AI 定期干活，不需要你在场。</p></div>
+      <div class="card"><h3>③ Hermes 的日程表</h3><p><code>hermes cron</code> 让常驻管家到点干活：晨报、备份、盯网页变化——比裸 cron 多了记忆与技能。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">组合公式：<b>cron 定"何时"，脚本或 Agent 定"做什么"，tmux + 日志保证"出了事查得到"</b>。回家作业里有它的打卡题。</div>
   </div>
 </section>
 
 <!-- 19 D03 -->
 <section class="slide divider">
   <div class="inner">
-    <div class="no num">03</div>
+    <div class="no num">04</div>
     <h2>Git / GitHub：代码的时光机</h2>
     <p class="lead">rm 没有回收站，但 git 有——而且是全宇宙最强的那种。它还是全球程序员的协作协议，和你未来最好看的一份简历。</p>
   </div>
@@ -583,7 +638,7 @@
 <!-- 20 为什么 git -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · 为什么人人都该会</div>
+    <div class="eyebrow">04 · Git / GitHub · 为什么人人都该会</div>
     <h2>四个理由，一个比一个现实</h2>
     <div class="grid g2">
       <div class="card"><h3>① 时光机 <span class="tag ok">后悔药</span></h3><p>每次 <code>commit</code>（提交）都是一个存档点。改崩了？<b style="color:var(--ink)">一条命令回到任意存档</b>。写论文都想要的功能。</p></div>
@@ -598,7 +653,7 @@
 <!-- 21 git 概念图 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · 心智模型</div>
+    <div class="eyebrow">04 · Git / GitHub · 心智模型</div>
     <h2>三步走：改 → 存档 → 上云</h2>
     <div class="card" style="padding:1.4em 1.6em;margin-bottom:16px">
       <svg viewBox="0 0 1200 240" width="100%" role="img" aria-label="git 流程：工作区经 git add 到暂存区，经 git commit 到本地仓库，经 git push 到 GitHub 远程仓库；git pull 反向拉回">
@@ -639,7 +694,7 @@
 <!-- 22 git 日常 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · 日常五连</div>
+    <div class="eyebrow">04 · Git / GitHub · 日常五连</div>
     <h2>一个仓库的一天</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -667,7 +722,7 @@
 <!-- 23 GitHub -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · 上云三件事</div>
+    <div class="eyebrow">04 · Git / GitHub · 上云三件事</div>
     <h2>GitHub：备份、展示、协作，一站全包</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -696,7 +751,7 @@
 <!-- 24 AI 时代的 git -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">03 · Git / GitHub · 本章点题</div>
+    <div class="eyebrow">04 · Git / GitHub · 本章点题</div>
     <h2>AI 时代，git 反而更重要了</h2>
     <div class="grid g3">
       <div class="card"><h3>AI 的安全绳</h3><p>让 Claude Code 放手重构的前提是"随时可回滚"。<b style="color:var(--ink)">先 commit，再让 AI 动手</b>——这是 AI 协作第一守则。</p></div>
@@ -710,16 +765,16 @@
 <!-- 25 D04 -->
 <section class="slide divider">
   <div class="inner">
-    <div class="no num">04</div>
+    <div class="no num">05</div>
     <h2>Claude Code：终端里的编程搭档</h2>
-    <p class="lead">前三章的所有技能在这里合流：你在终端里指挥它，它用命令和 git 干活，tmux 让它跑个通宵——而且现在，手机就能接管。</p>
+    <p class="lead">前四章的所有技能在这里合流：你在终端里指挥它，它用命令和 git 干活，tmux 让它跑个通宵——而且现在，手机就能接管。</p>
   </div>
 </section>
 
 <!-- 26 CC 安装 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · 安装与启动</div>
+    <div class="eyebrow">05 · Claude Code · 安装与启动</div>
     <h2>一行命令安装，一个 <code style="font-size:.85em">claude</code> 启动</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -749,7 +804,7 @@
 <!-- 27 CC 核心操作 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · 日常核心操作</div>
+    <div class="eyebrow">05 · Claude Code · 日常核心操作</div>
     <h2>六个动作，覆盖每天 90% 的使用</h2>
     <div class="grid g2" style="align-items:start">
       <div class="tblwrap">
@@ -774,7 +829,7 @@
 <!-- 28 CC 斜杠命令 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · 高频斜杠命令</div>
+    <div class="eyebrow">05 · Claude Code · 高频斜杠命令</div>
     <h2>输入 <code style="font-size:.85em">/</code> 呼出命令面板，这 8 个最常用</h2>
     <div class="grid g2" style="align-items:start">
       <div class="tblwrap">
@@ -798,10 +853,37 @@
   </div>
 </section>
 
+<!-- 28b CC 安全与权限 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Claude Code · 安全与会话中的权限申请</div>
+    <h2>权限弹窗不是打扰，是实习生在举手</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">&gt;</span> <span class="k">帮我清理没用的旧日志</span>
+<span class="o">Claude 想要执行以下命令：
+
+    rm -rf ~/logs/2025/
+
+  [y] 允许一次   [a] 本会话总是允许   [n] 拒绝</span>
+<span class="cm"># 停——先看懂命令再选。rm -rf 值得你多看三秒：</span>
+<span class="cm"># 删的目录对不对？会不会殃及别的东西？</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>它什么时候会问</h3><p>改文件、跑命令、联网……任何"动真格"的操作都会先申请；<b style="color:var(--ink)">只读操作（看代码、搜索）不打扰你</b>。</p></div>
+        <div class="card"><h3>三条批准纪律</h3><p>① <b style="color:var(--ink)">看懂再批</b>——尤其 <code>rm</code>、<code>git push</code>、<code>curl | bash</code>；② 钱、删除、对外发布，<b style="color:var(--ink)">永远手动逐条批</b>；③ 反复出现的安全只读命令，用 <code>/permissions</code> 放行，减少打扰。</p></div>
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ 模式要配场景</h3><p>日常写码用"自动接受编辑"足够；<code>--dangerously-skip-permissions</code>（全跳过）只配在<b style="color:var(--ink)">容器/虚拟机</b>里用——它的名字就在劝退你。</p></div>
+      </div>
+    </div>
+    <div class="note">原则一句话：<b>收权限像收快递——先看单子，再签收。</b>敢放手让 AI 干活的底气，来自"危险动作必过我手"这道闸门守得住。</div>
+  </div>
+</section>
+
 <!-- 29 CLAUDE.md -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · 项目记忆</div>
+    <div class="eyebrow">05 · Claude Code · 项目记忆</div>
     <h2>CLAUDE.md：写给 AI 的"项目说明书"</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -827,7 +909,7 @@
 <!-- 30 Remote Control -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · Remote Control（官方远程遥控）</div>
+    <div class="eyebrow">05 · Claude Code · Remote Control（官方远程遥控）</div>
     <h2>电脑上开跑，手机上接管</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -857,7 +939,7 @@
 <!-- 31 组合拳 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">04 · Claude Code · 终极形态：三章合体</div>
+    <div class="eyebrow">05 · Claude Code · 终极形态：四章合体</div>
     <h2>云服务器 + tmux + Remote Control = 永不下班的工程师</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -865,8 +947,8 @@
 <pre><span class="cm"># 早上，笔记本：</span>
 <span class="p">$</span> ssh tom@203.0.113.7        <span class="cm"># ① 上服务器（第1章）</span>
 <span class="p">$</span> tmux new -s cc               <span class="cm"># ② 开持久会话（第2章）</span>
-<span class="p">$</span> cd my-project && git commit -am "开工前存档"  <span class="cm"># ③ 系安全绳（第3章）</span>
-<span class="p">$</span> claude --remote-control "网站改版"  <span class="cm"># ④ 开跑（第4章）</span>
+<span class="p">$</span> cd my-project && git commit -am "开工前存档"  <span class="cm"># ③ 系安全绳（第4章）</span>
+<span class="p">$</span> claude --remote-control "网站改版"  <span class="cm"># ④ 开跑（第5章）</span>
 <span class="cm"># Ctrl+b d 挂起，合盖出门 ——</span>
 
 <span class="cm"># 下午，手机：</span>
@@ -877,7 +959,7 @@
 <span class="o">✓ 改版完成，测试通过，git log 里 12 个新提交</span></pre>
       </div>
       <div style="display:grid;gap:14px">
-        <div class="card"><h3>这就是今天前四章的全部意义</h3><p>ssh 让你<b style="color:var(--ink)">到场</b>，tmux 让你<b style="color:var(--ink)">离场</b>，git 让你<b style="color:var(--ink)">敢放手</b>，Remote Control 让你<b style="color:var(--ink)">随时插手</b>。</p></div>
+        <div class="card"><h3>这就是今天前五章的全部意义</h3><p>ssh 让你<b style="color:var(--ink)">到场</b>，tmux 让你<b style="color:var(--ink)">离场</b>，git 让你<b style="color:var(--ink)">敢放手</b>，Remote Control 让你<b style="color:var(--ink)">随时插手</b>。</p></div>
         <div class="card"><h3>顺便：自动化入口</h3><p>无头模式 <code>claude -p</code> 可写进定时脚本；GitHub Actions 里也能跑——AI 从"工具"变成"值班同事"。</p></div>
       </div>
     </div>
@@ -887,7 +969,7 @@
 <!-- 32 D05 -->
 <section class="slide divider">
   <div class="inner">
-    <div class="no num">05</div>
+    <div class="no num">06</div>
     <h2>Hermes Agent：部署你的常驻管家</h2>
     <p class="lead">Claude Code 是"编程搭档"，Hermes 是"生活管家"——装在服务器上 7×24 待命，微信里发句话就干活，而且越用越懂你。</p>
   </div>
@@ -896,7 +978,7 @@
 <!-- 33 Hermes 安装 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">05 · Hermes Agent · 安装部署（v0.18，2026-07）</div>
+    <div class="eyebrow">06 · Hermes Agent · 安装部署（v0.18，2026-07）</div>
     <h2>一条命令，把 Hermes 请进服务器</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -924,7 +1006,7 @@
 <!-- 34 Hermes 配置 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">05 · Hermes Agent · 首次配置与接入</div>
+    <div class="eyebrow">06 · Hermes Agent · 首次配置与接入</div>
     <h2>三步：接上大脑 → 启动网关 → 连上微信</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -952,7 +1034,7 @@
 <!-- 35 Hermes 技能记忆 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">05 · Hermes Agent · 技能与记忆</div>
+    <div class="eyebrow">06 · Hermes Agent · 技能与记忆</div>
     <h2>看着它一天天变聪明</h2>
     <div class="grid g2" style="align-items:center">
       <div class="term">
@@ -982,7 +1064,7 @@
 <!-- 36 分工 -->
 <section class="slide">
   <div class="inner">
-    <div class="eyebrow">05 · Hermes Agent · 双 Agent 分工</div>
+    <div class="eyebrow">06 · Hermes Agent · 双 Agent 分工</div>
     <h2>一个管代码，一个管生活</h2>
     <div class="grid g2">
       <div class="card" style="border-top:3px solid var(--us-bar)"><h3>Claude Code <span class="tag us">编程搭档</span></h3><p>开在<b style="color:var(--ink)">项目里</b>，任务制：写代码、修 bug、重构、数据分析。干完一票结一票，用 git 交作业。</p></div>
@@ -992,20 +1074,77 @@
   </div>
 </section>
 
+<!-- 36b D07 AI 日常 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">07</div>
+    <h2>用 AI 管理你的日常</h2>
+    <p class="lead">工具都学会了，最后把它们指向真正的战场：你的邮箱、你的消息、你的内容账号——把琐事外包给 Agent，把时间还给自己。</p>
+  </div>
+</section>
+
+<!-- 36c 邮件 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">07 · AI 日常 · 邮箱</div>
+    <h2>让 AI 当你的邮件秘书</h2>
+    <div class="grid g3">
+      <div class="card"><h3>读：晨间摘要</h3><p>每天早上一份收件箱简报：<b style="color:var(--ink)">谁找你、什么事、哪封急</b>——上百封浓缩成三行。（Hermes 原生支持 Email 平台，也可经 Gmail API / MCP 接入）</p></div>
+      <div class="card"><h3>写与回：代拟草稿</h3><p>你口述要点，AI 按<b style="color:var(--ink)">你的语气</b>拟稿放进草稿箱；确认、致谢、改期这类常规回复，套模板秒出。</p></div>
+      <div class="card"><h3>管理：自动分类</h3><p>归档、打标签、盯住重要发件人、每晚清点<b style="color:var(--ink)">"待回未回"</b>——再也不会"忘了回老师的邮件"。</p></div>
+    </div>
+    <div class="note">铁律：<b>AI 只进草稿箱，发送键永远在你手里</b>——"对外发布"属于上一章讲的"必过人手"清单。</div>
+  </div>
+</section>
+
+<!-- 36d 消息与社交 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">07 · AI 日常 · 消息与社交</div>
+    <h2>消息洪水里，让 Agent 替你站岗</h2>
+    <div class="grid g3">
+      <div class="card"><h3>群消息摘要</h3><p>接入微信/Telegram 的 Hermes 顺手就能干：每晚汇总各群要点、<b style="color:var(--ink)">@你的消息单独提醒</b>——99 条闲聊浓缩成 3 条正事。</p></div>
+      <div class="card"><h3>聊天框 = 任务管理器</h3><p>"明早提醒我给导师发进度"、"每周日晚提醒写周报"——随手一句话，Agent 帮你记、到点催。</p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ 社交红线</h3><p>允许名单只加自己；<b style="color:var(--ink)">别让 AI 自动替你回复朋友</b>——效率可以外包，真诚不能。各平台对机器人自动化有风控规则，逾越可能封号。</p></div>
+    </div>
+    <div class="note">正确姿势：Agent 做<b>"读与整理"</b>，你做<b>"回与决定"</b>——它是站岗的哨兵，不是替你社交的替身。</div>
+  </div>
+</section>
+
+<!-- 36e 内容与营销账号 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">07 · AI 日常 · 内容与营销账号</div>
+    <h2>一个人 + AI，运营一个内容账号</h2>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① 选题调研</div><p>让 AI 盯行业动态与竞品爆款，<b style="color:var(--ink)">每周自动出选题清单</b>（知识库那套打法）</p></div>
+      <div class="st"><div class="k">② 批量草稿</div><p>一次生成 5 篇初稿 + 配图建议，你挑一篇<b style="color:var(--ink)">改出"人味"</b></p></div>
+      <div class="st"><div class="k">③ 定时发布</div><p>cron / Agent 到点发布，一稿多平台分发</p></div>
+      <div class="st"><div class="k">④ 数据复盘</div><p>每周自动拉数据出报告：什么内容涨粉、什么时段有效</p></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>效率来自流水线</h3><p>调研、草稿、发布、复盘全自动，你只把守两道关：<b style="color:var(--ink)">选题判断 + 最终改稿</b>——产量 ×10，风格还是你的。</p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ 红线与底线</h3><p>平台对 AI 内容有<b style="color:var(--ink)">标注要求</b>，遵守；不做垃圾营销（批量小号、刷量）——那是封号 + 法律风险；账号授权走官方 API，<b style="color:var(--ink)">绝不把密码交给任何脚本</b>。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">这一页也是第一讲"进阶工作流"的缩影：知识库 → 生产 → 发布 → 数据回流。<b>跑通一个小账号，你就跑通了一家"微型公司"。</b></div>
+  </div>
+</section>
+
 <!-- 37 作业 -->
 <section class="slide">
   <div class="inner">
     <div class="no num" style="font-size:clamp(50px,7vw,100px);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3)">✓</div>
-    <h2>回家作业：六件事，一周内打完卡</h2>
+    <h2>回家作业：七件事，一周内打完卡</h2>
     <div class="grid g3">
-      <div class="card"><h3>① 终端热身</h3><p>打开终端（Windows 先装 WSL），把第 14 页小抄的 20 条命令各敲一遍。</p></div>
+      <div class="card"><h3>① 终端热身</h3><p>打开终端（Windows 先装 WSL），把第 15 页小抄的 20 条命令各敲一遍。</p></div>
       <div class="card"><h3>② 连上服务器</h3><p>ssh 登录云服务器，配好免密登录，手机装 Termius 也连一次。</p></div>
       <div class="card"><h3>③ tmux 实验</h3><p>开一个会话跑 <code>tail -f</code>，断开 ssh 再连回来，确认现场还在。</p></div>
       <div class="card"><h3>④ GitHub 开户</h3><p>注册账号，建第一个仓库，把练习作品 push 上去、写好 README。</p></div>
       <div class="card"><h3>⑤ Claude Code 初体验</h3><p>安装登录，在一个项目里 <code>/init</code>，让它完成一个小任务，手机扫码远程接管一次。</p></div>
       <div class="card"><h3>⑥ 部署 Hermes</h3><p>在服务器 tmux 里装好 Hermes，接上一个聊天软件，发出第一条指令。</p></div>
+      <div class="card"><h3>⑦ 定个闹钟</h3><p>写一条 crontab：每天 8 点把一行系统状态追加进日志，第二天来验收。</p></div>
     </div>
-    <div class="note" style="border-left-color:var(--us-bar)">打完这六个卡，你就拥有了：一台随身服务器、一位编程搭档、一名私人管家——<b>和第一讲练习题需要的全部装备</b>。</div>
+    <div class="note" style="border-left-color:var(--us-bar)">打完这七个卡，你就拥有了：一台随身服务器、一位编程搭档、一名私人管家——<b>和第一讲练习题需要的全部装备</b>。</div>
   </div>
 </section>
 
