@@ -164,7 +164,7 @@
     <div class="eyebrow">AI 通识与工具实战培训 · 2026 年 7 月</div>
     <h1>AI 革命进行时</h1>
     <p class="sub">看懂格局 &nbsp;·&nbsp; 用好工具 &nbsp;·&nbsp; 亲手实战</p>
-    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> 或空格翻页 &nbsp;·&nbsp; <kbd>F</kbd> 全屏 &nbsp;·&nbsp; 共 41 页</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> 或空格翻页 &nbsp;·&nbsp; <kbd>F</kbd> 全屏 &nbsp;·&nbsp; 共 46 页</p>
   </div>
 </section>
 
@@ -181,6 +181,7 @@
       <div class="card"><h3><span class="hl-us num">05</span> Agent 智能体</h3><p>AI 怎么替你干活：Claude Code、龙虾、Hermes 三个案例</p></div>
       <div class="card"><h3><span class="hl-us num">06</span> 具身智能</h3><p>当智能长出身体：AGI、人形机器人与灵巧手</p></div>
       <div class="card"><h3><span class="hl-us num">07</span> 动手实战</h3><p>几个练习，把今天学到的立刻用起来</p></div>
+      <div class="card"><h3><span class="hl-us num">08</span> 进阶工作流</h3><p>开工三件套 → 迭代 → 审查 → 落地运维</p></div>
     </div>
   </div>
 </section>
@@ -963,6 +964,76 @@
       <div class="card"><h3>练习五 · 自选题</h3><p>用今天学到的任何工具，解决一个你自己学习 / 生活里的真实问题。唯一要求：<b style="color:var(--ink)">开工前说清目标和验收标准</b>，做完后复盘 AI 错在哪。</p></div>
       <div class="card" style="border-style:dashed;display:flex;align-items:center"><p style="color:var(--ink-2)">提示：练习不比谁做得快，比谁<b style="color:var(--ink)">说得清、验得准</b>——提问质量 = 产出质量。</p></div>
     </div>
+  </div>
+</section>
+
+<!-- 28b D08 进阶工作流 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">08</div>
+    <h2>进阶工作流：像带团队一样带 AI</h2>
+    <p class="lead">练习会做了，怎么把它做成"真项目"？一套从准备、迭代、审查到落地运维的完整打法——一个人 + 一群 Agent，就是一个工程团队。</p>
+  </div>
+</section>
+
+<!-- 28c 开工三件套 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">08 · 进阶工作流 · 开工之前</div>
+    <h2>先做三份文档：给 AI 的"入职培训包"</h2>
+    <div class="grid g3">
+      <div class="card"><h3>① 知识库 <span class="tag us">磨刀</span></h3><p>围绕主题<b style="color:var(--ink)">全网定向搜集</b>：论文、研究报告、官方文档、竞品、最新进展——让 AI 深度调研并落成 <code>knowledge-base.md</code>。之后每个新会话先读它，AI 立刻"入行"。</p></div>
+      <div class="card"><h3>② 数据基建 <span class="tag us">地基</span></h3><p>数据从哪来、怎么抓、怎么清洗、存在哪——<b style="color:var(--ink)">先把管道跑通</b>（练习一练的就是它），再附一份"数据字典"说明每个字段的含义与口径。</p></div>
+      <div class="card"><h3>③ 目标与约束说明书 <span class="tag us">契约</span></h3><p>一页写清：<b style="color:var(--ink)">目标、验收标准、边界（不做什么）、技术约束</b>。它就是项目 CLAUDE.md 的第一版——AI 跑偏时，拿它对齐。</p></div>
+    </div>
+    <div class="note">经验法则：这三份文档花掉你 20% 的时间，但省掉后面 80% 的返工——<b>AI 产出的质量，取决于你给它的"背景包"的质量。</b></div>
+  </div>
+</section>
+
+<!-- 28d 迭代节奏 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">08 · 进阶工作流 · 项目进行中</div>
+    <h2>小步快跑，缰绳在手</h2>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① 写码带测试</div><p>每个模块让 AI <b style="color:var(--ink)">连同单元测试一起生成</b>——测试是 AI 迭代的缰绳</p></div>
+      <div class="st"><div class="k">② 跑到全绿</div><p>测试全部通过，这一步才算完成；红着就继续改</p></div>
+      <div class="st"><div class="k">③ git commit</div><p>完成一个小目标就存档；<b style="color:var(--ink)">让 AI 大改之前必先 commit</b></p></div>
+      <div class="st"><div class="k">④ 更新 CLAUDE.md</div><p>踩了坑、定了规矩，立刻写进去——AI 的"错题本"</p></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>为什么测试是缰绳</h3><p>AI 改代码又快又猛，单元测试是唯一能<b style="color:var(--ink)">自动告诉你"改坏了"</b>的东西。没有测试的项目，AI 不敢碰、你不敢睡。</p></div>
+      <div class="card"><h3>为什么 CLAUDE.md 要及时更新</h3><p>每个新会话 AI 都会"失忆"，CLAUDE.md 是它唯一的长期记忆。<b style="color:var(--ink)">规矩不写下来 = 同一个坑踩 N 遍</b>。（这份 PPT 项目自己的 CLAUDE.md 就是这么长大的。）</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">git、commit、CLAUDE.md 的具体用法第二讲全部教过——这一页做的事，是把它们串成<b>节奏</b>。</div>
+  </div>
+</section>
+
+<!-- 28e 审查修复 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">08 · 进阶工作流 · 审查与修复</div>
+    <h2>别让 AI 自己给自己打分</h2>
+    <div class="grid g3">
+      <div class="card"><h3>第二双眼睛</h3><p>写代码与审代码<b style="color:var(--ink)">分开</b>：开一个新会话（或用专门的代码审查命令）让"没有立场"的 AI 挑毛病——正确性、安全、性能各过一遍。</p></div>
+      <div class="card"><h3>人审关键路径</h3><p>涉及<b style="color:var(--ink)">钱、删数据、对外发布</b>的代码必须人眼过一遍——AI 负责广度，你负责要害。</p></div>
+      <div class="card"><h3>Bug 修复四步</h3><p>报错原文<b style="color:var(--ink)">整段</b>贴给 AI → 让它先解释原因再动手 → 修复 → 跑回归测试。<b style="color:var(--ink)">修完补一条测试</b>，让这个 bug 永远不再复发。</p></div>
+    </div>
+    <div class="note">心法：把 AI 的产出当作"<b>一位很强但会过度自信的实习生</b>"交上来的活——欢迎热情，验收从严。</div>
+  </div>
+</section>
+
+<!-- 28f 落地运维 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">08 · 进阶工作流 · 落地与日常</div>
+    <h2>让项目自己照顾自己</h2>
+    <div class="grid g3">
+      <div class="card"><h3>测试分层与上线</h3><p>单元 → 集成 → 端到端，三层都绿再上线；上线前 checklist：<b style="color:var(--ink)">回滚方案、数据备份、监控就位</b>。部署交给脚本，人只负责按回车。</p></div>
+      <div class="card"><h3>Log 是项目的心电图</h3><p>统一写日志；<code>tail -f</code> 实时盯。更进一步：<b style="color:var(--ink)">让 AI 定期读 log 找异常</b>——"每天早上，总结昨晚的错误日志并给出修复建议"。</p></div>
+      <div class="card"><h3>日常自动管理</h3><p>定时任务（cron / Hermes）让 Agent 值班：巡检、备份、数据更新、自动周报——项目从"<b style="color:var(--ink)">你养它</b>"变成"<b style="color:var(--ink)">它自己长</b>"。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">闭环：运维中发现的问题 → 回流成下一轮迭代的输入 → 知识库与 CLAUDE.md 同步长大。这套流程转起来，<b>一个人 + 一群 Agent，就是一个完整的工程团队</b>。</div>
   </div>
 </section>
 

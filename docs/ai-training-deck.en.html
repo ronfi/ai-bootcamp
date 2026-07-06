@@ -172,7 +172,7 @@
     <div class="eyebrow">AI Literacy &amp; Hands-On Tools Training · July 2026</div>
     <h1>The AI Revolution Is Underway</h1>
     <p class="sub">See the big picture &nbsp;·&nbsp; Master the tools &nbsp;·&nbsp; Build it yourself</p>
-    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> or Space to navigate &nbsp;·&nbsp; <kbd>F</kbd> for fullscreen &nbsp;·&nbsp; 41 slides</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> or Space to navigate &nbsp;·&nbsp; <kbd>F</kbd> for fullscreen &nbsp;·&nbsp; 46 slides</p>
   </div>
 </section>
 
@@ -189,6 +189,7 @@
       <div class="card"><h3><span class="hl-us num">05</span> AI Agents</h3><p>How AI does the work for you: Claude Code, the "Lobster," and Hermes</p></div>
       <div class="card"><h3><span class="hl-us num">06</span> Embodied AI</h3><p>When intelligence gets a body: AGI, humanoid robots, dexterous hands</p></div>
       <div class="card"><h3><span class="hl-us num">07</span> Hands-On Practice</h3><p>A set of exercises to put today's lessons to work immediately</p></div>
+      <div class="card"><h3><span class="hl-us num">08</span> The Pro Workflow</h3><p>Prep kit → iterate → review → ship &amp; operate</p></div>
     </div>
   </div>
 </section>
@@ -971,6 +972,76 @@
       <div class="card"><h3>Exercise 5 · Your own pick</h3><p>Use any tool you learned today to solve a real problem from your own study or life. The one requirement: <b style="color:var(--ink)">state the goal and acceptance criteria before you start</b>, and afterwards review where the AI went wrong.</p></div>
       <div class="card" style="border-style:dashed;display:flex;align-items:center"><p style="color:var(--ink-2)">A hint: these exercises don't reward whoever finishes fastest, but whoever <b style="color:var(--ink)">states it most clearly and verifies it most rigorously</b> — question quality = output quality.</p></div>
     </div>
+  </div>
+</section>
+
+<!-- 28b D08 进阶工作流 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">08</div>
+    <h2>The Pro Workflow: Lead AI Like You'd Lead a Team</h2>
+    <p class="lead">You can do the exercises — now how do you turn one into a real project? A complete playbook from preparation through iteration, review, and operations. One person plus a fleet of agents is an engineering team.</p>
+  </div>
+</section>
+
+<!-- 28c 开工三件套 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">08 · Pro workflow · Before you start</div>
+    <h2>Write three documents first: the AI's "onboarding kit"</h2>
+    <div class="grid g3">
+      <div class="card"><h3>① Knowledge base <span class="tag us">Sharpen the axe</span></h3><p><b style="color:var(--ink)">Sweep the web with intent</b>: papers, research reports, official docs, competitors, the latest developments — have AI do the deep research and distill it into <code>knowledge-base.md</code>. Every new session reads it first, and the AI is instantly "in the field."</p></div>
+      <div class="card"><h3>② Data infrastructure <span class="tag us">The foundation</span></h3><p>Where the data comes from, how it's fetched, cleaned, and stored — <b style="color:var(--ink)">get the pipeline running first</b> (that's Exercise 1), then add a "data dictionary" explaining every field and its definition.</p></div>
+      <div class="card"><h3>③ Goals &amp; constraints brief <span class="tag us">The contract</span></h3><p>One page stating <b style="color:var(--ink)">the goal, acceptance criteria, boundaries (what you won't do), and technical constraints</b>. It becomes the first version of the project's CLAUDE.md — when the AI drifts, this is what you align it against.</p></div>
+    </div>
+    <div class="note">Rule of thumb: these three documents cost you 20% of the time and save 80% of the rework — <b>the quality of AI output is bounded by the quality of the context you hand it.</b></div>
+  </div>
+</section>
+
+<!-- 28d 迭代节奏 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">08 · Pro workflow · While the project runs</div>
+    <h2>Small steps, tight reins</h2>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① Code with tests</div><p>Have AI generate <b style="color:var(--ink)">each module together with its unit tests</b> — tests are the reins on AI iteration</p></div>
+      <div class="st"><div class="k">② Run to green</div><p>A step counts as done only when every test passes; if it's red, keep going</p></div>
+      <div class="st"><div class="k">③ git commit</div><p>Checkpoint every small win; <b style="color:var(--ink)">always commit before letting AI make big changes</b></p></div>
+      <div class="st"><div class="k">④ Update CLAUDE.md</div><p>Hit a pitfall, set a rule — write it down immediately: the AI's "mistake journal"</p></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>Why tests are the reins</h3><p>AI edits code fast and boldly; unit tests are the only thing that <b style="color:var(--ink)">automatically tells you something broke</b>. A project without tests is one AI fears to touch — and you can't sleep on.</p></div>
+      <div class="card"><h3>Why CLAUDE.md must stay current</h3><p>Every new session starts with amnesia; CLAUDE.md is the AI's only long-term memory. <b style="color:var(--ink)">An unwritten rule = the same pit stepped in N times.</b> (This very slide project's CLAUDE.md grew exactly this way.)</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">git, commits, and CLAUDE.md are all taught in Lecture 2 — what this page adds is stringing them into a <b>rhythm</b>.</div>
+  </div>
+</section>
+
+<!-- 28e 审查修复 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">08 · Pro workflow · Review &amp; fixes</div>
+    <h2>Never let the AI grade its own homework</h2>
+    <div class="grid g3">
+      <div class="card"><h3>A second pair of eyes</h3><p><b style="color:var(--ink)">Separate</b> the session that writes code from the one that reviews it: open a fresh session (or a dedicated code-review command) and let an AI with no stake pick it apart — correctness, security, performance.</p></div>
+      <div class="card"><h3>Humans review the critical paths</h3><p>Anything touching <b style="color:var(--ink)">money, data deletion, or public releases</b> gets human eyes, no exceptions — AI covers the breadth, you cover what's vital.</p></div>
+      <div class="card"><h3>Bug fixing in four steps</h3><p>Paste the <b style="color:var(--ink)">full error text</b> to the AI → have it explain the cause before touching anything → fix → run the regression tests. <b style="color:var(--ink)">Then add a test for it</b>, so this bug can never come back.</p></div>
+    </div>
+    <div class="note">The mindset: treat AI output as work submitted by "<b>a brilliant but overconfident intern</b>" — welcome the enthusiasm, inspect it strictly.</div>
+  </div>
+</section>
+
+<!-- 28f 落地运维 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">08 · Pro workflow · Shipping &amp; daily operations</div>
+    <h2>Make the project take care of itself</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Layered tests, then ship</h3><p>Unit → integration → end-to-end, all green before launch; a pre-launch checklist: <b style="color:var(--ink)">rollback plan, data backup, monitoring in place</b>. Deployment goes in a script — the human just presses Enter.</p></div>
+      <div class="card"><h3>Logs are the project's EKG</h3><p>Log consistently; watch live with <code>tail -f</code>. Then go further: <b style="color:var(--ink)">have AI read the logs on a schedule</b> — "every morning, summarize last night's errors and suggest fixes."</p></div>
+      <div class="card"><h3>Autonomous daily operations</h3><p>Scheduled jobs (cron / Hermes) put an agent on duty: health checks, backups, data refreshes, an auto-generated weekly report — the project goes from "<b style="color:var(--ink)">you feeding it</b>" to "<b style="color:var(--ink)">it growing on its own</b>."</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">The loop closes: problems found in operations flow back as input to the next iteration, while the knowledge base and CLAUDE.md keep growing. Once this wheel turns, <b>one person plus a fleet of agents is a complete engineering team</b>.</div>
   </div>
 </section>
 

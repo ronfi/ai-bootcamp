@@ -10,7 +10,7 @@
 
 | # | 讲次 | 在线演示 | 源文件 | 页数 |
 |---|------|----------|--------|------|
-| 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) | [`ai-training-deck.html`](ai-training-deck.html) | 41 |
+| 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) | [`ai-training-deck.html`](ai-training-deck.html) | 46 |
 | 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) | [`basic-tools-deck.html`](basic-tools-deck.html) | 39 |
 
 ### 第一讲《AI 革命进行时》
@@ -24,6 +24,7 @@
 5. **Agent 智能体** — Claude Code、龙虾 OpenClaw、Hermes 三个案例
 6. **AGI 与具身智能** — AGI 时间表、VLA 模型、人形机器人格局与灵巧手
 7. **实战练习** — 五道动手题
+8. **进阶工作流** — 开工三件套（知识库/数据基建/目标约束书）、测试与 git 迭代节奏、代码审查、落地与日常自动运维
 
 ### 第二讲《基础工具培训》
 

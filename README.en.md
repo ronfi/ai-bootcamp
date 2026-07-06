@@ -10,7 +10,7 @@ Slide decks for a student-facing AI training series. The goal: understand the te
 
 | # | Lecture | Watch online | Source | Slides |
 |---|---------|--------------|--------|--------|
-| 1 | **The AI Revolution, Live** — see the big picture, master the tools | [▶ EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) | [`ai-training-deck.en.html`](ai-training-deck.en.html) | 41 |
+| 1 | **The AI Revolution, Live** — see the big picture, master the tools | [▶ EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) | [`ai-training-deck.en.html`](ai-training-deck.en.html) | 46 |
 | 2 | **Essential Tools Bootcamp** — terminal · persistent sessions · Git · AI agents | [▶ EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) | [`basic-tools-deck.en.html`](basic-tools-deck.en.html) | 39 |
 
 ### Lecture 1 · The AI Revolution, Live
@@ -24,6 +24,7 @@ A complete narrative arc from macro trends to hands-on practice:
 5. **Agents** — three case studies: Claude Code, the "Lobster" (OpenClaw), and Hermes
 6. **AGI & Embodied AI** — AGI timelines, VLA models, the humanoid-robot race, dexterous hands
 7. **Exercises** — five hands-on assignments
+8. **The Pro Workflow** — the prep kit (knowledge base / data infra / goals brief), test-and-git iteration rhythm, code review, shipping and autonomous operations
 
 ### Lecture 2 · Essential Tools Bootcamp
 
