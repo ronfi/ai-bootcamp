@@ -1076,6 +1076,12 @@
     tx=null;
   });
   show(i);
+  document.addEventListener('click',function(e){
+    if(e.target.closest('a,button,#hud'))return;
+    var s=window.getSelection&&window.getSelection();
+    if(s&&s.toString())return;
+    show(i+1);
+  });
 
   var cv=document.getElementById('fx');
   if(cv&&!matchMedia('(prefers-reduced-motion: reduce)').matches){

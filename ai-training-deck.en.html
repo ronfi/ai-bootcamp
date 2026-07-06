@@ -948,6 +948,12 @@
     tx=null;
   });
   show(i);
+  document.addEventListener('click',function(e){
+    if(e.target.closest('a,button,#hud'))return;
+    var s=window.getSelection&&window.getSelection();
+    if(s&&s.toString())return;
+    show(i+1);
+  });
 
   /* 封面背景：缓慢漂移的节点网络 */
   var cv=document.getElementById('fx');
