@@ -898,6 +898,7 @@
   <button id="prev" aria-label="上一页" title="上一页">‹</button>
   <button id="next" aria-label="下一页" title="下一页">›</button>
   <button id="last" aria-label="末页" title="末页">»</button>
+  <button id="lang" title="Switch to English">EN</button>
 </div>
 
 <script>
@@ -927,6 +928,17 @@
   document.getElementById('prev').addEventListener('click',function(){show(i-1)});
   document.getElementById('first').addEventListener('click',function(){show(0)});
   document.getElementById('last').addEventListener('click',function(){show(slides.length-1)});
+  var lb=document.getElementById('lang');
+  if(!/\.html$/.test(location.pathname)){lb.style.display='none';}
+  else{
+    var isEN=/\.en\.html$/.test(location.pathname);
+    lb.textContent=isEN?'中':'EN';
+    lb.title=isEN?'切换到中文':'Switch to English';
+    lb.addEventListener('click',function(){
+      var p=location.pathname;
+      location.href=(isEN?p.replace(/\.en\.html$/,'.html'):p.replace(/\.html$/,'.en.html'))+location.hash;
+    });
+  }
   var tx=null;
   document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
   document.addEventListener('touchend',function(e){

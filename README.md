@@ -8,8 +8,8 @@
 
 | # | 讲次 | 在线演示 | 源文件 | 页数 |
 |---|------|----------|--------|------|
-| 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 在线播放](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) | [`ai-training-deck.html`](ai-training-deck.html) | 36 |
-| 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 在线播放](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) | [`basic-tools-deck.html`](basic-tools-deck.html) | 39 |
+| 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) | [`ai-training-deck.html`](ai-training-deck.html) | 36 |
+| 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) | [`basic-tools-deck.html`](basic-tools-deck.html) | 39 |
 
 ### 第一讲《AI 革命进行时》
 
@@ -37,6 +37,7 @@
 - **在线看**：点上表"在线播放"链接即可，无需安装任何东西
 - **本地放映**：克隆仓库后用浏览器打开对应 HTML 文件
 - **操作**：`←` `→` 或空格翻页 · `F` 全屏 · `Home`/`End` 首末页 · 手机支持滑动翻页 · 地址栏 `#页码` 可直达任意页
+- **中英切换**：放映页右下角 `EN` / `中` 按钮一键切换语言，并停留在当前页
 
 ## 技术说明
 

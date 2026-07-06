@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Essential Tools Bootcamp · Lecture 2</title>
+</head>
+<body>
+<title>Basic Tools Training · Training Deck</title>
+<style>
+  :root{
+    --bg:#0A0F1E; --panel:#10182E; --panel-2:#0D1426; --line:#1E2A47;
+    --ink:#E9EDF7; --ink-2:#98A4C0; --ink-3:#5E6B8C;
+    --us:#56C8F5; --us-bar:#1E9BD2; --cn:#F5A340; --cn-bar:#C97A15;
+    --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+    font-size:clamp(17px,1.65vw,36px);line-height:1.6;overflow:hidden}
+  .deck{position:fixed;inset:0}
+  .slide{position:absolute;inset:0;padding:3.5vh 3vw 6vh;overflow-y:auto;
+    opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .38s ease,transform .38s ease,visibility 0s linear .38s}
+  .slide.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  @media (prefers-reduced-motion:reduce){.slide{transition:none;transform:none}}
+  .inner{max-width:94vw;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+  #bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--us-bar),var(--us));z-index:10;transition:width .3s ease}
+  #hud{position:fixed;right:2.2vw;bottom:2.4vh;z-index:10;display:flex;align-items:center;gap:14px;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+  #hud button{background:var(--panel);border:1px solid var(--line);color:var(--ink-2);width:34px;height:34px;border-radius:8px;font-size:15px;cursor:pointer}
+  #hud button:hover{color:var(--ink);border-color:var(--ink-3)}
+  #hud button:focus-visible{outline:2px solid var(--us);outline-offset:2px}
+
+  .eyebrow{font-size:clamp(13px,1vw,21px);letter-spacing:.22em;color:var(--ink-3);text-transform:uppercase;margin-bottom:1.6em;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--ink-3)}
+  h1{font-size:clamp(44px,6.5vw,124px);line-height:1.15;margin:0 0 .3em;font-weight:800;letter-spacing:.01em;text-wrap:balance}
+  h2{font-size:clamp(30px,3.6vw,74px);line-height:1.25;margin:0 0 .8em;font-weight:700;text-wrap:balance}
+  h3{font-size:1.05em;margin:0 0 .5em;font-weight:700}
+  p{margin:.4em 0}
+  .lead{color:var(--ink-2);font-size:1.06em;max-width:34em}
+  .num{font-variant-numeric:tabular-nums}
+  .hl-us{color:var(--us);font-weight:700}
+  .hl-cn{color:var(--cn);font-weight:700}
+  code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:.08em .4em;color:var(--us)}
+  .src{margin-top:auto;padding-top:2em;font-size:clamp(12px,.85vw,18px);color:var(--ink-3);line-height:1.6}
+  .note{font-size:.85em;color:var(--ink-2);background:var(--panel-2);border-left:3px solid var(--cn-bar);padding:.7em 1em;border-radius:0 8px 8px 0;margin-top:1.2em}
+
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media (max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.15em 1.25em}
+  .card h3{display:flex;align-items:baseline;gap:.5em;flex-wrap:wrap}
+  .card p{font-size:.92em;color:var(--ink-2)}
+  .tag{font-size:clamp(12px,.8vw,17px);padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2);letter-spacing:.06em;white-space:nowrap;font-weight:500}
+  .tag.us{color:var(--us);border-color:rgba(86,200,245,.4)}
+  .tag.cn{color:var(--cn);border-color:rgba(245,163,64,.4)}
+  .tag.warn{color:#F58A8A;border-color:rgba(245,138,138,.4)}
+  .tag.ok{color:#6FD9A6;border-color:rgba(111,217,166,.4)}
+
+  table{border-collapse:collapse;width:100%;font-size:.92em}
+  th{color:var(--ink-3);font-weight:600;text-align:left;letter-spacing:.05em;font-size:.85em}
+  th,td{padding:.62em .8em;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:700}
+  td code{white-space:nowrap}
+  .tblwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.4em .6em}
+
+  /* 仿终端窗口 */
+  .term{background:#060A13;border:1px solid var(--line);border-radius:12px;padding:.9em 1.2em 1.1em;font-family:var(--mono);font-size:.8em;line-height:1.8;overflow-x:auto}
+  .term .bar{display:flex;gap:7px;margin-bottom:.7em}
+  .term .bar i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+  .term .bar i:first-child{background:#E0655A}.term .bar i:nth-child(2){background:#E0A33E}.term .bar i:nth-child(3){background:#5FBF6B}
+  .term pre{margin:0;font-family:inherit;white-space:pre}
+  .term .p{color:var(--us);font-weight:700}
+  .term .o{color:var(--ink-2)}
+  .term .cm{color:var(--ink-3)}
+  .term .k{color:var(--cn)}
+
+  blockquote{margin:0;font-size:clamp(24px,3vw,58px);line-height:1.55;font-weight:700;text-wrap:balance;padding-left:.85em;border-left:4px solid var(--us-bar)}
+  cite{display:block;font-style:normal;color:var(--ink-3);font-size:clamp(14px,1vw,21px);margin-top:1.4em}
+
+  .divider .no{font-size:clamp(70px,11vw,210px);font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);letter-spacing:.02em}
+  .divider h2{font-size:clamp(36px,5.2vw,100px);margin:.25em 0 .4em}
+  .divider .lead{font-size:1.15em}
+
+  .cover{position:relative}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%}
+  .cover .inner{position:relative;align-items:center;text-align:center}
+  .cover .eyebrow::after{content:"";width:22px;height:1px;background:var(--ink-3)}
+  .sub{font-size:clamp(18px,2vw,38px);color:var(--ink-2);font-weight:400;letter-spacing:.12em}
+  .hint{margin-top:5em;color:var(--ink-3);font-size:clamp(13px,.9vw,19px)}
+  kbd{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-family:var(--mono);font-size:.85em}
+
+  .steps{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+  .steps .st{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);padding:1em 1.1em;position:relative}
+  .steps .st:first-child{border-radius:12px 0 0 12px}
+  .steps .st:last-child{border-radius:0 12px 12px 0}
+  .steps .st+.st{border-left:none}
+  .steps .k{font-size:.78em;color:var(--us);letter-spacing:.15em;font-weight:700}
+  .steps .st p{font-size:.85em;color:var(--ink-2)}
+
+  .dense{font-size:.88em}
+  .dense h2{font-size:clamp(26px,3vw,58px);margin-bottom:.6em}
+  .dense .grid{gap:12px}
+  .dense .card{padding:.85em 1em}
+  .dense .note{margin-top:.8em;padding:.55em .9em}
+  .dense .src{padding-top:1.2em}
+
+  ul.tight{margin:.3em 0;padding-left:1.2em}
+  ul.tight li{margin:.42em 0;color:var(--ink-2)}
+  ul.tight li b{color:var(--ink)}
+</style>
+
+<div id="bar"></div>
+<div class="deck" id="deck">
+
+<!-- 1 封面 -->
+<section class="slide cover">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">AI Training Series · Session 2 · July 2026</div>
+    <h1>Basic Tools Training</h1>
+    <p class="sub">Terminal · Persistent Sessions · Git · AI Agents</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> or Space to flip · <kbd>F</kbd> fullscreen · 39 slides</p>
+  </div>
+</section>
+
+<!-- 2 路线图 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">Today's route · one chain, link by link</div>
+    <h2>Why learn the terminal in 2026, of all years?</h2>
+    <p class="lead" style="margin-bottom:1em">Because AI agents live in the terminal. The terminal is the cockpit from which you command AI — today's five chapters form one tightly linked chain:</p>
+    <div class="steps">
+      <div class="st"><div class="k">01 · Terminal</div><p>Talk to your computer: a dozen survival commands</p></div>
+      <div class="st"><div class="k">02 · tmux</div><p>Sessions that never drop: close the laptop, the work keeps running</p></div>
+      <div class="st"><div class="k">03 · Git / GitHub</div><p>A time machine for code: the safety net that lets AI make big changes</p></div>
+      <div class="st"><div class="k">04 · Claude Code</div><p>Command a coding agent, take over from your phone</p></div>
+      <div class="st"><div class="k">05 · Hermes</div><p>Deploy a 24/7 personal agent of your own</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">This session is fully hands-on: whenever a <b>black terminal window</b> shows up on a slide, type along. All commands assume Linux / macOS (Windows folks: install WSL on slide 5 and everything works verbatim).</div>
+  </div>
+</section>
+
+<!-- 3 D01 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">01</div>
+    <h2>Terminal: Learn to Talk to Your Computer</h2>
+    <p class="lead">Graphical interfaces are for "users"; the terminal is for "commanders". In a GUI you can only do what the developers pre-built; in the terminal you can issue any instruction — and AI speaks the language natively.</p>
+  </div>
+</section>
+
+<!-- 4 终端是什么 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal</div>
+    <h2>Terminal = a text chat box; Shell = the interpreter that gets what you mean</h2>
+    <div class="grid g2" style="align-items:center">
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Terminal</h3><p>A window where you <b style="color:var(--ink)">type instead of click</b>. You enter a command, it returns a result — that's the whole deal.</p></div>
+        <div class="card"><h3>Shell (command interpreter)</h3><p>The program doing the actual work inside the terminal: Linux usually runs <code>bash</code>, macOS defaults to <code>zsh</code>, Windows has <code>PowerShell</code>. Different dialects, same core grammar.</p></div>
+        <div class="card"><h3>Why it's worth learning</h3><p>① Precise — one command is one unambiguous instruction; ② Copy-pasteable — send it to someone and it just runs; ③ Servers have no GUI; ④ <b style="color:var(--ink)">it is the native language of AI agents</b>.</p></div>
+      </div>
+      <div class="term" role="img" aria-label="Terminal demo: typing echo and ls commands and getting output">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> echo "Hello, terminal"
+<span class="o">Hello, terminal</span>
+<span class="p">$</span> ls
+<span class="o">training  stock-report  notes.txt</span>
+<span class="p">$</span> <span class="cm"># anything after the hash is a comment explaining the command</span>
+<span class="p">$</span> <span class="k">▌</span></pre>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Pep talk: the terminal won't break because you typed something wrong — most mistakes just print "command not found". <b>Type boldly.</b></div>
+  </div>
+</section>
+
+<!-- 5 平台入口+WSL -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · How to open it on each platform</div>
+    <h2>Three platforms, three entrances — Windows folks, just install WSL</h2>
+    <div class="grid g3" style="margin-bottom:16px">
+      <div class="card"><h3>macOS <span class="tag ok">built-in</span></h3><p><kbd>⌘ + Space</kbd>, search "Terminal", hit Enter. Default shell is zsh. Power users can add iTerm2.</p></div>
+      <div class="card"><h3>Linux <span class="tag ok">built-in</span></h3><p>On the desktop press <kbd>Ctrl+Alt+T</kbd>; on a cloud server, ssh in and you're already inside the terminal itself.</p></div>
+      <div class="card"><h3>Windows <span class="tag cn">use WSL</span></h3><p>The built-in PowerShell works (comparison table on slide 13), but we strongly recommend <b style="color:var(--ink)">WSL</b> — a real Linux running inside Windows.</p></div>
+    </div>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># Open PowerShell as Administrator, one command:</span>
+<span class="p">PS&gt;</span> wsl --install
+<span class="o">Installing: Ubuntu ...</span>
+<span class="cm"># After a reboot, "Ubuntu" appears in the Start menu</span>
+<span class="cm"># Open it = you now own a full Linux terminal</span></pre>
+      </div>
+      <div class="card"><h3>Why this step pays off</h3><p>With WSL installed, every command in the rest of today (tmux / git / Claude Code / Hermes) can be <b style="color:var(--ink)">copied verbatim</b>; over 95% of the world's servers run Linux — learning it is learning the lingua franca.</p></div>
+    </div>
+    <p class="src">WSL = Windows Subsystem for Linux, an official Microsoft feature, available on Windows 10 1809+ / Windows 11</p>
+  </div>
+</section>
+
+<!-- 6 文件系统 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Look at the map before you walk</div>
+    <h2>The file system is a tree — and you're always standing on some node</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="card" style="padding:1.3em 1.5em">
+        <svg viewBox="0 0 760 360" width="100%" role="img" aria-label="Directory tree: the root contains home and etc; home contains the user directory tom, which holds the training and stock-report folders">
+          <g font-family="ui-monospace,Consolas,monospace" font-size="21">
+            <text x="40" y="48" fill="#56C8F5" font-weight="700">/</text><text x="70" y="48" fill="#5E6B8C" font-size="17">← the root, where it all starts</text>
+            <path d="M52 62 v40 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="100" y="110" fill="#E9EDF7">home/</text>
+            <path d="M52 62 v100 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="100" y="170" fill="#98A4C0">etc/</text><text x="168" y="170" fill="#5E6B8C" font-size="17">← system config</text>
+            <path d="M118 122 v40 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="166" y="230" fill="#F5A340" font-weight="700">tom/</text><text x="268" y="230" fill="#5E6B8C" font-size="17">← your home = ~</text>
+            <path d="M118 122 v96 h36" stroke="#1E2A47" stroke-width="2" fill="none" opacity="0"/>
+            <path d="M184 242 v40 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="232" y="290" fill="#E9EDF7">training/</text>
+            <path d="M184 242 v96 h36" stroke="#1E2A47" stroke-width="2" fill="none"/>
+            <text x="232" y="346" fill="#E9EDF7">stock-report/</text>
+          </g>
+        </svg>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Absolute path: start from the root</h3><p><code>/home/tom/training</code> — the full address starting at <code>/</code>, valid from anywhere.</p></div>
+        <div class="card"><h3>Relative path: start from where you stand</h3><p>Standing in <code>~</code>, it's just <code>training</code>; <code>..</code> = one level up, <code>.</code> = right here.</p></div>
+        <div class="card"><h3>Tilde <code>~</code> = home directory</h3><p>Your private turf (<code>/home/yourusername</code>). Lost? <code>cd ~</code> takes you home.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 pwd/ls/cd -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Command set 1: find your way</div>
+    <h2><code style="font-size:.9em">pwd</code> where am I · <code style="font-size:.9em">ls</code> what's here · <code style="font-size:.9em">cd</code> go there</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> pwd                <span class="cm"># print working directory — where am I</span>
+<span class="o">/home/tom</span>
+<span class="p">$</span> ls                 <span class="cm"># list what's here</span>
+<span class="o">training  stock-report  notes.txt</span>
+<span class="p">$</span> ls -l              <span class="cm"># -l for details (size/time/permissions)</span>
+<span class="p">$</span> ls -a              <span class="cm"># -a to include hidden files</span>
+<span class="p">$</span> cd training        <span class="cm"># change directory — enter a folder</span>
+<span class="p">$</span> pwd
+<span class="o">/home/tom/training</span>
+<span class="p">$</span> cd ..              <span class="cm"># go up one level</span>
+<span class="p">$</span> cd ~               <span class="cm"># one hop home</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>The lost-person combo</h3><p>Whenever you don't know where you are, what's around, or where to go — <code>pwd</code> → <code>ls</code> → <code>cd</code>. Three moves and you're oriented.</p></div>
+        <div class="card"><h3>Tab completion = half the typing</h3><p>Type <code>cd tr</code>, press <kbd>Tab</kbd>, it completes to <code>training/</code>. <b style="color:var(--ink)">Nobody types full paths by hand.</b></p></div>
+        <div class="card"><h3>↑ arrow = history</h3><p>Press <kbd>↑</kbd> to recall the last command, tweak two characters, hit Enter.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 看文件 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Command set 2: reading files</div>
+    <h2><code style="font-size:.9em">cat</code> dump it all · <code style="font-size:.9em">less</code> page through · <code style="font-size:.9em">tail -f</code> keep watching</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> cat notes.txt      <span class="cm"># print the whole file (great for short ones)</span>
+<span class="o">Today's to-dos: install WSL, learn tmux...</span>
+<span class="p">$</span> more notes.txt     <span class="cm"># page by page: Space for next, q to quit</span>
+<span class="p">$</span> less big.log       <span class="cm"># more, upgraded: ↑↓ scroll, / search, q to quit</span>
+<span class="p">$</span> head -5 big.log    <span class="cm"># just the first 5 lines</span>
+<span class="p">$</span> tail -5 big.log    <span class="cm"># just the last 5 lines</span>
+<span class="p">$</span> tail -f agent.log  <span class="cm"># follow new lines live (Ctrl+C to stop)</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Which one?</h3><p>Short file: <code>cat</code>; long file: <code>less</code> (remember <kbd>q</kbd> to quit); only care about the ends: <code>head</code> / <code>tail</code>.</p></div>
+        <div class="card"><h3><code>tail -f</code> is the agent-watching tool</h3><p>Claude Code and Hermes both write logs while grinding through long tasks — <code>tail -f</code> is their live commentary feed.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 造与搬 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Command set 3: make, move, delete</div>
+    <h2><code style="font-size:.9em">mkdir</code> make · <code style="font-size:.9em">cp</code> copy · <code style="font-size:.9em">mv</code> move · <code style="font-size:.9em">rm</code> delete (careful)</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> mkdir demo             <span class="cm"># make directory — new folder</span>
+<span class="p">$</span> mkdir -p a/b/c         <span class="cm"># -p builds all three levels at once</span>
+<span class="p">$</span> touch todo.txt         <span class="cm"># create an empty file</span>
+<span class="p">$</span> cp todo.txt backup.txt <span class="cm"># copy</span>
+<span class="p">$</span> cp -r demo demo2       <span class="cm"># copying a folder needs -r</span>
+<span class="p">$</span> mv todo.txt done.txt   <span class="cm"># move — rename and relocate in one</span>
+<span class="p">$</span> mv done.txt demo/      <span class="cm"># move into a folder</span>
+<span class="p">$</span> rm demo/done.txt       <span class="cm"># remove a file</span>
+<span class="p">$</span> rm -r demo2            <span class="cm"># deleting a folder needs -r</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ rm has no recycle bin <span class="tag warn">tattoo it on your DNA</span></h3><p>Deleted means gone. <code>ls</code> the target before deleting; <b style="color:var(--ink)">never, ever run an internet-copied <code>rm -rf /</code>-style command</b> — have AI double-check it first.</p></div>
+        <div class="card"><h3>Habit: back up important folders first</h3><p>Before surgery, <code>cp -r project project.bak</code> — five seconds buys you an undo. Chapter 3's git is the ultimate version of this idea.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 vi -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Command set 4: vi survival guide</div>
+    <h2>vi: you don't need to master it, just survive it</h2>
+    <p class="lead" style="margin-bottom:1em">The scenario: you ssh into a server to change one config line, and vi is often all there is. It has an "insert" mode and a "command" mode — every ounce of beginner panic comes from not knowing which one you're in.</p>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① Open</div><p><code>vi filename</code> — you start in <b>command mode</b>; typing doing nothing is normal</p></div>
+      <div class="st"><div class="k">② Start editing</div><p>Press <kbd>i</kbd> (insert); <code>-- INSERT --</code> appears at the bottom; now you can type</p></div>
+      <div class="st"><div class="k">③ Stop editing</div><p>Press <kbd>Esc</kbd> to return to command mode (a few extra presses never hurt)</p></div>
+      <div class="st"><div class="k">④ Save / flee</div><p><code>:wq</code> save and quit; <code>:q!</code> quit without saving — <b>the escape hatch</b></p></div>
+    </div>
+    <div class="grid g2">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> vi config.txt
+<span class="cm"># press i → make your edits → press Esc → type :wq and Enter</span>
+<span class="p">$</span> <span class="cm"># done, and you made it out alive</span></pre>
+      </div>
+      <div class="card"><h3>Can't memorize it? Normal.</h3><p>Save these four survival moves to your phone and you're covered. Leave everyday editing to AI (next chapter's Claude Code edits files far faster than you); vi is for <b style="color:var(--ink)">emergencies only</b>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 ssh -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Command set 5: ssh remote login</div>
+    <h2>ssh: turn a server a thousand miles away into this very window</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> ssh tom@203.0.113.7      <span class="cm"># username@server-address</span>
+<span class="o">Are you sure ...? </span><span class="k">yes</span><span class="cm">        # type yes on first connect</span>
+<span class="o">tom@203.0.113.7's password:</span> <span class="cm"># type the password (nothing showing is normal)</span>
+<span class="o">Welcome to Ubuntu 24.04 LTS</span>
+<span class="p">tom@server:~$</span>              <span class="cm"># the prompt changed = you're on the server</span>
+
+<span class="cm"># —— Passwordless login (configure once, enjoy forever) ——</span>
+<span class="p">$</span> ssh-keygen                  <span class="cm"># generate a key pair (just keep hitting Enter)</span>
+<span class="p">$</span> ssh-copy-id tom@203.0.113.7  <span class="cm"># deliver your public key to the server</span>
+
+<span class="cm"># —— Transferring files ——</span>
+<span class="p">$</span> scp localfile tom@203.0.113.7:~/   <span class="cm"># upload</span>
+<span class="p">$</span> scp tom@203.0.113.7:~/remotefile .  <span class="cm"># download</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Read the prompt to know where you are</h3><p>When the prompt turns from <code>local$</code> into <code>tom@server:~$</code>, every command you type runs <b style="color:var(--ink)">on the server</b>; <code>exit</code> brings you back home.</p></div>
+        <div class="card"><h3>Your phone can ssh too</h3><p>Install an app like Termius and you can reach your server from the subway — this is the key to "commanding agents remotely" later on.</p></div>
+        <div class="card" style="border-color:rgba(245,163,64,.45)"><h3>Planting a hook 🪝</h3><p>The moment ssh drops, the program running on the remote end <b style="color:var(--ink)">dies with it</b>. What now? Next chapter.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11b ssh 进阶 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · ssh, level 2: keys and the address book</div>
+    <h2>The public key is the lock, the private key is the key, config is the address book</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> ssh-keygen -t ed25519       <span class="cm"># generate a key pair (passphrase optional)</span>
+<span class="p">$</span> ls ~/.ssh
+<span class="o">id_ed25519  id_ed25519.pub  config  known_hosts</span>
+<span class="cm">#  ↑private key = the key, never share   ↑public key = the lock, share freely</span>
+<span class="p">$</span> cat ~/.ssh/id_ed25519.pub   <span class="cm"># the public key looks like:</span>
+<span class="o">ssh-ed25519 AAAAC3Nza... tom@laptop</span>
+<span class="cm"># what ssh-copy-id does = append this line to the server's
+#   ~/.ssh/authorized_keys (the "locks that open this door" list)</span>
+
+<span class="p">$</span> cat ~/.ssh/config           <span class="cm"># SSH's address book:</span>
+<span class="o">Host work
+    HostName 203.0.113.7
+    User tom
+    IdentityFile ~/.ssh/id_ed25519</span>
+<span class="p">$</span> ssh work                    <span class="cm"># four letters onto the server, forever after</span>
+<span class="p">$</span> ssh-add                     <span class="cm"># passphrase on the key? the keychain remembers it</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Division of labor between the pair</h3><p><b style="color:var(--ink)">Public key (.pub) = the lock</b>: installed on the server's <code>authorized_keys</code> door; <b style="color:var(--ink)">private key = the key</b>: stays on your machine to open it. Handing out the public key is harmless; <b style="color:var(--ink)">a private key leaving your computer is like posting your house key to a group chat</b>.</p></div>
+        <div class="card"><h3><code>~/.ssh/config</code> = the address book</h3><p>Give every server a nickname; write down address, username and which key just once — after that <code>ssh work</code>, <code>scp file work:~/</code> all use it. <b style="color:var(--ink)">A must-have once you manage two or more servers</b>.</p></div>
+        <div class="card"><h3><code>ssh-add</code> = the keychain</h3><p>A passphrase makes the private key safer — but typing it on every connect? <code>ssh-add</code> hands the key to ssh-agent for safekeeping, so <b style="color:var(--ink)">you type it once per boot</b>; <code>ssh-add -l</code> shows what's hanging on the ring.</p></div>
+      </div>
+    </div>
+    <div class="note">Reading <code>authorized_keys</code> in reverse: adding one public-key line = cutting someone a copy of your house key. So on slide 30, when Claude Code helps edit configs, <b>any change to this file deserves your personal approval</b>.</div>
+  </div>
+</section>
+
+<!-- 12 求救 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Command set 6: three ways to call for help</div>
+    <h2>Forgetting commands isn't embarrassing — knowing how to ask is the real skill</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Move 1: <code>--help</code></h3><p>Almost every command accepts it: <code>ls --help</code>, <code>tmux --help</code> — one screen of usage at a glance.</p></div>
+      <div class="card"><h3>Move 2: <code>man</code></h3><p><code>man ls</code> opens the full manual; <kbd>q</kbd> quits. Classic, but long-winded.</p></div>
+      <div class="card"><h3>Move 3: ask AI <span class="tag us">the 2026 way</span></h3><p>Paste the <b style="color:var(--ink)">full error message</b> to AI; or just state the goal: "convert every mp4 in this folder to mp3" — let it write the command, you make sure you understand it before hitting Enter.</p></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> claude -p "count the txt files in the current directory with one command"
+<span class="o">ls *.txt | wc -l</span></pre>
+      </div>
+      <div class="note" style="margin-top:0;border-left-color:var(--us-bar)">The new division of labor: <b>you describe goals + review commands; AI memorizes the syntax.</b> The one red line: for deletions or system-level commands you don't understand, make AI explain every flag before running.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 PowerShell 对照 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · A page for Windows folks</div>
+    <h2>PowerShell cheat table: you already know half of it</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="tblwrap">
+        <table>
+          <tr><th>Linux / macOS</th><th>PowerShell</th><th>What it does</th></tr>
+          <tr><td><code>ls</code></td><td><code>ls</code> / <code>dir</code></td><td>List a directory (aliases work out of the box)</td></tr>
+          <tr><td><code>cd</code> · <code>pwd</code></td><td><code>cd</code> · <code>pwd</code></td><td>Exactly the same</td></tr>
+          <tr><td><code>cat</code></td><td><code>cat</code> / <code>type</code></td><td>View a file</td></tr>
+          <tr><td><code>mkdir</code></td><td><code>mkdir</code></td><td>Make a folder</td></tr>
+          <tr><td><code>cp</code> · <code>mv</code></td><td><code>copy</code> · <code>move</code></td><td>Copy · move</td></tr>
+          <tr><td><code>rm</code></td><td><code>del</code> / <code>rm</code></td><td>Delete (also no recycle bin)</td></tr>
+          <tr><td><code>ssh</code> · <code>scp</code></td><td><code>ssh</code> · <code>scp</code></td><td>Built into Windows 10+</td></tr>
+          <tr><td><code>clear</code></td><td><code>cls</code> / <code>clear</code></td><td>Clear the screen</td></tr>
+        </table>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Good news</h3><p>PowerShell ships <b style="color:var(--ink)">aliases</b> for the common Linux commands — 60% of your daily typing works as-is.</p></div>
+        <div class="card"><h3>But still: WSL</h3><p>tmux and plenty of open-source tools are happiest in the Linux ecosystem. <b style="color:var(--ink)">PowerShell for emergencies, WSL for real work.</b></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 速查小抄 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">01 · Terminal · Chapter cheat sheet (screenshot it to your phone)</div>
+    <h2>20-command quick reference</h2>
+    <div class="grid g2">
+      <div class="tblwrap">
+        <table>
+          <tr><td><code>pwd</code></td><td>Where am I</td></tr>
+          <tr><td><code>ls -la</code></td><td>List everything + details</td></tr>
+          <tr><td><code>cd dir</code> / <code>cd ..</code> / <code>cd ~</code></td><td>Enter / one level up / home</td></tr>
+          <tr><td><code>cat file</code></td><td>Print the whole file</td></tr>
+          <tr><td><code>less file</code></td><td>Page through a big file (q to quit)</td></tr>
+          <tr><td><code>head/tail -n 20 file</code></td><td>First / last 20 lines</td></tr>
+          <tr><td><code>tail -f log</code></td><td>Watch a log live</td></tr>
+          <tr><td><code>mkdir -p a/b</code></td><td>Make directories (nested)</td></tr>
+          <tr><td><code>touch file</code></td><td>Create an empty file</td></tr>
+          <tr><td><code>cp -r src dst</code></td><td>Copy (-r for folders)</td></tr>
+        </table>
+      </div>
+      <div class="tblwrap">
+        <table>
+          <tr><td><code>mv old new</code></td><td>Move / rename</td></tr>
+          <tr><td><code>rm -r target</code></td><td>Delete ⚠️ no recycle bin</td></tr>
+          <tr><td><code>ssh user@host</code></td><td>Remote login</td></tr>
+          <tr><td><code>scp file user@host:~/</code></td><td>Transfer files</td></tr>
+          <tr><td><code>vi file</code></td><td>Emergency edit (i edit, Esc :wq)</td></tr>
+          <tr><td><code>grep "keyword" file</code></td><td>Search text inside a file</td></tr>
+          <tr><td><code>history</code></td><td>Commands you've typed</td></tr>
+          <tr><td><code>man cmd</code> / <code>cmd --help</code></td><td>Read the manual</td></tr>
+          <tr><td><code>clear</code></td><td>Clear the screen</td></tr>
+          <tr><td><kbd>Tab</kbd> · <kbd>↑</kbd> · <kbd>Ctrl+C</kbd></td><td>Complete · history · kill the current command</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">These 20 cover 90% of daily life. The other 10% — ask AI.</div>
+  </div>
+</section>
+
+<!-- 15 D02 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">02</div>
+    <h2>tmux: Close the Laptop, the Work Keeps Running</h2>
+    <p class="lead">The hook planted last chapter: when ssh drops, the remote program dies. tmux keeps your session living on the server — a disconnect just means "not watching right now", not "start all over".</p>
+  </div>
+</section>
+
+<!-- 16 tmux 概念 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · tmux · Why and what</div>
+    <h2>A "safe-deposit box" that keeps your session on the server</h2>
+    <div class="grid g2" style="align-items:center">
+      <div style="display:grid;gap:14px">
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>The tragedy without tmux</h3><p>You ssh in and set an agent on a 3-hour task → step into an elevator, Wi-Fi drops for 3 seconds → <b style="color:var(--ink)">the task dies on the spot; start from scratch</b>.</p></div>
+        <div class="card" style="border-color:rgba(111,217,166,.4)"><h3>Daily life with tmux</h3><p>The task runs inside a tmux session → disconnect, shut the laptop, go home and sleep, none of it matters → next day <code>tmux attach</code>, <b style="color:var(--ink)">everything exactly as you left it</b>.</p></div>
+        <div class="card"><h3>Three layers</h3><p><b style="color:var(--ink)">Session</b> &gt; <b style="color:var(--ink)">Window</b> (like browser tabs) &gt; <b style="color:var(--ink)">Pane</b> (one screen split into pieces). Beginners: just remember Session.</p></div>
+      </div>
+      <div class="card" style="padding:1.3em 1.5em">
+        <svg viewBox="0 0 760 380" width="100%" role="img" aria-label="tmux three-layer diagram: the server holds a session containing windows, which can split into panes; your laptop and phone can attach or detach at any time">
+          <rect x="20" y="20" width="720" height="250" rx="14" fill="none" stroke="#1E2A47" stroke-width="2"/>
+          <text x="40" y="56" font-size="19" fill="#5E6B8C">Cloud server (never powers off)</text>
+          <rect x="46" y="76" width="668" height="170" rx="10" fill="#0D1426" stroke="#1E9BD2" stroke-width="2"/>
+          <text x="66" y="108" font-size="18" fill="#56C8F5" font-weight="700">tmux session: ai</text>
+          <rect x="66" y="124" width="380" height="100" rx="6" fill="none" stroke="#1E2A47" stroke-width="1.5"/>
+          <text x="82" y="152" font-size="15.5" fill="#98A4C0" font-family="ui-monospace,Consolas,monospace">pane 1: claude (running for 6 hours)</text>
+          <rect x="66" y="164" width="380" height="0" fill="none"/>
+          <text x="82" y="182" font-size="15.5" fill="#98A4C0" font-family="ui-monospace,Consolas,monospace">pane 2: tail -f agent.log</text>
+          <rect x="470" y="124" width="224" height="100" rx="6" fill="none" stroke="#1E2A47" stroke-width="1.5"/>
+          <text x="486" y="152" font-size="15.5" fill="#98A4C0" font-family="ui-monospace,Consolas,monospace">window 2: hermes</text>
+          <path d="M180 330 L260 274" stroke="#56C8F5" stroke-width="2.5" stroke-dasharray="7 6"/>
+          <path d="M560 330 L480 274" stroke="#F5A340" stroke-width="2.5" stroke-dasharray="7 6"/>
+          <text x="120" y="362" font-size="17" fill="#56C8F5">💻 your laptop (disconnect anytime)</text>
+          <text x="500" y="362" font-size="17" fill="#F5A340">📱 phone ssh (take over anytime)</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 tmux 操作 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · tmux · The four survival moves</div>
+    <h2>Four moves is all: new, detach, list, attach</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> sudo apt install tmux   <span class="cm"># install (Mac: brew install tmux)</span>
+<span class="p">$</span> tmux new -s ai          <span class="cm"># ① start a session named ai</span>
+<span class="cm"># ...launch your long task inside...</span>
+<span class="cm"># ② detach: press Ctrl+b, release, then d (detach)</span>
+<span class="o">[detached (from session ai)]</span>
+<span class="p">$</span> tmux ls                 <span class="cm"># ③ list all sessions</span>
+<span class="o">ai: 1 windows (created Fri Jul  4 10:02)</span>
+<span class="p">$</span> tmux attach -t ai       <span class="cm"># ④ reattach — scene restored, untouched</span>
+
+<span class="cm"># Bonus: split panes</span>
+<span class="cm"># Ctrl+b %  split left/right | Ctrl+b "  split top/bottom</span>
+<span class="cm"># Ctrl+b arrow keys  move between panes</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>The command key <kbd>Ctrl+b</kbd></h3><p>Every tmux shortcut is "press <kbd>Ctrl+b</kbd>, release, then one key". Today you only need <kbd>d</kbd> (detach).</p></div>
+        <div class="card"><h3>Detach ≠ close</h3><p>After <code>detach</code> the program keeps running; typing <code>exit</code> inside the session is what actually closes it.</p></div>
+        <div class="card"><h3>Name your sessions</h3><p>Name them by purpose: <code>tmux new -s claude</code>, <code>-s hermes</code> — recognizable at a glance when you come back.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 tmux 点题 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · tmux · The point of this chapter</div>
+    <h2>tmux is the agent's dorm: once it moves in, it never clocks out</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Daytime · office</h3><p>ssh to the server, <code>tmux new -s cc</code>, set Claude Code refactoring the project.</p></div>
+      <div class="card"><h3>Evening · on the subway</h3><p><kbd>Ctrl+b</kbd> <kbd>d</kbd> to detach, close the laptop. The task keeps running on the server. Want progress on your phone? Termius ssh in, <code>tmux attach</code>.</p></div>
+      <div class="card"><h3>Late night · at home</h3><p>Open your home computer, <code>tmux attach -t cc</code> — the afternoon's scene is back in one second, and the agent is already done.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">One line: <b>ssh gives you the power to show up; tmux gives you the freedom to walk away.</b> Chapter 4's official Remote Control takes this experience one level higher.</div>
+  </div>
+</section>
+
+<!-- 19 D03 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">03</div>
+    <h2>Git / GitHub: a Time Machine for Code</h2>
+    <p class="lead">rm has no recycle bin, but git does — the most powerful one in the universe. It's also the collaboration protocol of programmers worldwide, and the best-looking résumé you'll ever own.</p>
+  </div>
+</section>
+
+<!-- 20 为什么 git -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · Why everyone should know it</div>
+    <h2>Four reasons, each more down-to-earth than the last</h2>
+    <div class="grid g2">
+      <div class="card"><h3>① Time machine <span class="tag ok">the undo button</span></h3><p>Every <code>commit</code> is a save point. Broke something? <b style="color:var(--ink)">One command returns you to any save</b>. The feature you wish essays had.</p></div>
+      <div class="card"><h3>② Collaboration protocol <span class="tag">worldwide</span></h3><p>Tens of thousands of people co-writing one project without chaos — that's git's branching and merging. The "common tongue" of programmers everywhere.</p></div>
+      <div class="card"><h3>③ The AI-era safety net <span class="tag us">today's focus</span></h3><p>You dare let Claude Code slash boldly through your code <b style="color:var(--ink)">because of git</b>: every AI change is recorded, and one click rolls it back. Without git, even AI won't work with a free hand.</p></div>
+      <div class="card"><h3>④ GitHub = the new résumé <span class="tag cn">most practical for students</span></h3><p>Employers increasingly check GitHub before the résumé. Push the exercises and projects you've built — that's a <b style="color:var(--ink)">verifiable portfolio</b>.</p></div>
+    </div>
+    <div class="note">Concepts in one line: <b>git</b> is the version-control tool installed on your machine; <b>GitHub</b> is a website hosting repos in the cloud (Gitee, GitLab are its peers).</div>
+  </div>
+</section>
+
+<!-- 21 git 概念图 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · Mental model</div>
+    <h2>Three steps: edit → save → sync to the cloud</h2>
+    <div class="card" style="padding:1.4em 1.6em;margin-bottom:16px">
+      <svg viewBox="0 0 1200 240" width="100%" role="img" aria-label="git flow: the working directory goes to the staging area via git add, to the local repo via git commit, and to the GitHub remote via git push; git pull brings changes back">
+        <g font-size="20" font-weight="700">
+          <rect x="20" y="60" width="220" height="90" rx="12" fill="none" stroke="#5E6B8C" stroke-width="2"/>
+          <text x="130" y="98" text-anchor="middle" fill="#E9EDF7">Working dir</text>
+          <text x="130" y="128" text-anchor="middle" fill="#5E6B8C" font-size="15" font-weight="400">files you're editing</text>
+          <rect x="330" y="60" width="220" height="90" rx="12" fill="none" stroke="#5E6B8C" stroke-width="2"/>
+          <text x="440" y="98" text-anchor="middle" fill="#E9EDF7">Staging area</text>
+          <text x="440" y="128" text-anchor="middle" fill="#5E6B8C" font-size="15" font-weight="400">changes packed to save</text>
+          <rect x="640" y="60" width="220" height="90" rx="12" fill="#0D1426" stroke="#1E9BD2" stroke-width="2"/>
+          <text x="750" y="98" text-anchor="middle" fill="#56C8F5">Local repo</text>
+          <text x="750" y="128" text-anchor="middle" fill="#5E6B8C" font-size="15" font-weight="400">save points v1·v2·v3…</text>
+          <rect x="950" y="60" width="220" height="90" rx="12" fill="#0D1426" stroke="#C97A15" stroke-width="2"/>
+          <text x="1060" y="98" text-anchor="middle" fill="#F5A340">GitHub remote</text>
+          <text x="1060" y="128" text-anchor="middle" fill="#5E6B8C" font-size="15" font-weight="400">cloud backup + showcase</text>
+        </g>
+        <g font-family="ui-monospace,Consolas,monospace" font-size="16.5" fill="#98A4C0">
+          <path d="M244 105 h78" stroke="#56C8F5" stroke-width="2.5"/><path d="M322 105 l-13 -8 v16 z" fill="#56C8F5"/>
+          <text x="283" y="88" text-anchor="middle">git add</text>
+          <path d="M554 105 h78" stroke="#56C8F5" stroke-width="2.5"/><path d="M632 105 l-13 -8 v16 z" fill="#56C8F5"/>
+          <text x="593" y="88" text-anchor="middle">git commit</text>
+          <path d="M864 92 h78" stroke="#56C8F5" stroke-width="2.5"/><path d="M942 92 l-13 -8 v16 z" fill="#56C8F5"/>
+          <text x="903" y="76" text-anchor="middle">git push</text>
+          <path d="M942 122 h-78" stroke="#C97A15" stroke-width="2.5"/><path d="M864 122 l13 -8 v16 z" fill="#C97A15"/>
+          <text x="903" y="148" text-anchor="middle">git pull</text>
+        </g>
+      </svg>
+    </div>
+    <div class="grid g3">
+      <div class="card"><p><b style="color:var(--ink)">add</b> = drop changes into the "to-save" basket</p></div>
+      <div class="card"><p><b style="color:var(--ink)">commit</b> = click! — a save point, with a one-line note</p></div>
+      <div class="card"><p><b style="color:var(--ink)">push / pull</b> = sync with the cloud: push up / pull down</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 git 日常 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · The daily five</div>
+    <h2>A day in the life of a repo</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> git init                 <span class="cm"># turn this folder into a git repo (once)</span>
+<span class="p">$</span> git status               <span class="cm"># the catchphrase: what's going on right now?</span>
+<span class="o">modified: index.html</span>
+<span class="p">$</span> git add .                <span class="cm"># stage all the changes</span>
+<span class="p">$</span> git commit -m "finish signup form"  <span class="cm"># save + one line of plain words</span>
+<span class="p">$</span> git log --oneline        <span class="cm"># view the save history</span>
+<span class="o">a3f9c21 finish signup form
+9b2d1e0 initial version</span>
+<span class="p">$</span> git diff                 <span class="cm"># what exactly changed this time?</span>
+<span class="p">$</span> git checkout a3f9c21 -- index.html  <span class="cm"># the undo: restore an old version</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>The catchphrase: <code>git status</code></h3><p>Whenever you're unsure, run <code>status</code> first — it tells you where you are, what changed, and what you can do next.</p></div>
+        <div class="card"><h3>Commit messages say "why"</h3><p>"changed index.html" ❌ (git already knows); "fix untappable button on mobile" ✅ (future you says thanks).</p></div>
+        <div class="card"><h3>How small is one commit?</h3><p>Finish one describable small goal, save once. <b style="color:var(--ink)">Small steps, frequent saves</b> — that's what makes the time machine useful.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23 GitHub -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · Three things in the cloud</div>
+    <h2>GitHub: backup, showcase, collaboration — one-stop shop</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># ① Clone someone else's project (say, the "Lobster")</span>
+<span class="p">$</span> git clone https://github.com/openclaw/openclaw.git
+<span class="o">Cloning into 'openclaw'...</span>
+
+<span class="cm"># ② Push your own repo to the cloud (create an empty repo on GitHub first)</span>
+<span class="p">$</span> git remote add origin https://github.com/you/my-site.git
+<span class="p">$</span> git push -u origin main   <span class="cm"># first push; afterwards just git push</span>
+
+<span class="cm"># ③ Continue on another computer / sync teammates' changes</span>
+<span class="p">$</span> git pull</pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Sign up and it's yours</h3><p>A free github.com account = unlimited public repos. Pick your username seriously — <b style="color:var(--ink)">it will appear on your résumé</b>.</p></div>
+        <div class="card"><h3>README.md is the storefront</h3><p>The repo homepage renders the README automatically: what the project is, how to run it, screenshots. <b style="color:var(--ink)">A repo only counts as a portfolio piece once the README is good</b>.</p></div>
+        <div class="card"><h3>Star = bookmark + like</h3><p>Last session's 380k stars for the Lobster and 210k for Hermes — this is that star. Starring the good projects you use is also how you socialize in this world.</p></div>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Bonus egg 🥚: GitHub's official CLI <code>gh</code> — everything the website does, done in the terminal. <code>gh auth login</code> once; then <code>gh repo create my-site --public --source . --push</code> handles "create repo + link + push" in one command, and <code>gh pr create</code> opens PRs. Unlock it after the three moves on the left feel natural.</div>
+  </div>
+</section>
+
+<!-- 24 AI 时代的 git -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Git / GitHub · The point of this chapter</div>
+    <h2>In the AI era, git matters more, not less</h2>
+    <div class="grid g3">
+      <div class="card"><h3>AI's safety rope</h3><p>Letting Claude Code refactor freely requires "can roll back anytime". <b style="color:var(--ink)">Commit first, then let AI loose</b> — rule #1 of AI collaboration.</p></div>
+      <div class="card"><h3>AI's native tongue</h3><p>Claude Code already works in git: it branches, writes commit messages, opens PRs. Knowing git is how you read what it's doing — and catch it drifting off course.</p></div>
+      <div class="card"><h3>Your compounding asset</h3><p>Starting with today's exercises, push every piece of work to GitHub. A year from now you'll own something others can't backfill: <b style="color:var(--ink)">a timestamped record of growth</b>.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">This depth of git is enough for now — branches, merges and PRs can wait until you need them; AI will teach you on the spot in ten minutes.</div>
+  </div>
+</section>
+
+<!-- 25 D04 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">04</div>
+    <h2>Claude Code: Your Programming Partner in the Terminal</h2>
+    <p class="lead">Everything from the first three chapters converges here: you command it in the terminal, it works with commands and git, tmux lets it run all night — and now, your phone can take over.</p>
+  </div>
+</section>
+
+<!-- 26 CC 安装 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · Install and launch</div>
+    <h2>One line to install, one word — <code style="font-size:.85em">claude</code> — to launch</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># macOS / Linux / WSL:</span>
+<span class="p">$</span> curl -fsSL https://claude.ai/install.sh | bash
+
+<span class="cm"># Windows PowerShell (works even without WSL):</span>
+<span class="p">PS&gt;</span> irm https://claude.ai/install.ps1 | iex
+
+<span class="cm"># Launch: cd into your project folder, then —</span>
+<span class="p">$</span> cd my-project
+<span class="p">$</span> claude
+<span class="o">Follow the prompts to log in via your browser ✓</span>
+<span class="p">&gt;</span> <span class="k">tell me what this project does▌</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Logging in</h3><p>Claude Pro / Max subscribers sign in via OAuth (recommended); or use an API key. <code>/login</code> re-authenticates anytime.</p></div>
+        <div class="card"><h3>Three ways to open it</h3><p><code>claude</code> interactive session; <code>claude -c</code> continue the last session; <code>claude -p "question"</code> headless mode — ask and leave, perfect for scripts.</p></div>
+        <div class="card"><h3>First thing to do</h3><p>Type <code>/init</code> inside your project so it generates a <b style="color:var(--ink)">CLAUDE.md</b> (slide 29 covers it in depth).</p></div>
+      </div>
+    </div>
+    <p class="src">Install commands and supported platforms from official docs code.claude.com/docs (verified 2026-07): macOS 13+ / Ubuntu 20.04+ / Windows 10 1809+</p>
+  </div>
+</section>
+
+<!-- 27 CC 核心操作 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · Daily core moves</div>
+    <h2>Six moves cover 90% of every day</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="tblwrap">
+        <table>
+          <tr><th>Action</th><th>How</th></tr>
+          <tr><td>Make a request</td><td>Just type plain language — the more specific, the better</td></tr>
+          <tr><td>Interrupt it</td><td><kbd>Esc</kbd> — misspoke, or it's drifting? Call a stop anytime</td></tr>
+          <tr><td>Browse history</td><td><kbd>↑</kbd> <kbd>↓</kbd> arrows</td></tr>
+          <tr><td>Switch permission mode</td><td><kbd>Shift+Tab</kbd> cycles: confirm each step → auto-accept edits → plan mode</td></tr>
+          <tr><td>Run shell directly</td><td><code>!ls</code> — a leading bang bypasses the AI and just executes</td></tr>
+          <tr><td>Feed it images</td><td>Paste screenshots straight into the chat (error screenshots, design mockups, anything)</td></tr>
+        </table>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Permission modes are the seatbelt</h3><p>By default it asks before <b style="color:var(--ink)">every dangerous action</b>; once fluent, switch to "auto-accept edits"; want a proposal before it touches anything, use <b style="color:var(--ink)">plan mode</b>.</p></div>
+        <div class="card"><h3>Anatomy of a good request</h3><p>Goal + constraints + acceptance criteria: "Add an export-to-CSV button to the signup page, don't touch existing styles, output must open in Excel."</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 CC 斜杠命令 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · High-frequency slash commands</div>
+    <h2>Type <code style="font-size:.85em">/</code> for the command palette — these 8 get the most use</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="tblwrap">
+        <table>
+          <tr><td><code>/init</code></td><td>Scan the project, generate a CLAUDE.md project brief</td></tr>
+          <tr><td><code>/help</code></td><td>See every available command</td></tr>
+          <tr><td><code>/clear</code></td><td>Wipe the chat and start fresh (project memory stays)</td></tr>
+          <tr><td><code>/model</code></td><td>Switch models (small model for quick jobs, big model for hard ones)</td></tr>
+          <tr><td><code>/plan</code></td><td>Plan mode: propose first, act only once approved</td></tr>
+          <tr><td><code>/resume</code></td><td>Resume a previous session, pick up where you left off</td></tr>
+          <tr><td><code>/memory</code></td><td>View / edit what it remembers</td></tr>
+          <tr><td><code>/permissions</code></td><td>Manage what it may do automatically vs. must ask about</td></tr>
+        </table>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Money-saving tip</h3><p>Longer chats cost more (the context gets "re-read" every turn). Finish a task, <code>/clear</code>; new task, new session.</p></div>
+        <div class="card"><h3>Sessions don't get lost</h3><p>Closed the terminal by accident? <code>claude -c</code> resumes the latest, <code>claude --resume</code> picks from history — save files, tmux-style.</p></div>
+      </div>
+    </div>
+    <p class="src">Command list from official docs code.claude.com/docs/en/commands (verified 2026-07)</p>
+  </div>
+</section>
+
+<!-- 29 CLAUDE.md -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · Project memory</div>
+    <h2>CLAUDE.md: the "project manual" you write for the AI</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> cat CLAUDE.md
+<span class="o"># training — AI training slides project
+
+## Design system (must follow when editing)
+- Dark tech aesthetic, palette tokens in :root
+- US = cyan-blue #56C8F5, China = warm orange #F5A340
+- Font sizes must scale with the screen, no fixed px caps
+- All data must be verified online and cite source + date ...</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>What it is</h3><p>A Markdown file at the project root, <b style="color:var(--ink)">read automatically at every session start</b>. What goes in: build commands, code conventions, design rules, lessons learned the hard way.</p></div>
+        <div class="card"><h3>Real example: the deck you watched</h3><p>On the left is a real excerpt from session 1's slide project — because of it, <b style="color:var(--ink)">any brand-new session can pick up the work</b>, never forgetting lessons like "font sizes must scale with the screen".</p></div>
+        <div class="card"><h3>Hard-won tips</h3><p>Keep it short and sharp (under 200 lines works best); every time the AI repeats a mistake, add a rule — <b style="color:var(--ink)">it's the shared notebook between you and the AI</b>.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 30 Remote Control -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · Remote Control (official)</div>
+    <h2>Start it on your computer, take over from your phone</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># Option 1: enable remote for the current session (type inside it)</span>
+<span class="p">&gt;</span> /remote-control my-project
+<span class="o">✓ Enabled · QR code shown · visible at claude.ai/code</span>
+
+<span class="cm"># Option 2: launch with remote from the start</span>
+<span class="p">$</span> claude --remote-control "refactor task"
+
+<span class="cm"># Option 3: pure server mode (multi-device connections)</span>
+<span class="p">$</span> claude remote-control
+<span class="o">Session URL: https://claude.ai/code/session/...
+[press Space to show the QR code]</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>How the phone connects</h3><p>The official Claude app (iOS/Android): <b style="color:var(--ink)">scan the QR and take over</b> — watch progress, send instructions, approve actions; or open the session URL in any browser.</p></div>
+        <div class="card"><h3>Push notifications</h3><p>Turn on "Push when actions required" in <code>/config</code> — <b style="color:var(--ink)">when the AI needs your call, your phone buzzes</b>, like a food-delivery alert.</p></div>
+        <div class="card" style="border-color:rgba(245,163,64,.45)"><h3>The one prerequisite</h3><p>The local process must stay alive (closing the terminal = session over) — which is why it and <b style="color:var(--ink)">tmux are a match made in heaven</b>: the combo, next slide.</p></div>
+      </div>
+    </div>
+    <p class="src">Features and commands from official docs code.claude.com/docs/en/remote-control (verified 2026-07); message triggers via Telegram/Discord (Channels) and scheduled tasks (Routines) also available</p>
+  </div>
+</section>
+
+<!-- 31 组合拳 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Claude Code · Final form: three chapters combined</div>
+    <h2>Cloud server + tmux + Remote Control = an engineer who never clocks out</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># Morning, laptop:</span>
+<span class="p">$</span> ssh tom@203.0.113.7        <span class="cm"># ① onto the server (ch. 1)</span>
+<span class="p">$</span> tmux new -s cc               <span class="cm"># ② open a persistent session (ch. 2)</span>
+<span class="p">$</span> cd my-project && git commit -am "checkpoint before work"  <span class="cm"># ③ buckle the safety rope (ch. 3)</span>
+<span class="p">$</span> claude --remote-control "site redesign"  <span class="cm"># ④ go (ch. 4)</span>
+<span class="cm"># Ctrl+b d to detach, close the lid, out the door —</span>
+
+<span class="cm"># Afternoon, phone:</span>
+<span class="o">📱 Notification: Claude requests approval to run tests → tap "Allow"</span>
+
+<span class="cm"># Evening, home computer:</span>
+<span class="p">$</span> ssh tom@203.0.113.7 && tmux attach -t cc
+<span class="o">✓ Redesign done, tests passing, 12 new commits in git log</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>This is what the first four chapters were for</h3><p>ssh lets you <b style="color:var(--ink)">show up</b>, tmux lets you <b style="color:var(--ink)">walk away</b>, git lets you <b style="color:var(--ink)">let go</b>, Remote Control lets you <b style="color:var(--ink)">step in anytime</b>.</p></div>
+        <div class="card"><h3>Bonus: the automation door</h3><p>Headless <code>claude -p</code> fits into cron scripts; it runs inside GitHub Actions too — AI goes from "tool" to "colleague on duty".</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 32 D05 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">05</div>
+    <h2>Hermes Agent: Deploy Your Live-in Butler</h2>
+    <p class="lead">Claude Code is the "programming partner"; Hermes is the "life butler" — installed on a server, on call 24/7, works whenever you text it in a chat app, and understands you better the more you use it.</p>
+  </div>
+</section>
+
+<!-- 33 Hermes 安装 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Hermes Agent · Install and deploy (v0.18, 2026-07)</div>
+    <h2>One command to move Hermes into your server</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># First, assign it a dorm (chapter 2 skills):</span>
+<span class="p">$</span> ssh tom@203.0.113.7
+<span class="p">$</span> tmux new -s hermes
+
+<span class="cm"># Official one-liner install (Linux / macOS / WSL2):</span>
+<span class="p">$</span> curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+<span class="o">✓ Python · Node.js · ffmpeg and other deps installed automatically
+✓ global command hermes is ready</span>
+<span class="p">$</span> hermes doctor      <span class="cm"># checkup: is the environment healthy?</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>The script handles everything</h3><p>Dependencies (Python, Node, ffmpeg…) all install automatically; the official pitch is "<b style="color:var(--ink)">running in two minutes</b>". Headless servers can add <code>--skip-browser</code>.</p></div>
+        <div class="card"><h3>Platform support</h3><p>macOS / Windows / Linux / WSL2 / Docker are all first-class; <b style="color:var(--ink)">a Linux cloud server is exactly the officially recommended setup</b>. Native Windows uses <code>iex (irm …/install.ps1)</code>.</p></div>
+        <div class="card"><h3>Why install it on a server</h3><p>A butler is on duty 24/7 — running in tmux on a cloud server, it keeps working whether your own computer is on or off.</p></div>
+      </div>
+    </div>
+    <p class="src">Commands from official docs hermes-agent.nousresearch.com/docs (verified 2026-07-04) · open-source repo github.com/nousresearch/hermes-agent (MIT)</p>
+  </div>
+</section>
+
+<!-- 34 Hermes 配置 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Hermes Agent · First-time setup and hookup</div>
+    <h2>Three steps: attach a brain → start the gateway → connect WeChat</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> hermes setup            <span class="cm"># ① interactive wizard: answer the questions, done</span>
+<span class="p">$</span> hermes model            <span class="cm"># pick a "brain": 30+ model providers</span>
+<span class="o">  Anthropic Claude / OpenAI / DeepSeek / Qwen ...</span>
+
+<span class="p">$</span> hermes gateway setup    <span class="cm"># ② configure the chat platforms to connect</span>
+<span class="p">$</span> hermes gateway start    <span class="cm"># start the resident gateway (inside tmux!)</span>
+
+<span class="cm"># ③ Send your bot its first message from your phone → add your
+#    user ID to the allowlist → restart the gateway, start bossing it around</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Chinese platforms supported natively</h3><p><b style="color:var(--ink)">WeChat, WeCom, Feishu, DingTalk, QQ</b>, plus Telegram / Discord / Slack / email — 20+ platforms in all, one gateway catches them all.</p></div>
+        <div class="card"><h3>Where the files live</h3><p>Config in <code>~/.hermes/config.yaml</code>; API keys in <code>~/.hermes/.env</code> (remember <code>chmod 600</code>).</p></div>
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ Three security rules — break none</h3><p>① Never enable "allow everyone" (<code>ALLOW_ALL_USERS</code>); ② keep the default human approval for dangerous actions — don't get lazy with <code>/yolo</code>; ③ don't run the gateway as root.</p></div>
+      </div>
+    </div>
+    <p class="src">Sources: official Quickstart / CLI Reference / Weixin integration docs / Security docs (verified 2026-07-04)</p>
+  </div>
+</section>
+
+<!-- 35 Hermes 技能记忆 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Hermes Agent · Skills and memory</div>
+    <h2>Watch it get smarter by the day</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">$</span> hermes --tui            <span class="cm"># the recommended terminal UI</span>
+<span class="p">&gt;</span> <span class="k">/skills</span>                 <span class="cm"># see the skills it has learned</span>
+<span class="o">  ├─ tidy the Downloads folder
+  ├─ back up stock-report nightly
+  └─ generate the weekly report</span>
+<span class="p">&gt;</span> <span class="k">/usage</span>                  <span class="cm"># check token spend, no bill shocks</span>
+
+<span class="p">$</span> ls ~/.hermes/skills/    <span class="cm"># skills = plain folders you can see and touch</span>
+<span class="p">$</span> cat ~/.hermes/memories/MEMORY.md  <span class="cm"># its memory of you, plain markdown too</span>
+<span class="p">$</span> hermes skills           <span class="cm"># browse/install/publish community skills</span>
+<span class="p">$</span> hermes cron             <span class="cm"># schedule it: work every night at 11</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>What "self-evolving" looks like in practice</h3><p>You walk it through one complex task; it writes the procedure up as a skill doc in <code>skills/</code> — <b style="color:var(--ink)">next time it calls the skill directly, and gets smoother with use</b>. This is the "grows with you" from session 1.</p></div>
+        <div class="card"><h3>Memory in plain sight</h3><p>Everything it remembers lives in two plaintext files, <code>MEMORY.md / USER.md</code> — <b style="color:var(--ink)">edit or delete them directly</b>. Your butler, your rules.</p></div>
+        <div class="card"><h3>Skills can be "restocked"</h3><p><code>hermes skills install</code> pulls in community skills (compatible with the open skills standard) — raise your butler standing on the shoulders of users worldwide.</p></div>
+      </div>
+    </div>
+    <p class="src">Sources: official CLI Reference / Persistent Memory / Skills docs (verified 2026-07-04)</p>
+  </div>
+</section>
+
+<!-- 36 分工 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Hermes Agent · Two agents, two jobs</div>
+    <h2>One handles the code, one handles the life</h2>
+    <div class="grid g2">
+      <div class="card" style="border-top:3px solid var(--us-bar)"><h3>Claude Code <span class="tag us">programming partner</span></h3><p>Runs <b style="color:var(--ink)">inside a project</b>, task-based: write code, fix bugs, refactor, analyze data. Finishes a job, closes the tab, hands in its work via git.</p></div>
+      <div class="card" style="border-top:3px solid var(--cn-bar)"><h3>Hermes <span class="tag cn">live-in butler</span></h3><p>Runs <b style="color:var(--ink)">on a server</b>, duty-based: scheduled tasks, tidying files, looking things up, watching messages. On call in your chat apps, with skills stacking up over time.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">They don't compete — they <b>complete each other</b>: let Hermes mind the calendar and the chores, and keep the uninterrupted hours for you and Claude Code to do real creating. Both run in tmux, both leave a git trail — everything you learned today closes the loop right here.</div>
+  </div>
+</section>
+
+<!-- 37 作业 -->
+<section class="slide">
+  <div class="inner">
+    <div class="no num" style="font-size:clamp(50px,7vw,100px);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3)">✓</div>
+    <h2>Homework: six things, checked off within a week</h2>
+    <div class="grid g3">
+      <div class="card"><h3>① Terminal warm-up</h3><p>Open a terminal (Windows: install WSL first) and type each of the 20 commands from the slide-14 cheat sheet once.</p></div>
+      <div class="card"><h3>② Reach a server</h3><p>ssh into a cloud server, set up passwordless login, and install Termius on your phone to connect once too.</p></div>
+      <div class="card"><h3>③ tmux experiment</h3><p>Start a session running <code>tail -f</code>, disconnect ssh, reconnect, and confirm the scene survived.</p></div>
+      <div class="card"><h3>④ Open a GitHub account</h3><p>Sign up, create your first repo, push your practice work, and write a proper README.</p></div>
+      <div class="card"><h3>⑤ First taste of Claude Code</h3><p>Install and log in, <code>/init</code> inside a project, have it finish one small task, and take over from your phone via QR code once.</p></div>
+      <div class="card"><h3>⑥ Deploy Hermes</h3><p>Install Hermes in tmux on the server, hook up one chat app, and send the first command.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Check off all six and you'll own: a server in your pocket, a programming partner, and a personal butler — <b>everything the session-1 exercises require</b>.</div>
+  </div>
+</section>
+
+<!-- 38 结尾 -->
+<section class="slide">
+  <div class="inner" style="text-align:center;align-items:center">
+    <p class="sub" style="letter-spacing:.3em;margin-bottom:2em">The last slide</p>
+    <h1 style="font-size:clamp(30px,4.2vw,58px)">The terminal is the cockpit,<br>and now <span class="hl-us">you hold the keys</span>.</h1>
+    <p class="lead" style="margin:2em auto 0;max-width:30em">The tools are in place. Back to session 1's five exercises — start your engines.</p>
+  </div>
+</section>
+
+</div>
+
+<div id="hud">
+  <span id="pg" class="num" aria-live="polite"></span>
+  <button id="first" aria-label="First page" title="First page">«</button>
+  <button id="prev" aria-label="Previous page" title="Previous page">‹</button>
+  <button id="next" aria-label="Next page" title="Next page">›</button>
+  <button id="last" aria-label="Last page" title="Last page">»</button>
+  <button id="lang" title="Switch to English">EN</button>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),
+      bar=document.getElementById('bar'),pg=document.getElementById('pg'),
+      i=Math.min(Math.max((parseInt(location.hash.slice(1),10)||1)-1,0),slides.length-1);
+  function show(n){
+    n=Math.min(Math.max(n,0),slides.length-1);
+    slides[i].classList.remove('active');
+    i=n;slides[i].classList.add('active');slides[i].scrollTop=0;
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    pg.textContent=String(i+1).padStart(2,'0')+' / '+slides.length;
+    history.replaceState(null,'','#'+(i+1));
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(slides.length-1);}
+    else if(e.key==='f'||e.key==='F'){
+      if(document.fullscreenElement)document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(function(){});
+    }
+  });
+  document.getElementById('next').addEventListener('click',function(){show(i+1)});
+  document.getElementById('prev').addEventListener('click',function(){show(i-1)});
+  document.getElementById('first').addEventListener('click',function(){show(0)});
+  document.getElementById('last').addEventListener('click',function(){show(slides.length-1)});
+  var lb=document.getElementById('lang');
+  if(!/\.html$/.test(location.pathname)){lb.style.display='none';}
+  else{
+    var isEN=/\.en\.html$/.test(location.pathname);
+    lb.textContent=isEN?'中':'EN';
+    lb.title=isEN?'切换到中文':'Switch to English';
+    lb.addEventListener('click',function(){
+      var p=location.pathname;
+      location.href=(isEN?p.replace(/\.en\.html$/,'.html'):p.replace(/\.html$/,'.en.html'))+location.hash;
+    });
+  }
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+  document.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>60)show(i+(dx<0?1:-1));
+    tx=null;
+  });
+  show(i);
+
+  var cv=document.getElementById('fx');
+  if(cv&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var ctx=cv.getContext('2d'),W,H,pts=[],seed=7;
+    function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+    function size(){W=cv.width=cv.offsetWidth*devicePixelRatio;H=cv.height=cv.offsetHeight*devicePixelRatio;}
+    size();addEventListener('resize',size);
+    for(var k=0;k<46;k++)pts.push({x:rnd()*1.2-.1,y:rnd()*1.2-.1,vx:(rnd()-.5)*.0004,vy:(rnd()-.5)*.0004});
+    (function tick(){
+      if(slides[i]&&slides[i].classList.contains('cover')){
+        ctx.clearRect(0,0,W,H);
+        for(var a=0;a<pts.length;a++){
+          var p=pts[a];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-.15||p.x>1.15)p.vx*=-1;if(p.y<-.15||p.y>1.15)p.vy*=-1;
+          for(var b=a+1;b<pts.length;b++){
+            var q=pts[b],dx=(p.x-q.x)*W,dy=(p.y-q.y)*H,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<W*.11){ctx.strokeStyle='rgba(86,200,245,'+(0.09*(1-d/(W*.11)))+')';
+              ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x*W,p.y*H);ctx.lineTo(q.x*W,q.y*H);ctx.stroke();}
+          }
+          ctx.fillStyle='rgba(86,200,245,.35)';
+          ctx.beginPath();ctx.arc(p.x*W,p.y*H,1.6*devicePixelRatio,0,7);ctx.fill();
+        }
+      }
+      requestAnimationFrame(tick);
+    })();
+  }
+})();
+</script>
+
+<div id="pv" style="position:fixed;left:2.2vw;bottom:2.4vh;z-index:10;font-size:12px;color:#5E6B8C;font-variant-numeric:tabular-nums"><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> views</span></div>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The AI Revolution, Live · Lecture 1</title>
+</head>
+<body>
+<title>The AI Revolution Is Underway · Training Deck</title>
+<style>
+  :root{
+    --bg:#0A0F1E;
+    --panel:#10182E;
+    --panel-2:#0D1426;
+    --line:#1E2A47;
+    --ink:#E9EDF7;
+    --ink-2:#98A4C0;
+    --ink-3:#5E6B8C;
+    --us:#56C8F5;      /* 文本高亮·美国/数据 */
+    --us-bar:#1E9BD2;  /* 图表填充·美国 */
+    --cn:#F5A340;      /* 文本高亮·中国 */
+    --cn-bar:#C97A15;  /* 图表填充·中国 */
+    --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+    font-size:clamp(17px,1.65vw,36px);line-height:1.6;overflow:hidden;
+  }
+  /* ---------- 幻灯机制 ---------- */
+  .deck{position:fixed;inset:0}
+  .slide{
+    position:absolute;inset:0;padding:3.5vh 3vw 6vh;overflow-y:auto;
+    opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .38s ease,transform .38s ease,visibility 0s linear .38s;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  @media (prefers-reduced-motion:reduce){
+    .slide{transition:none;transform:none}
+  }
+  .inner{max-width:94vw;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+  #bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--us-bar),var(--us));z-index:10;transition:width .3s ease}
+  #hud{position:fixed;right:2.2vw;bottom:2.4vh;z-index:10;display:flex;align-items:center;gap:14px;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+  #hud button{
+    background:var(--panel);border:1px solid var(--line);color:var(--ink-2);
+    width:34px;height:34px;border-radius:8px;font-size:15px;cursor:pointer;
+  }
+  #hud button:hover{color:var(--ink);border-color:var(--ink-3)}
+  #hud button:focus-visible{outline:2px solid var(--us);outline-offset:2px}
+
+  /* ---------- 排版 ---------- */
+  .eyebrow{
+    font-size:clamp(13px,1vw,21px);letter-spacing:.22em;color:var(--ink-3);text-transform:uppercase;
+    margin-bottom:1.6em;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--ink-3)}
+  h1{font-size:clamp(44px,6.5vw,124px);line-height:1.15;margin:0 0 .3em;font-weight:800;letter-spacing:.01em;text-wrap:balance}
+  h2{font-size:clamp(30px,3.6vw,74px);line-height:1.25;margin:0 0 .8em;font-weight:700;text-wrap:balance}
+  h3{font-size:1.05em;margin:0 0 .5em;font-weight:700}
+  p{margin:.4em 0}
+  .lead{color:var(--ink-2);font-size:1.06em;max-width:34em}
+  .num{font-variant-numeric:tabular-nums}
+  .hl-us{color:var(--us);font-weight:700}
+  .hl-cn{color:var(--cn);font-weight:700}
+  .src{margin-top:auto;padding-top:2em;font-size:clamp(12px,.85vw,18px);color:var(--ink-3);line-height:1.6}
+  .note{font-size:.85em;color:var(--ink-2);background:var(--panel-2);border-left:3px solid var(--cn-bar);padding:.7em 1em;border-radius:0 8px 8px 0;margin-top:1.2em}
+
+  /* ---------- 组件 ---------- */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media (max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.15em 1.25em}
+  .card h3{display:flex;align-items:baseline;gap:.5em;flex-wrap:wrap}
+  .card p{font-size:.92em;color:var(--ink-2)}
+  .card .big{font-size:2.1em;font-weight:800;line-height:1.15;letter-spacing:-.01em}
+  .tag{font-size:clamp(12px,.8vw,17px);padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2);letter-spacing:.06em;white-space:nowrap;font-weight:500}
+  .tag.us{color:var(--us);border-color:rgba(86,200,245,.4)}
+  .tag.cn{color:var(--cn);border-color:rgba(245,163,64,.4)}
+  .tag.warn{color:#F58A8A;border-color:rgba(245,138,138,.4)}
+  .tag.ok{color:#6FD9A6;border-color:rgba(111,217,166,.4)}
+
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.2em 1.3em}
+  .stat .v{font-size:clamp(36px,4.6vw,92px);font-weight:800;line-height:1.1;letter-spacing:-.015em}
+  .stat .l{color:var(--ink-2);font-size:.9em;margin-top:.45em}
+  .stat .s{color:var(--ink-3);font-size:.78em;margin-top:.3em}
+
+  table{border-collapse:collapse;width:100%;font-size:.92em}
+  th{color:var(--ink-3);font-weight:600;text-align:left;letter-spacing:.05em;font-size:.85em}
+  th,td{padding:.62em .8em;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:700}
+  .tblwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.4em .6em}
+
+  /* 条形图 */
+  .hbar{display:grid;grid-template-columns:7.5em 1fr;gap:.55em 1em;align-items:center}
+  .hbar .n{text-align:right;color:var(--ink-2);font-size:.92em}
+  .hbar .t{height:1.05em;border-radius:0 4px 4px 0;position:relative;background:var(--us-bar);min-width:3px;transition:filter .15s}
+  .hbar .t:hover{filter:brightness(1.25)}
+  .hbar .t.cn{background:var(--cn-bar)}
+  .hbar .t span{position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink);white-space:nowrap;font-weight:600}
+  .legend{display:flex;gap:1.4em;font-size:.82em;color:var(--ink-2);margin:.8em 0 .2em}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+  /* 点图（Elo） */
+  .dotplot{position:relative;height:clamp(160px,13vw,250px);margin:1.4em 0 0}
+  .dotplot .axis{position:absolute;left:0;right:0;bottom:28px;height:1px;background:var(--line)}
+  .dotplot .tick{position:absolute;bottom:0;font-size:clamp(12px,.85vw,18px);color:var(--ink-3);transform:translateX(-50%)}
+  .dotplot .tick::before{content:"";position:absolute;left:50%;bottom:22px;width:1px;height:6px;background:var(--line)}
+  .dotplot .dot{position:absolute;bottom:22px;width:clamp(13px,.9vw,19px);height:clamp(13px,.9vw,19px);border-radius:50%;transform:translateX(-50%);border:2px solid var(--bg)}  .dotplot .dl{position:absolute;font-size:clamp(13px,.95vw,20px);color:var(--ink-2);transform:translateX(-50%);white-space:nowrap}
+
+  /* 引语 */
+  blockquote{
+    margin:0;font-size:clamp(24px,3vw,58px);line-height:1.55;font-weight:700;text-wrap:balance;
+    padding-left:.85em;border-left:4px solid var(--us-bar);
+  }
+  blockquote .en{display:block;font-size:.52em;font-weight:400;color:var(--ink-2);margin-top:.9em;line-height:1.6}
+  cite{display:block;font-style:normal;color:var(--ink-3);font-size:clamp(14px,1vw,21px);margin-top:1.4em}
+
+  /* 章节页 */
+  .divider .no{font-size:clamp(70px,11vw,210px);font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);letter-spacing:.02em}
+  .divider h2{font-size:clamp(36px,5.2vw,100px);margin:.25em 0 .4em}
+  .divider .lead{font-size:1.15em}
+
+  .cover{position:relative}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%}
+  .cover .inner{position:relative;align-items:center;text-align:center}
+  .cover .eyebrow::after{content:"";width:22px;height:1px;background:var(--ink-3)}
+  .sub{font-size:clamp(18px,2vw,38px);color:var(--ink-2);font-weight:400;letter-spacing:.12em}
+  .hint{margin-top:5em;color:var(--ink-3);font-size:clamp(13px,.9vw,19px)}
+  kbd{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-family:inherit;font-size:.92em}
+
+  .steps{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+  .steps .st{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);padding:1em 1.1em;position:relative}
+  .steps .st:first-child{border-radius:12px 0 0 12px}
+  .steps .st:last-child{border-radius:0 12px 12px 0}
+  .steps .st+.st{border-left:none}
+  .steps .k{font-size:.78em;color:var(--us);letter-spacing:.15em;font-weight:700}
+  .steps .st p{font-size:.85em;color:var(--ink-2)}
+
+  .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch}
+  @media (max-width:820px){.vs{grid-template-columns:1fr}}
+  .vs .mid{display:flex;align-items:center;color:var(--ink-3);font-weight:800;font-size:1.3em}
+  .flag{font-size:.8em;letter-spacing:.2em;font-weight:700;margin-bottom:.6em}
+  .panel-us{border-top:3px solid var(--us-bar)}
+  .panel-cn{border-top:3px solid var(--cn-bar)}
+
+  /* 紧凑页：内容密度高的页面用，整体略缩 */
+  .dense{font-size:.88em}
+  .dense h2{font-size:clamp(26px,3vw,58px);margin-bottom:.6em}
+  .dense .grid{gap:12px}
+  .dense .card{padding:.85em 1em}
+  .dense .stat{padding:.9em 1.1em}
+  .dense .stat .v{font-size:clamp(28px,3.4vw,52px)}
+  .dense .note{margin-top:.8em;padding:.55em .9em}
+  .dense .src{padding-top:1.2em}
+
+  ul.tight{margin:.3em 0;padding-left:1.2em}
+  ul.tight li{margin:.42em 0;color:var(--ink-2)}
+  ul.tight li b{color:var(--ink)}
+</style>
+
+<div id="bar"></div>
+<div class="deck" id="deck">
+
+<!-- 1 封面 -->
+<section class="slide cover">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">AI Literacy &amp; Hands-On Tools Training · July 2026</div>
+    <h1>The AI Revolution Is Underway</h1>
+    <p class="sub">See the big picture &nbsp;·&nbsp; Master the tools &nbsp;·&nbsp; Build it yourself</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> or Space to navigate &nbsp;·&nbsp; <kbd>F</kbd> for fullscreen &nbsp;·&nbsp; 36 slides</p>
+  </div>
+</section>
+
+<!-- 2 路线图 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">Today's Roadmap</div>
+    <h2>90 minutes to see an entire revolution clearly</h2>
+    <div class="grid g3">
+      <div class="card"><h3><span class="hl-us num">01</span> A Real Revolution</h3><p>How fast is AI actually improving? And what did Elon Musk really predict?</p></div>
+      <div class="card"><h3><span class="hl-us num">02</span> A Bet of National Destiny</h3><p>How the US and China are staking their futures on AI as national strategy</p></div>
+      <div class="card"><h3><span class="hl-us num">03</span> The Battle of Models</h3><p>US and Chinese models in close combat: how much of a gap is left?</p></div>
+      <div class="card"><h3><span class="hl-us num">04</span> Capital Markets</h3><p>AI companies newly listed and lining up to list · China's "Six Little Tigers" diverge</p></div>
+      <div class="card"><h3><span class="hl-us num">05</span> AI Agents</h3><p>How AI does the work for you: Claude Code, the "Lobster," and Hermes</p></div>
+      <div class="card"><h3><span class="hl-us num">06</span> Hands-On Practice</h3><p>A set of exercises to put today's lessons to work immediately</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 章节 01 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">01</div>
+    <h2>A technological revolution that is really happening</h2>
+    <p class="lead">Not hype. Not a story spun for investors. To judge whether a revolution is real, look at three things: how fast it spreads, how fast it improves, and where the real money goes.</p>
+  </div>
+</section>
+
+<!-- 3b 四次革命并列 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · A Real Revolution · Putting AI on history's map</div>
+    <h2>The fourth time around: every revolution has reshuffled the ranks of great powers</h2>
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="card">
+        <div style="font-size:2.6em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);line-height:1.2">Ⅰ</div>
+        <h3>Steam Revolution <span class="tag num">1760s–</span></h3>
+        <p>Steam engines · Textile machines · Railways</p>
+        <p>For the first time, machines replaced <b style="color:var(--ink)">human muscle</b></p>
+        <p style="color:var(--ink-3)">Front-runner: Britain — the "empire on which the sun never set"; left behind: a Qing dynasty closed to the world</p>
+      </div>
+      <div class="card">
+        <div style="font-size:2.6em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);line-height:1.2">Ⅱ</div>
+        <h3>Electric Revolution <span class="tag num">1870s–</span></h3>
+        <p>Electricity · Internal combustion · Assembly lines</p>
+        <p>Energy and manufacturing <b style="color:var(--ink)">at scale</b> — modern industry takes shape</p>
+        <p style="color:var(--ink-3)">Front-runners: the US and Germany — new powers rise, Britain's hegemony loosens</p>
+      </div>
+      <div class="card">
+        <div style="font-size:2.6em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);line-height:1.2">Ⅲ</div>
+        <h3>Information Revolution <span class="tag num">1950s–</span></h3>
+        <p>Computers · The internet · Smartphones</p>
+        <p>Machines take over <b style="color:var(--ink)">computing and moving information</b></p>
+        <p style="color:var(--ink-3)">Front-runner: the US locks in tech supremacy; China catches the last train and pulls even at the application layer</p>
+      </div>
+      <div class="card" style="border-color:rgba(86,200,245,.5)">
+        <div style="font-size:2.6em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--us);line-height:1.2">Ⅳ</div>
+        <h3>Intelligence Revolution <span class="tag us">2020s · happening now</span></h3>
+        <p>Large models · Agents · Robots</p>
+        <p>For the first time, machines replace <b class="hl-us">the human brain</b> — cognition, judgment, creativity</p>
+        <p style="color:var(--ink-3)">Front-runners: the US and China, neck and neck — exactly why both have bet their national destiny on it</p>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Two things are different this time: the first three revolutions replaced muscle and hands — this one replaces <b>the brain itself</b>, so there is no ceiling on its reach; and the first three took decades to spread, while this one spreads in <b>months</b> — see the next slide.</div>
+  </div>
+</section>
+
+<!-- 4 渗透速度 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · A Real Revolution</div>
+    <h2>No technology in history has ever spread this fast</h2>
+    <div class="grid g2" style="align-items:center">
+      <div>
+        <p class="lead" style="margin-bottom:1em">Time to reach 50 million users (years)</p>
+        <div class="hbar" role="img" aria-label="Telephone 50 years, mobile phone 12 years, internet 7 years, Facebook 4 years, WeChat 1 year">
+          <div class="n">Telephone</div><div class="t" style="width:72%"><span class="num">50 yrs</span></div>
+          <div class="n">Mobile phone</div><div class="t" style="width:17.3%"><span class="num">12 yrs</span></div>
+          <div class="n">Internet</div><div class="t" style="width:10.1%"><span class="num">7 yrs</span></div>
+          <div class="n">Facebook</div><div class="t" style="width:5.8%"><span class="num">4 yrs</span></div>
+          <div class="n">WeChat</div><div class="t" style="width:1.4%"><span class="num">1 yr</span></div>
+        </div>
+      </div>
+      <div class="stat" style="border-color:rgba(86,200,245,.35)">
+        <div class="v num hl-us">2 months</div>
+        <div class="l">Time for <b>ChatGPT to reach 100 million monthly active users</b> (Nov 2022 – Jan 2023) — the fastest-growing consumer app in history at the time</div>
+        <div class="s">TikTok took 9 months; Instagram took two and a half years</div>
+      </div>
+    </div>
+    <p class="src">Sources: Statista / HBR, "The Pace of Technology Adoption is Speeding Up"; UBS analysis (Reuters, Feb 2023)</p>
+  </div>
+</section>
+
+<!-- 5 指数曲线 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · A Real Revolution</div>
+    <h2>The point isn't that AI is powerful — it's that it's getting powerful <span class="hl-us">faster and faster</span></h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">4–5×</div><div class="l">How much frontier-model <b>training compute grows every year</b> — a trend sustained for over a decade</div><div class="s">Epoch AI, 2010–2024 trend</div></div>
+      <div class="stat"><div class="v num">7 mo → 4 mo</div><div class="l">How long it takes for the length of tasks AI can complete on its own to double — <b>the doubling time itself is shrinking</b></div><div class="s">METR time-horizon study, updated Jan 2026; current frontier models can handle tasks of roughly 12–14 hours</div></div>
+      <div class="stat"><div class="v num">1.7% → 80%+</div><div class="l">SWE-bench (real software-engineering tasks) scores: from GPT-4 (2023) to 2026 frontier models — <b>the benchmark is nearly saturated and being retired</b></div><div class="s">Epoch AI / OpenAI, 2026</div></div>
+    </div>
+    <div class="note">A landmark moment: in July 2025, general-purpose models from OpenAI and Google DeepMind both reached the <b>International Mathematical Olympiad (IMO) gold-medal bar</b> — something only 11% of the 630 human contestants managed that year.</div>
+    <p class="src">Sources: epoch.ai/trends · metr.org/time-horizons · Axios 2025-07-21 · official DeepMind blog</p>
+  </div>
+</section>
+
+<!-- 6 马斯克 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · A Real Revolution · In the words of the people steering it</div>
+    <blockquote>
+      "AI that is smarter than <b class="hl-us">any human</b> by the end of this year… by 2030 or 2031 — about five years from now — AI will be smarter than <b class="hl-us">all of humanity</b> collectively."
+      <span class="en">— Elon Musk, World Economic Forum, Davos, 2026-01-22</span>
+    </blockquote>
+    <cite>That same month he wrote on X: "We have entered the Singularity." And again on June 21: AI will probably exceed the combined intelligence of all humans "in 4 to 5 years."</cite>
+    <div class="grid g2" style="margin-top:1.6em">
+      <div class="card"><h3>Sam Altman · OpenAI CEO <span class="tag">2025.06</span></h3><p>"We are past the event horizon; the takeoff has started." — from his blog post <i>The Gentle Singularity</i></p></div>
+      <div class="card"><h3>Dario Amodei · Anthropic CEO <span class="tag">2024.10–2025</span></h3><p>"Powerful AI" could arrive as early as <b style="color:var(--ink)">2026–2027</b> — the equivalent of "a country of geniuses in a datacenter." — <i>Machines of Loving Grace</i> and Davos interviews</p></div>
+    </div>
+    <p class="src">Sources: Rev Davos transcript · Euronews 2026-01-22 · X@elonmusk 2026-06-21 · OpenAI blog "The Gentle Singularity" 2025-06 · Anthropic "Machines of Loving Grace" 2024-10</p>
+  </div>
+</section>
+
+<!-- 7 真金白银 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · A Real Revolution</div>
+    <h2>Real money doesn't lie</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">$725B</div><div class="l">Combined <b>2026 AI capital expenditure</b> of Microsoft, Google, Meta, and Amazon — a 77% surge over 2025</div><div class="s">Analysts expect it to top $1 trillion in 2027</div></div>
+      <div class="stat"><div class="v num">500×</div><div class="l">Anthropic's annualized revenue growth in two and a half years: <b>$87M in early 2024 → over $44B by May 2026</b></div><div class="s">Official Series H figures; now ahead of OpenAI (~$25B)</div></div>
+      <div class="stat"><div class="v num">48%</div><div class="l">Share of Q1 2026's 78.6K tech layoffs <b>attributed to AI/automation</b> — the structure of employment is already being rewritten</div><div class="s">Entry-level hiring is hit hardest; a counterexample: IBM tripled its junior hiring</div></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">The takeaway: fastest adoption ever, acceleration still increasing, and money entering by the trillions — <b>this is not another hype cycle. It's the early stretch of an exponential curve.</b> You are standing where the curve still looks flat.</div>
+    <p class="src">Sources: Tom's Hardware / CNBC Feb 2026 · VentureBeat Apr 2026 · Goldman Sachs Research · CBS News</p>
+  </div>
+</section>
+
+<!-- 7b 普通人的翅膀 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · A Real Revolution · What this revolution means for individuals</div>
+    <h2>AI gives ordinary people <span class="hl-us">angel wings</span></h2>
+    <div class="grid g2" style="align-items:center;gap:36px">
+      <div class="card" style="padding:1.4em 1.5em">
+        <svg viewBox="0 0 900 430" width="100%" role="img" aria-label="Illustration: an ordinary person with wings made of points of light flies through the dashed ceiling marked as the old limit, while an arrow overhead points to an unknown new limit">
+          <!-- 新上限 -->
+          <line x1="450" y1="132" x2="450" y2="86" stroke="#56C8F5" stroke-width="3" stroke-linecap="round"/>
+          <path d="M450 78 l-11 16 h22 z" fill="#56C8F5"/>
+          <text x="450" y="52" text-anchor="middle" font-size="21" font-weight="700" fill="#56C8F5">New ceiling: ?</text>
+          <!-- 旧天花板（中间被飞破） -->
+          <line x1="60" y1="300" x2="348" y2="300" stroke="#5E6B8C" stroke-width="2" stroke-dasharray="9 7"/>
+          <line x1="552" y1="300" x2="840" y2="300" stroke="#5E6B8C" stroke-width="2" stroke-dasharray="9 7"/>
+          <text x="60" y="330" font-size="16.5" fill="#5E6B8C">Old ceiling: set by years of training</text>
+          <!-- 翅膀（右） -->
+          <g stroke="#56C8F5" stroke-width="3" fill="none" stroke-linecap="round">
+            <path d="M455 215 Q560 130 680 120" opacity=".9"/>
+            <path d="M455 220 Q570 165 660 170" opacity=".65"/>
+            <path d="M455 225 Q560 200 630 215" opacity=".45"/>
+            <path d="M455 230 Q540 230 600 255" opacity=".3"/>
+            <!-- 翅膀（左） -->
+            <path d="M445 215 Q340 130 220 120" opacity=".9"/>
+            <path d="M445 220 Q330 165 240 170" opacity=".65"/>
+            <path d="M445 225 Q340 200 270 215" opacity=".45"/>
+            <path d="M445 230 Q360 230 300 255" opacity=".3"/>
+          </g>
+          <g fill="#56C8F5">
+            <circle cx="680" cy="120" r="5" opacity=".9"/><circle cx="660" cy="170" r="4" opacity=".65"/><circle cx="630" cy="215" r="3.5" opacity=".45"/><circle cx="600" cy="255" r="3" opacity=".3"/>
+            <circle cx="220" cy="120" r="5" opacity=".9"/><circle cx="240" cy="170" r="4" opacity=".65"/><circle cx="270" cy="215" r="3.5" opacity=".45"/><circle cx="300" cy="255" r="3" opacity=".3"/>
+          </g>
+          <!-- 人 -->
+          <g stroke="#E9EDF7" stroke-width="5.5" stroke-linecap="round" fill="none">
+            <circle cx="450" cy="180" r="13" fill="#E9EDF7" stroke="none"/>
+            <path d="M450 196 V245"/>
+            <path d="M450 208 L423 231 M450 208 L477 231"/>
+            <path d="M450 245 L431 284 M450 245 L469 284"/>
+          </g>
+          <text x="450" y="322" text-anchor="middle" font-size="17" font-weight="700" fill="#E9EDF7">An ordinary person × AI</text>
+          <!-- 上升气流 -->
+          <g stroke="#56C8F5" stroke-width="2.5" stroke-linecap="round" opacity=".35">
+            <path d="M420 355 V385 M450 348 V392 M480 355 V385"/>
+          </g>
+        </svg>
+        <p style="font-size:.85em;color:var(--ink-2);margin:.8em 0 0">The old ceiling was set by years of training. The new one is set by imagination.</p>
+      </div>
+      <div style="display:grid;gap:16px">
+        <div class="card"><h3>For the first time, one person can "grow" a whole team</h3><p>Copywriting, coding, design, data analysis, law, foreign languages — each used to take years of training. Now all it takes is being able to say clearly <b style="color:var(--ink)">what you want and what counts as good</b>. The barrel effect has been flipped: your shortest stave used to set your floor — now AI fills in every weakness for you, and <b style="color:var(--ink)">all you need is one plank that's long enough</b>.</p></div>
+        <div class="card">
+          <p style="font-size:.95em">"The computer is a bicycle for the mind."<br><span style="color:var(--ink-3);font-size:.82em">— Steve Jobs, 1980. Forty-plus years later, AI has traded the bicycle for wings.</span></p>
+          <p style="font-size:.95em;margin-top:1em">"Everyone is now a programmer — the programming language of the future is human language."<br><span style="color:var(--ink-3);font-size:.82em">— Jensen Huang, NVIDIA CEO, Computex 2023</span></p>
+          <p style="font-size:.95em;margin-top:1em">"There won't be a profession called 'programmer' anymore — anyone who can speak will have a programmer's powers."<br><span style="color:var(--ink-3);font-size:.82em">— Robin Li, Baidu CEO, 2024</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 章节 02 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">02</div>
+    <h2>A Bet of National Destiny: the US and China both go all in</h2>
+    <p class="lead">Rarely in history has a single technology made the world's two largest economies place their bets at the same moment, with the full force of national will. This time, both sides have wagered their futures.</p>
+  </div>
+</section>
+
+<!-- 9 美国 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · A Bet of National Destiny · <span class="hl-us">United States</span></div>
+    <h2>Compute, energy, export controls: total war</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>America's AI Action Plan <span class="tag">2025.07</span></h3><p><i>Winning the Race</i>: 90+ federal actions on three pillars — accelerate innovation (cut regulation), build AI infrastructure (fast-track permits for data centers and the grid), and lead the international AI order (export a "full-stack AI package" to allies).</p></div>
+      <div class="card panel-us"><h3>Stargate <span class="tag">Target: $500B</span></h3><p>OpenAI × SoftBank × Oracle × MGX. By the end of 2025, <b class="hl-us">over $450B</b> committed and more than 8 GW of compute planned; the ~1.2 GW flagship campus in Abilene, Texas is already online.</p></div>
+      <div class="card panel-us"><h3>Energy as national power <span class="tag">2025–2026</span></h3><p>Executive orders fast-track federal permits for data centers; the Department of Energy's "Genesis Mission" plugs AI into 17 national labs, aiming to "double American research productivity within a decade"; by 2030, data centers will account for 25% of new US electricity demand.</p></div>
+      <div class="card panel-us"><h3>The chip-control tug-of-war with China <span class="tag">Weaponized</span></h3><p>Apr 2025: H20 sales banned → Aug: an unheard-of deal — hand over 15% of sales revenue for a license → China pivots to domestic chips and the H20 goes cold → Dec: H200 approved case by case. Chips have become the bargaining chips of the two powers.</p></div>
+    </div>
+    <p class="src">Sources: whitehouse.gov 2025-07-23 · OpenAI official announcement 2025-09 · energy.gov (Genesis Mission, 2025-11-24) · NPR/Fortune 2025-08 · BIS 2025-12</p>
+  </div>
+</section>
+
+<!-- 10 中国 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · A Bet of National Destiny · <span class="hl-cn">China</span></div>
+    <h2>The "AI+" Initiative goes on the national agenda</h2>
+    <div class="grid g2">
+      <div class="card panel-cn"><h3>The State Council's "AI+" Initiative <span class="tag">2025.08</span></h3><p>Three steps: by <b class="hl-cn">2027</b>, smart devices and agents reach 70%+ adoption → by <b class="hl-cn">2030</b>, over 90%, with the intelligent economy as a major growth engine → by 2035, China fully enters the intelligent society.</p></div>
+      <div class="card panel-cn"><h3>15th Five-Year Plan + the "intelligent economy" <span class="tag">2025.10–2026.03</span></h3><p>AI is positioned as the main battlefield of "new quality productive forces"; the 2026 Government Work Report introduced the term "intelligent economy," deploying ultra-large compute clusters and compute–electricity coordination. China's core AI industry already exceeds RMB 1.2 trillion.</p></div>
+      <div class="card panel-cn"><h3>Compute self-reliance <span class="tag">Ascend roadmap</span></h3><p>Huawei published its first three-year chip roadmap: 950PR (Q1 2026) → 970 (2028), with in-house HBM; per Reuters, new state-funded data centers <b>may only use domestic AI chips</b>. State capital has poured over $100B into AI data centers.</p></div>
+      <div class="card panel-cn"><h3>Open source as national strategy <span class="tag">The DeepSeek effect</span></h3><p>Openness is written into the "AI+" policy itself. As of August 2025, Chinese open-weight models took <b class="hl-cn">17.1%</b> of global downloads, overtaking the US (15.86%) for the first time.</p></div>
+    </div>
+    <p class="src">Sources: gov.cn 2025-08-26 · Xinhua/People's Daily Online 2026-03-13 · Huawei Connect 2025-09 · Reuters 2025-11 · USCC report 2026-03</p>
+  </div>
+</section>
+
+<!-- 11 对比 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · A Bet of National Destiny</div>
+    <h2>Two playbooks, one astonishing result</h2>
+    <div class="vs">
+      <div class="stat" style="text-align:right"><div class="v num hl-us">23×</div><div class="l">US private AI investment in 2025, as a multiple of China's<br>($285.9B vs $12.4B)</div></div>
+      <div class="mid">BUT</div>
+      <div class="stat"><div class="v num hl-cn">2.7%</div><div class="l">Benchmark performance gap between the strongest US and Chinese models<br>(in May 2023 it was still 17.5–31.6 percentage points)</div></div>
+    </div>
+    <div class="tblwrap" style="margin-top:16px">
+      <table>
+        <tr><th></th><th style="color:var(--us)">United States</th><th style="color:var(--cn)">China</th></tr>
+        <tr><td>Core playbook</td><td>Compute + capital + closed-source frontier</td><td>Engineering efficiency + open-source ecosystem + real-world deployment</td></tr>
+        <tr><td>Role of the state</td><td>Deregulation, fast-track permits, export controls</td><td>Top-level planning, government guidance funds, adoption targets</td></tr>
+        <tr><td>Notable models, 2025</td><td class="num">50</td><td class="num">30 (doubled from 15 the year before)</td></tr>
+        <tr><td>Open-source download share</td><td class="num">15.86%</td><td class="num">17.1% (first-ever lead)</td></tr>
+      </table>
+    </div>
+    <p class="src">Sources: Stanford HAI, 2026 AI Index Report · USCC Mar 2026. Note: China's government guidance funds and other implicit investment are not counted under "private investment."</p>
+  </div>
+</section>
+
+<!-- 12 章节 03 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">03</div>
+    <h2>Close combat: the US-China battle of large models</h2>
+    <p class="lead">Before January 2025, the consensus was "China is two years behind." Then DeepSeek made its move.</p>
+  </div>
+</section>
+
+<!-- 12b 原理一:AI是什么 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · The Battle of Models · Fundamentals I: What is AI</div>
+    <h2>What a large model really is: a giant function that learned to finish sentences</h2>
+    <div class="grid g2" style="align-items:center;gap:30px">
+      <div class="card" style="padding:1.3em 1.4em">
+        <svg viewBox="0 0 900 270" width="100%" role="img" aria-label="Diagram: the input 'The capital of China is' passes through a trillion-parameter neural network and outputs a probability distribution: Beijing 92%, Shanghai 3%, Tokyo 1%">
+          <rect x="10" y="95" width="228" height="80" rx="12" fill="none" stroke="#5E6B8C" stroke-width="2"/>
+          <text x="124" y="128" text-anchor="middle" font-size="18" fill="#98A4C0">Input</text>
+          <text x="124" y="156" text-anchor="middle" font-size="20" font-weight="700" fill="#E9EDF7">"The capital of China is _"</text>
+          <path d="M248 135 h44 m0 0 l-13 -8 m13 8 l-13 8" stroke="#56C8F5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <rect x="306" y="45" width="286" height="180" rx="14" fill="#0D1426" stroke="#1E9BD2" stroke-width="2"/>
+          <g fill="#56C8F5">
+            <circle cx="360" cy="95" r="7" opacity=".85"/><circle cx="360" cy="135" r="7" opacity=".5"/><circle cx="360" cy="175" r="7" opacity=".7"/>
+            <circle cx="449" cy="80" r="7" opacity=".6"/><circle cx="449" cy="118" r="7" opacity=".9"/><circle cx="449" cy="156" r="7" opacity=".4"/><circle cx="449" cy="192" r="7" opacity=".7"/>
+            <circle cx="538" cy="95" r="7" opacity=".5"/><circle cx="538" cy="135" r="7" opacity=".85"/><circle cx="538" cy="175" r="7" opacity=".6"/>
+          </g>
+          <g stroke="#1E9BD2" stroke-width="1.2" opacity=".45">
+            <path d="M367 95 L442 80 M367 95 L442 118 M367 135 L442 118 M367 135 L442 156 M367 175 L442 156 M367 175 L442 192"/>
+            <path d="M456 80 L531 95 M456 118 L531 95 M456 118 L531 135 M456 156 L531 135 M456 156 L531 175 M456 192 L531 175"/>
+          </g>
+          <text x="449" y="252" text-anchor="middle" font-size="17" fill="#98A4C0">A trillion-parameter neural network (Transformer)</text>
+          <path d="M602 135 h44 m0 0 l-13 -8 m13 8 l-13 8" stroke="#56C8F5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <text x="664" y="82" font-size="17" fill="#98A4C0">Output: next-word probabilities</text>
+          <rect x="664" y="98" width="170" height="26" rx="5" fill="#1E9BD2"/><text x="672" y="117" font-size="16.5" font-weight="700" fill="#0A0F1E">Beijing 92%</text>
+          <rect x="664" y="136" width="34" height="26" rx="5" fill="#1E9BD2" opacity=".45"/><text x="706" y="155" font-size="15.5" fill="#98A4C0">Shanghai 3%</text>
+          <rect x="664" y="174" width="16" height="26" rx="5" fill="#1E9BD2" opacity=".3"/><text x="688" y="193" font-size="15.5" fill="#98A4C0">Tokyo 1%</text>
+        </svg>
+        <p style="font-size:.85em;color:var(--ink-2);margin:.8em 0 0">It doesn't look up answers — it computes probabilities. Every bit of "intelligence" you see comes from predicting the next word, over and over again.</p>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Parameters = a trillion knobs</h3><p>A model is a vast mathematical network, and its "parameters" are the adjustable knobs inside — frontier models have <b style="color:var(--ink)">over a trillion</b>. Training is simply turning every knob to the right position.</p></div>
+        <div class="card"><h3>Tokens = the building blocks of text</h3><p>Models chop text into small chunks for processing (the Chinese word for "artificial intelligence" ≈ 2 tokens). APIs bill by the token — that's where the "per million tokens" on the pricing slide comes from.</p></div>
+        <div class="card"><h3>Emergence = quantity becomes quality</h3><p>Scaling laws: grow parameters, data, and compute together, and abilities like understanding, reasoning, and creativity <b style="color:var(--ink)">"grow out on their own"</b> — which is exactly why the whole world is scrambling for compute.</p></div>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">In one sentence: AI isn't "programmed" into being — it's "fed" into being. From oceans of text, it learned the patterns of language, and of the world itself.</div>
+  </div>
+</section>
+
+<!-- 12c 原理二:训练 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">03 · The Battle of Models · Fundamentals II: How training works</div>
+    <h2>"Forging" a large model: first read the entire internet, then teach it to behave</h2>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① Pre-training</div><p>Read trillions of tokens of text (≈ a few million libraries), learning the patterns of language and the world through a guess-the-next-word game. <b style="color:var(--ink)">This is where the compute and money get burned.</b></p></div>
+      <div class="st"><div class="k">② Post-training</div><p>Human demonstrations + ratings (RLHF and friends) teach it to be helpful, honest, and well-behaved — from "can chat" to "can work."</p></div>
+      <div class="st"><div class="k">③ Inference (usage)</div><p>Every question you ask is one "inference," billed by the token. <b style="color:var(--ink)">Train once, serve hundreds of millions.</b></p></div>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <tr><th>Model</th><th>GPU scale</th><th>Duration</th><th>Published cost figure</th><th>Why it matters</th></tr>
+        <tr><td>GPT-4 · 2023</td><td class="num">~25,000 A100s (SemiAnalysis estimate)</td><td class="num">~3 months</td><td>Altman himself: "more than $100 million"</td><td>Kicked off the large-model arms race</td></tr>
+        <tr><td>Llama 3.1-405B · 2024</td><td class="num">16,000 H100s · 30.84M GPU-hours (official)</td><td class="num">~3 months</td><td>No figure disclosed (electricity alone runs tens of millions of dollars)</td><td>The strongest open-source model of its day</td></tr>
+        <tr><td>DeepSeek-V3 · 2024</td><td class="num">2,048 H800s · 2.79M GPU-hours</td><td class="num">~2 months</td><td class="num">$5.58M (official paper; GPU rental for the final run only)</td><td>An efficiency revolution — it set off the "DeepSeek moment"</td></tr>
+        <tr><td>2026 frontier (GPT / Claude / Grok)</td><td class="num">Clusters like xAI's Colossus have reached 200,000 GPUs</td><td class="num">Months</td><td>Amodei: single training runs are heading toward the <b class="num">$10 billion</b> mark</td><td>Escalated into a nation-scale compute race</td></tr>
+      </table>
+    </div>
+    <div class="note">Read this bill and the first two chapters snap into focus: training cost ≈ chips × electricity × time — which is why the US and China fight over chips and power. It also explains why DeepSeek shook the world: it trained a 90-point model for pocket change.</div>
+    <p class="src">Sources: Wired 2023 (Altman interview) · SemiAnalysis 2023-07 · Meta Llama 3.1 model card 2024-07 · DeepSeek-V3 technical report 2024-12 · x.ai · Amodei podcast interview 2024-06. Methodologies differ; figures are order-of-magnitude reference only.</p>
+  </div>
+</section>
+
+<!-- 13 美国阵营 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · The Battle of Models · <span class="hl-us">Team USA</span> (flagship models on sale, July 2026)</div>
+    <h2>The closed-source frontier: five giants slug it out</h2>
+    <div class="grid g3">
+      <div class="card panel-us"><h3>OpenAI · GPT-5.5 <span class="tag">2026.04</span></h3><p>The default model across all of ChatGPT; the GPT-5.6 line (Sol/Terra/Luna) is already in preview. Annualized revenue around $25B.</p></div>
+      <div class="card panel-us"><h3>Anthropic · Claude Fable 5 <span class="tag">2026.06</span></h3><p>A brand-new Mythos-class model beyond Opus. Three days after launch, the US government suspended access for foreign users for 19 days on national-security grounds — <b>the model itself became a geopolitical event</b>. The budget agent tier, Sonnet 5, followed shortly after.</p></div>
+      <div class="card panel-us"><h3>Google · Gemini 3.1 Pro <span class="tag">2026.02</span></h3><p>First place in 12 of 18 benchmarks at launch; 3.5 Flash leads on speed, and 3.5 Pro is on the way.</p></div>
+      <div class="card panel-us"><h3>xAI · Grok 4.3 <span class="tag">2026.04</span></h3><p>Native video input and 1M context; the rumored 10-trillion-parameter Grok 5 is still in training. xAI has been folded into the SpaceX empire.</p></div>
+      <div class="card panel-us"><h3>Meta · Muse Spark <span class="tag">2026.04</span></h3><p>Meta's first <b>closed-source, API-only</b> frontier model — the one-time open-source standard-bearer changes sides, and the "Llama era" is effectively over.</p></div>
+      <div class="card" style="display:flex;align-items:center"><p style="font-size:1em;color:var(--ink-2)">What they share: <b style="color:var(--ink)">all closed-source</b>, stacking compute like mad, charging by the token, chasing the frontier.</p></div>
+    </div>
+    <p class="src">Sources: openai.com · CNBC 2026-06-09/30 · Forbes 2026-06-16 · deepmind.google · x.ai · VentureBeat 2026-04</p>
+  </div>
+</section>
+
+<!-- 14 中国阵营 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · The Battle of Models · <span class="hl-cn">Team China</span> (main models, July 2026)</div>
+    <h2>The open-source legion: cheap, fast, good enough — and getting stronger</h2>
+    <div class="grid g4">
+      <div class="card panel-cn"><h3>DeepSeek V4 <span class="tag cn">Open source</span></h3><p>1.6T parameters (only 49B active); inference compute cut to 27% of the previous generation. Foreign press verdict: "nearly frontier, at a fraction of the price."</p></div>
+      <div class="card panel-cn"><h3>Alibaba Qwen3.7-Max <span class="tag cn">Open + closed</span></h3><p>Trillion-parameter MoE; the Qwen family has spawned over 113,000 derivative models — <b>more than Google and Meta combined</b>.</p></div>
+      <div class="card panel-cn"><h3>ByteDance Doubao Seed 2.0</h3><p>Built for hundreds of millions of users, with inference cost cut 90%; ranked No.1 in China on SuperCLUE's Chinese benchmark, Mar 2026.</p></div>
+      <div class="card panel-cn"><h3>Zhipu GLM-5.2 <span class="tag cn">MIT open source</span></h3><p>754B parameters, pointedly released the very night Fable 5 was suspended, under the slogan: "Frontier intelligence belongs to everyone."</p></div>
+      <div class="card panel-cn"><h3>Moonshot Kimi K2.6 <span class="tag cn">Open source</span></h3><p>A big leap in coding ability; the 2.5T+ parameter K3 is slated for Q3.</p></div>
+      <div class="card panel-cn"><h3>MiniMax M3</h3><p>59% on SWE-bench Pro, claiming to beat GPT-5.5; per-token compute is 1/20 of the previous generation.</p></div>
+      <div class="card panel-cn"><h3>Baidu ERNIE 5.1</h3><p>2.4T natively multimodal; officially claims leading performance at 6% of the pre-training cost of its peers.</p></div>
+      <div class="card panel-cn"><h3>Tencent Hunyuan</h3><p>Fast-slow fused MoE, 295B total with 21B active, aimed squarely at agent workloads.</p></div>
+    </div>
+    <p class="src">Sources: DeepSeek API announcement 2026-04-24 · simonwillison.net · Alibaba Cloud Summit 2026-05 · Caixin 2026-02 · OSCHINA 2026-06 · official ERNIE blog 2026-05</p>
+  </div>
+</section>
+
+<!-- 15 差距量化 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · The Battle of Models</div>
+    <h2>How much gap is left? Measure with three rulers at once</h2>
+    <div class="card" style="padding-bottom:1.6em">
+      <h3 style="font-size:.95em;color:var(--ink-2);font-weight:600">LMArena global blind-test leaderboard (Elo, 2026-07-01) — the top 10 are all American models, but the pack behind is closing in</h3>
+      <div class="legend"><span><i style="background:var(--us-bar)"></i>US</span><span><i style="background:var(--cn-bar)"></i>China</span></div>
+      <div class="dotplot" role="img" aria-label="Fable 5 at 1509, Opus 4.6 Thinking at 1504, Muse Spark at 1487, Gemini 3.1 Pro at 1486, GPT-5.5 High at 1481, Qwen3.7-Max at 1475, GLM-5.1 at 1472, GLM-5.2 at 1469">
+        <div class="axis"></div>
+        <div class="tick" style="left:0%">1460</div><div class="tick" style="left:33.3%">1480</div><div class="tick" style="left:66.7%">1500</div><div class="tick" style="left:100%">1520</div>
+        <div class="dot" style="left:81.7%;background:var(--us-bar)" title="Claude Fable 5 · 1509 · #1"></div><div class="dl" style="left:81.7%;bottom:62%">Fable 5 <b class="num">1509</b></div>
+        <div class="dot" style="left:73.3%;background:var(--us-bar)" title="Claude Opus 4.6 Thinking · 1504 · #2"></div><div class="dl" style="left:73.3%;bottom:38%">Opus 4.6 <b class="num">1504</b></div>
+        <div class="dot" style="left:45%;background:var(--us-bar)" title="Muse Spark · 1487 · #6"></div><div class="dl" style="left:46%;bottom:62%">Muse Spark <b class="num">1487</b></div>
+        <div class="dot" style="left:43.3%;background:var(--us-bar)" title="Gemini 3.1 Pro · 1486 · #7"></div><div class="dl" style="left:38%;bottom:38%">Gemini 3.1 <b class="num">1486</b></div>
+        <div class="dot" style="left:35%;background:var(--us-bar)" title="GPT-5.5 High · 1481 · #10"></div><div class="dl" style="left:31%;bottom:62%">GPT-5.5 <b class="num">1481</b></div>
+        <div class="dot" style="left:25%;background:var(--cn-bar)" title="Qwen3.7-Max · 1475 · #15 · China's best"></div><div class="dl" style="left:24%;bottom:38%;color:var(--cn)">Qwen3.7 <b class="num">1475</b></div>
+        <div class="dot" style="left:20%;background:var(--cn-bar)" title="GLM-5.1 · 1472 · #22"></div><div class="dl" style="left:14%;bottom:62%;color:var(--cn)">GLM-5.1 <b class="num">1472</b></div>
+        <div class="dot" style="left:15%;background:var(--cn-bar)" title="GLM-5.2 · 1469 · #26"></div><div class="dl" style="left:9%;bottom:38%;color:var(--cn)">GLM-5.2 <b class="num">1469</b></div>
+      </div>
+      <p style="font-size:.85em;color:var(--ink-2);margin-top:.4em">The leader and China's best are only <b class="num" style="color:var(--ink)">34 Elo points</b> apart; by Stanford's AI Index measure, the performance gap is <b class="num" style="color:var(--ink)">2.7%</b>; by Epoch AI's time-based measure, China trails by about <b class="num" style="color:var(--ink)">7 months</b>. Note: GPT-5.6 and GLM-5.2 both shipped in June — GPT-5.6 is still in closed preview and not yet on the blind-test board; adjacent models' score gaps overlap within confidence intervals.</p>
+    </div>
+    <div class="note">Rewind to the "DeepSeek moment" (2025-01-27): DeepSeek disclosed that V3's final training run cost only about $5.6M in GPU time (mind the scope: excludes R&amp;D and hardware). That day NVIDIA shed <b class="num">$589 billion</b> in market value — the largest single-day loss in US stock-market history. The "China is two years behind" narrative died on the spot.</div>
+    <p class="src">Sources: arena.ai/leaderboard (captured 2026-07-01) · Stanford HAI 2026 · epoch.ai · CNBC/Bloomberg 2025-01-27</p>
+  </div>
+</section>
+
+<!-- 16 开源与价格 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · The Battle of Models</div>
+    <h2>The pattern is set: America rules the frontier, China owns the ecosystem</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="card">
+        <h3 style="font-size:.95em;color:var(--ink-2);font-weight:600">API input price (USD per million tokens, official list prices, July 2026)</h3>
+        <div class="legend"><span><i style="background:var(--us-bar)"></i>US</span><span><i style="background:var(--cn-bar)"></i>China</span></div>
+        <div class="hbar" style="grid-template-columns:9.5em 1fr">
+          <div class="n">Claude Fable 5</div><div class="t" style="width:74%"><span class="num">$10.00</span></div>
+          <div class="n">GPT-5.5</div><div class="t" style="width:37%"><span class="num">$5.00</span></div>
+          <div class="n">Claude Sonnet 5</div><div class="t" style="width:14.8%"><span class="num">$2.00</span></div>
+          <div class="n">Zhipu GLM-5.2</div><div class="t cn" style="width:10.4%"><span class="num">$1.40</span></div>
+          <div class="n">DeepSeek V4-Pro</div><div class="t cn" style="width:3.3%"><span class="num">$0.44</span></div>
+          <div class="n">DeepSeek V4-Flash</div><div class="t cn" style="width:1%"><span class="num">$0.14</span></div>
+        </div>
+        <p style="font-size:.85em;color:var(--ink-2);margin-top:.9em">Chinese open-source flagships list anywhere from a fraction of US flagship prices (GLM-5.2) all the way down to <b style="color:var(--ink)" class="num">1/35 – 1/100</b> (DeepSeek) — those short orange bars are why developers worldwide are voting with their feet.</p>
+      </div>
+      <div>
+        <div class="stat" style="margin-bottom:16px"><div class="v num hl-cn">41%</div><div class="l">Share of global Hugging Face model downloads over the past year that went to <b>Chinese models</b>; the most popular open model is now DeepSeek-R1, dethroning Llama</div><div class="s">Official Hugging Face report, Mar 2026</div></div>
+        <div class="stat"><div class="v num hl-us">Top 10: all closed</div><div class="l">LMArena's top ten is swept by closed American models; after Meta abandoned Llama for closed source, <b>the open-source field was essentially ceded to China</b></div><div class="s">arena.ai · VentureBeat Apr 2026</div></div>
+      </div>
+    </div>
+    <p class="src">Sources: DeepSeek / Anthropic / z.ai official pricing pages (captured Jul 2026) · GPT-5.5 pricing via third-party trackers · huggingface.co spring report 2026-03-17 · SCMP</p>
+  </div>
+</section>
+
+<!-- 17 章节 04 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">04</div>
+    <h2>Capital markets: where the money flows</h2>
+    <p class="lead">In 2026, AI companies are stampeding toward the exchanges — the US is incubating the largest IPO in history, while China's model makers rushed to ring the bell first.</p>
+  </div>
+</section>
+
+<!-- 18 美国已上市 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Capital Markets · <span class="hl-us">US · Listed</span></div>
+    <h2>The throne and the newcomers</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>NVIDIA NVDA <span class="tag ok">The throne</span></h3><p class="big num">≈ $4.8T</p><p>The most valuable company on Earth. The shovel-seller is still the biggest winner.</p></div>
+      <div class="card panel-us"><h3>Cerebras CBRS <span class="tag ok">IPO 2026.05</span></h3><p class="big num">$5.5B raised</p><p>The AI-chip challenger and the biggest tech IPO of 2026 so far; priced at $185, up as much as 108% on day one. Holds a $10B compute contract with OpenAI.</p></div>
+      <div class="card panel-us"><h3>CoreWeave CRWV <span class="tag">IPO 2025.03</span></h3><p class="big num">$40 → ≈$82</p><p>The first GPU-cloud stock — double its offer price, but down by half from its $163 peak. The market has started telling stories apart from cash flow.</p></div>
+      <div class="card panel-us"><h3>SpaceX (incl. xAI) <span class="tag ok">IPO 2026.06</span></h3><p class="big num">A $1.25T complex</p><p>Listed after absorbing xAI in February 2026; days after ringing the bell, it announced a <b class="num">$60B</b> all-stock acquisition of AI coding tool Cursor.</p></div>
+    </div>
+    <p class="src">Sources: CompaniesMarketCap 2026-07 · TechCrunch 2026-05-14 · StockAnalysis (CRWV, 2026-07-03) · Bloomberg/Fortune 2026-06-16</p>
+  </div>
+</section>
+
+<!-- 19 美国未上市 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Capital Markets · <span class="hl-us">US · In the IPO queue</span></div>
+    <h2>The biggest IPO in history is on its way</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>OpenAI <span class="tag warn">S-1 filed confidentially</span></h3><p class="big num">$852B</p><p>Valuation after its $122B raise in March 2026; in June it was revealed to have confidentially filed with the SEC, with a rumored IPO target of <b class="num">$1 trillion</b> — timing may slip to 2027.</p></div>
+      <div class="card panel-us"><h3>Anthropic <span class="tag warn">S-1 filed confidentially</span></h3><p class="big num">$965B</p><p>Post-money valuation after the $65B Series H in May 2026 (it was still $380B in February — 2.5× in a single quarter); <b>filed its S-1 confidentially with the SEC on June 1</b>, reportedly targeting a Nasdaq listing this October and raising over $60B. Annualized revenue above $44B.</p></div>
+      <div class="card panel-us"><h3>SSI (Ilya Sutskever)</h3><p class="big num">$32B</p><p>Founded by the OpenAI co-founder after his exit: no product, no revenue, $6B raised — the market's price tag on pure intellect.</p></div>
+      <div class="card panel-us"><h3>Databricks</h3><p class="big num">$134B</p><p>The data + AI platform; a fresh $5B raise, and a hot IPO candidate for 2026–27.</p></div>
+    </div>
+    <p class="src">Sources: CNBC 2026-06-08 · Reuters 2026-06 · Anthropic official announcements (Series H 2026-05 · S-1 filing statement 2026-06-01) · PitchBook / Sacra</p>
+  </div>
+</section>
+
+<!-- 19b 字节跳动专题 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">04 · Capital Markets · <span class="hl-cn">China</span> · ByteDance special</div>
+    <h2>ByteDance: the world's biggest unlisted tech company by revenue</h2>
+    <div class="grid g3" style="margin-bottom:16px">
+      <div class="stat"><div class="v num">$186B</div><div class="l">2025 revenue (+20%) — <b>about 7× OpenAI's</b>; the world's largest unlisted tech company by revenue, and solidly profitable</div><div class="s">36Kr/Sacra Jun 2026; overseas revenue topped 30% for the first time</div></div>
+      <div class="stat"><div class="v num">≈$550B</div><div class="l">Latest valuation (secondary-market share trades, Feb 2026) — second among all unlisted companies worldwide, behind only OpenAI</div><div class="s">PE Insights Feb 2026; no timetable for a full IPO — the board has reportedly chosen to delay it</div></div>
+      <div class="stat"><div class="v num hl-cn">RMB 160B+</div><div class="l">2026 AI capex budget (more than half of it for chips); per Bloomberg, internal talks of raising it toward <b class="num">$70B</b></div><div class="s">Bloomberg 2026-05-27; a three-track chip strategy: NVIDIA + Huawei + in-house</div></div>
+    </div>
+    <div class="grid g3" style="margin-bottom:16px">
+      <div class="card panel-cn"><h3>Doubao app <span class="tag cn">No.1 by users</span></h3><p>MAU of <b class="num" style="color:var(--ink)">345M</b> — China's top AI app (Qwen is second at 166M), with DAU past 100M; worldwide, second only to ChatGPT.</p></div>
+      <div class="card panel-cn"><h3>Doubao models × Volcano Engine <span class="tag cn">No.1 in calls · No.1 in cloud</span></h3><p><b class="num" style="color:var(--ink)">180 trillion tokens</b> served per day — roughly 1,500× growth in two years; <b class="num" style="color:var(--ink)">49.5%</b> of China's LLM public-cloud market, first place.</p></div>
+      <div class="card panel-cn"><h3>Jimeng AI · Seedance 2.0 <span class="tag cn">World No.1</span></h3><p><b style="color:var(--ink)">Topped the global blind-test board</b> for video generation (Video Arena), beating Google Veo 3 and OpenAI Sora 2 — so hot at launch the waiting line hit 8 hours.</p></div>
+      <div class="card panel-cn"><h3>Coze</h3><p>Agent-building platform, <b style="color:var(--ink)">fully open-sourced</b> under Apache 2.0 in July 2025 (9,000+ stars in 48 hours); serves tens of thousands of companies and millions of developers.</p></div>
+      <div class="card panel-cn"><h3>TRAE · AI coding</h3><p><b class="num" style="color:var(--ink)">6 million</b> global users within a year of launch, nearly 100 billion lines of code generated; 92% of ByteDance's own engineers use it.</p></div>
+      <div class="card panel-cn"><h3>Seed Edge · AGI ambitions</h3><p>A long-horizon AGI research program launched in early 2025, with relaxed KPIs and patient funding; <b style="color:var(--ink)">Zhang Yiming himself has returned to the front line</b>, reading papers and interviewing top researchers.</p></div>
+    </div>
+    <div class="note">The media's framing: "<b>from app factory to AI factory</b>" — Doubao only launched in August 2023, half a beat behind, yet in two years ByteDance took first place in users, token traffic, and cloud share through sheer spending power, internal horse races, and a full-stack layout (models–cloud–apps–chips). Note: TikTok's US business was handed to a US-majority joint venture in January 2026, with ByteDance keeping 19.9% — the company is also the most directly exposed player in the US-China standoff.</div>
+    <p class="src">Sources: 36Kr/Sacra Jun 2026 · PE Insights Feb 2026 · Bloomberg 2026-05-27 · QuestMobile Q1 2026 · Volcano Engine FORCE conference 2026-06-23 (citing IDC) · Artificial Analysis Video Arena Feb 2026 · QbitAI Jul 2025 · GeekPark Dec 2025 · LatePost Jan 2025 · CNBC Jan 2026. Valuation/revenue figures are media or secondary-market estimates; ByteDance has never confirmed them.</p>
+  </div>
+</section>
+
+<!-- 20 中国上市潮 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Capital Markets · <span class="hl-cn">China · One week, two bells — January 2026</span></div>
+    <h2>The first LLM stocks land in Hong Kong</h2>
+    <div class="grid g2">
+      <div class="card panel-cn">
+        <h3>Zhipu · 2513.HK <span class="tag ok">Listed 2026-01-08</span></h3>
+        <p class="big num">Market cap ≈ HK$799.4B</p>
+        <p>"The world's first LLM stock." Day-one market cap of HK$57B, <b>up roughly 13× in half a year</b> (HK$1,793 per share, 2026-07-04). Now pursuing an "A+H" dual listing on the STAR Market, aiming to raise another <b class="num">RMB 15B</b>. Its MaaS platform's annualized revenue grew 60× in 12 months.</p>
+      </div>
+      <div class="card panel-cn">
+        <h3>MiniMax · 0100.HK <span class="tag ok">Listed 2026-01-09</span></h3>
+        <p class="big num">Market cap ≈ HK$108.7B</p>
+        <p>The public offering was <b>oversubscribed 1,837×</b>, breaking Kuaishou's record, in the biggest raise ever by an LLM company (HK$5.54B); on day one it became the world's first LLM company to touch a HK$100B market cap. Now HK$346.6 (2026-07-04) — up 110% from the offer price, but down nearly 40% from June's HK$553 peak.</p>
+      </div>
+    </div>
+    <div class="note">A subplot: when lockups expired in February, both stocks whipsawed violently (Unisound swung even harder) — <b>the market's enthusiasm is real, and so is the bubble risk.</b> For investors and practitioners alike, volatility is part of this era.</div>
+    <p class="src">Sources: Securities Times / QbitAI 2026-01-08/09 · Guancha 2026-01-09 · Sina Finance 2026-06-03 · The Paper Feb 2026 · Market caps/prices from 2026-07-04 market tracking</p>
+  </div>
+</section>
+
+<!-- 21 六小虎 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Capital Markets · China's "Six Little Tigers"</div>
+    <h2>Same starting line two years ago — no longer even the same race</h2>
+    <div class="tblwrap">
+      <table>
+        <tr><th>Company</th><th>Status</th><th>Latest valuation / market cap</th><th>Flagship products</th><th>Direction in 2026</th></tr>
+        <tr><td>Zhipu</td><td><span class="tag ok">Listed</span></td><td class="num">≈ HK$799.4B (2026-07-04)</td><td>GLM series · MaaS</td><td>Foundation models + B2B; sprinting for the "A+H" dual listing</td></tr>
+        <tr><td>MiniMax</td><td><span class="tag ok">Listed</span></td><td class="num">≈ HK$108.7B (2026-07-04)</td><td>M3 · Hailuo AI · Talkie</td><td>All modalities + a global consumer push</td></tr>
+        <tr><td>Moonshot AI</td><td><span class="tag cn">Fundraising champion</span></td><td class="num">$30B pre-money (up ~7× in half a year)</td><td>Kimi · K2.6</td><td>Staying the AGI course; preparing a Hong Kong IPO</td></tr>
+        <tr><td>StepFun</td><td><span class="tag cn">Racing to IPO</span></td><td class="num">Pre-IPO round near $2.5B, targeting a $10B valuation</td><td>Step multimodal series</td><td>Betting on "AI + devices": shipped on 42M+ OPPO/Honor flagship phones</td></tr>
+        <tr><td>Baichuan</td><td><span class="tag warn">Pivoted</span></td><td class="num">No public valuation since 2025</td><td>Baichuan-M3 medical LLM</td><td>All in on medical AI; out of the general foundation-model race</td></tr>
+        <tr><td>01.AI</td><td><span class="tag warn">Pivoted</span></td><td class="num">No public valuation since 2025</td><td>Yi series (mega-model training halted)</td><td>Pivoting to enterprise AI deployment services</td></tr>
+      </table>
+    </div>
+    <p class="src">Sources: 36Kr, "After the Zhipu and MiniMax IPOs, the Six Little Tigers' paths diverge" · Caixin 2026-05-08 · Sina Finance 2026-06-09 · Caijing May 2026</p>
+  </div>
+</section>
+
+<!-- 22 分化小结 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Capital Markets</div>
+    <h2>The table is consolidating</h2>
+    <div class="grid g3">
+      <div class="card"><h3><span class="tag ok">Made it ashore</span></h3><p style="font-size:1em"><b style="color:var(--ink)">Zhipu, MiniMax</b></p><p>Secured a public-market funding channel — burning shareholders' money to keep training foundation models.</p></div>
+      <div class="card"><h3><span class="tag cn">Still at the table</span></h3><p style="font-size:1em"><b style="color:var(--ink)">Moonshot AI, StepFun</b></p><p>One rides China's biggest funding hauls ($3.9B in six months); the other is bolted into the smartphone supply chain.</p></div>
+      <div class="card"><h3><span class="tag warn">Switched lanes</span></h3><p style="font-size:1em"><b style="color:var(--ink)">Baichuan, 01.AI</b></p><p>Conceded that the foundation-model race is too expensive to stay in; pivoted deep into verticals like healthcare and enterprise services.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">The lesson for you: <b>foundation models are a game for giants and national champions — but application-layer opportunities are expanding exponentially</b>. In the next chapter, we look at one of the application layer's defining products.</div>
+  </div>
+</section>
+
+<!-- 23 章节 05 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">05</div>
+    <h2>Agents: AI is no longer just chat</h2>
+    <p class="lead">From "here's an answer" to "the task is done" — agents are the biggest paradigm shift of 2025–2026. Claude Code is our main case study, followed by two newer faces.</p>
+  </div>
+</section>
+
+<!-- 24 范式转变 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agents</div>
+    <h2>Three leaps in three years: completion → conversation → agents</h2>
+    <div class="steps" style="margin-bottom:20px">
+      <div class="st"><div class="k">2021 · Completion</div><p>GitHub Copilot: you write half a line, it guesses the next one.</p></div>
+      <div class="st"><div class="k">2022 · Conversation</div><p>ChatGPT: you ask, it answers — the copy-pasting is still on you.</p></div>
+      <div class="st"><div class="k">2025 · Agents</div><p>Claude Code: give it a goal, and it does the work itself.</p></div>
+    </div>
+    <h3 style="margin-top:1em">Claude Code's working loop in the terminal</h3>
+    <div class="steps">
+      <div class="st"><div class="k">① Understand</div><p>Reads the codebase and docs on its own to figure out the current state.</p></div>
+      <div class="st"><div class="k">② Plan</div><p>Breaks the task down, lays out an approach, asks before any major action.</p></div>
+      <div class="st"><div class="k">③ Execute</div><p>Writes code, edits files, runs commands, installs dependencies — many steps, back to back.</p></div>
+      <div class="st"><div class="k">④ Verify</div><p>Runs the tests itself, reads the errors, and keeps fixing until they pass.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">The key difference: when something breaks, it <b>doesn't dump the error on you</b> — it reads the error, fixes the code, and tries again. That is the line between a "tool" and a "colleague."</div>
+  </div>
+</section>
+
+<!-- 25 数据 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agents · Case study · Claude Code: the market votes with numbers</div>
+    <h2>The fastest-growing category of developer tools ever</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">$2.5B+</div><div class="l"><b>Claude Code annualized revenue</b> (Feb 2026): past $1B within 6 months of launch — Anthropic's fastest-growing product ever, with enterprise subscriptions making up over half</div><div class="s">Anthropic official, Feb 2026</div></div>
+      <div class="stat"><div class="v num">$60B</div><div class="l">What SpaceX paid for AI coding tool <b>Cursor</b> (Jun 2026); its ARR went from $100M to $4B in 17 months</div><div class="s">TechCrunch / Bloomberg 2026-06-16</div></div>
+      <div class="stat"><div class="v num">100%</div><div class="l">Multiple Anthropic and OpenAI engineers now say publicly that <b>every line of code they commit is AI-generated</b>; across Microsoft's repos it's ~20–30% (Nadella)</div><div class="s">Fortune 2026-01-29 · LlamaCon 2025-04</div></div>
+    </div>
+    <div class="note">Even the people who build AI no longer write code by hand — there is no harder proof that the tools have come of age.</div>
+    <p class="src">Sources: Anthropic Series G announcement 2026-02-12 · Fortune 2026-01-29 · TechCrunch 2026-04/06</p>
+  </div>
+</section>
+
+<!-- 26 案例 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agents · Case study · Three typical Claude Code workflows (demoable live)</div>
+    <h2>One sentence of instructions — how far can it run?</h2>
+    <div class="grid g3">
+      <div class="card">
+        <h3>Case 1 · A website from scratch</h3>
+        <p style="color:var(--us);font-size:.9em">"Build me a sign-up page for our class event — collect names, let people pick a session, export the list."</p>
+        <p>It will: scaffold the page → write the form logic → add data storage → run it locally for you to see. Something that used to take weeks of learning HTML/JS becomes <b style="color:var(--ink)">a working version in 20 minutes</b>.</p>
+      </div>
+      <div class="card">
+        <h3>Case 2 · Fixing a bug in an unfamiliar project</h3>
+        <p style="color:var(--us);font-size:.9em">"This open-source project throws this error when I run it — fix it for me." (paste the error)</p>
+        <p>It will: read the error → trace the root cause through tens of thousands of lines → patch it → run the tests to confirm. <b style="color:var(--ink)">Making sense of other people's messy code</b> is exactly where AI saves you the most pain.</p>
+      </div>
+      <div class="card">
+        <h3>Case 3 · Automated data analysis</h3>
+        <p style="color:var(--us);font-size:.9em">"Here's the survey spreadsheet — clean the data, run the cross-tabs, and generate a chart report."</p>
+        <p>It will: write the cleaning script → run the statistics → draw the charts → produce a one-page web report. <b style="color:var(--ink)">No Python required</b> — but you do need to judge whether the conclusions hold up.</p>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">The common thread: your role shifts from "operator" to the person who <b>defines the ask, makes the judgment calls, and signs off on the results</b> — the three skills the coming exercises will train.</div>
+  </div>
+</section>
+
+<!-- 26b 龙虾 OpenClaw -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agents · Case study · The "Lobster" (OpenClaw)</div>
+    <h2>An open-source "Lobster" sets off an agent-raising craze</h2>
+    <div class="grid g2" style="align-items:start">
+      <div style="display:grid;gap:16px">
+        <div class="card"><h3>What it is <span class="tag ok">Open source · Free</span></h3><p>An all-purpose personal assistant that lives on <b style="color:var(--ink)">your own computer</b>: send it a message on WeChat / Telegram / WhatsApp and it organizes files, writes emails, fills in forms, crunches data, controls your devices — on call 24/7. Open-sourced by Austrian developer Peter Steinberger in November 2025; its mascot is a lobster 🦞, and the Chinese community calls deploying and tuning it "<b style="color:var(--ink)">raising a lobster</b>."</p></div>
+        <div class="card"><h3>Why it took off</h3><p><b style="color:var(--ink)">Skills as files</b>: everything it can do is captured in SKILL.md documents you can accumulate and share — Fudan University even launched a "million-skill library." <b style="color:var(--ink)">Model-agnostic</b>: Claude, GPT, or DeepSeek can all serve as its brain; NetEase Youdao built a Chinese edition on top of it, <b style="color:var(--ink)">LobsterAI</b>.</p></div>
+      </div>
+      <div style="display:grid;gap:16px">
+        <div class="stat"><div class="v num">380K+</div><div class="l">GitHub stars — <b>one of the fastest-growing open-source projects in history</b>: 100K stars and 2 million visitors within a week of launch</div><div class="s">GitHub check 2026-07-04: 381,646 stars</div></div>
+        <div class="stat"><div class="v num">3 names</div><div class="l">Clawdbot → Moltbot → OpenClaw: renamed twice in three months over Anthropic trademark complaints; in February 2026 the author was hired by OpenAI to build its agent-infrastructure team</div><div class="s">Tencent News Feb 2026 · CNBC Mar 2026</div></div>
+      </div>
+    </div>
+    <div class="note">The "lobster paradox" (Xinhua): it gets things done because its permissions run deep, and deep permissions mean risk — prompt-injection and skill-poisoning controversies keep coming; government agencies and banks restrict it even as tech parks nurture its ecosystem. <b>The stronger the tool, the more you need to understand its boundaries.</b></div>
+    <p class="src">Sources: GitHub API check 2026-07-04 · Wikipedia, "OpenClaw" · Xinhua 2026-03-23 · Tencent News 2026-02-02 · QbitAI Feb 2026</p>
+  </div>
+</section>
+
+<!-- 26c Hermes Agent -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agents · Case study · Hermes Agent</div>
+    <h2>Hermes: the agent that evolves itself</h2>
+    <div class="grid g2" style="align-items:start">
+      <div style="display:grid;gap:16px">
+        <div class="card"><h3>What it is <span class="tag ok">MIT open source</span></h3><p>A general-purpose personal agent released in February 2026 by Nous Research (the team behind the open-source Hermes model family), under the motto "<b style="color:var(--ink)">The agent that grows with you</b>." Deployed on your own server with data sovereignty front and center; one gateway connects 20+ chat platforms (WeChat / DingTalk / Feishu / Telegram…) and works with 200+ models; a beginner-friendly desktop app shipped just this June.</p></div>
+        <div class="card"><h3>The big difference from the "Lobster" <span class="tag us">Self-evolving</span></h3><p>The Lobster's skills have to be written by humans in advance; Hermes <b style="color:var(--ink)">automatically distills every completed task into a skill document and keeps improving it with use</b>, backed by persistent cross-session memory — the more you use it, the better it knows you. The media consensus: the two are "complements, not substitutes."</p></div>
+      </div>
+      <div style="display:grid;gap:16px">
+        <div class="stat"><div class="v num">210K</div><div class="l">GitHub stars in just 4 months — in April, 36Kr was still asking "is this the next Lobster?"; it has since sat at No.1 on GitHub's global trending list for weeks on end</div><div class="s">GitHub check 2026-07-04: 208,890 stars</div></div>
+        <div class="stat"><div class="v num">200+ / 20+</div><div class="l">Models supported / chat platforms it plugs into — one agent, living inside every chat box you own</div><div class="s">Official docs · featured on NVIDIA's official blog</div></div>
+      </div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">The bigger picture: agents are now fiercely contested ground — on the commercial side, Manus (revenue above $100M) was acquired by Meta for over $2B, then halted by a Chinese security review; OpenAI poached the "Lobster's" author; ByteDance, Alibaba, and Tencent are all in. <b>The open-source Lobster and Hermes are the share ordinary people can pick up for free, right now.</b></div>
+    <p class="src">Sources: GitHub API check 2026-07-04 · 36Kr 2026-04-10 · Decrypt 2026-06-03 · Jiemian News 2025-12-31 · Guancha 2026-04-28</p>
+  </div>
+</section>
+
+<!-- 27 意义 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Agents</div>
+    <h2>What this means for ordinary people</h2>
+    <div class="grid g2" style="align-items:center;gap:36px">
+      <ul class="tight" style="font-size:1.05em">
+        <li><b>The coding barrier is gone; engineering judgment isn't.</b> AI writes the code for you — it doesn't decide what to build, what good looks like, or whether it's right.</li>
+        <li><b>What gets replaced isn't "engineers" — it's people who can't use AI.</b> Decomposing problems, specifying precisely, and verifying results are the new core competencies.</li>
+        <li><b>Question quality = output quality.</b> Vague asks get vague results; spell out the goal, the constraints, and the acceptance criteria, and the output changes immediately.</li>
+        <li><b>Ordinary people carry almost no "experience deficit."</b> This way of working only appeared in 2025 and only went mainstream in 2026 — you and a ten-year veteran are standing at nearly the same starting line. That almost never happens in history.</li>
+      </ul>
+      <div class="card" style="padding:1.4em 1.5em">
+        <svg viewBox="0 0 880 300" width="100%" role="img" aria-label="Diagram: an engineer with ten years of experience and you today stand side by side at the new starting line of 2026, Year One of the Agent Era, facing new tracks of equal length">
+          <!-- 新起跑线 -->
+          <line x1="300" y1="30" x2="300" y2="252" stroke="#56C8F5" stroke-width="2" stroke-dasharray="7 6"/>
+          <text x="300" y="285" text-anchor="middle" font-size="19" font-weight="700" fill="#56C8F5">2026 · Year One of the Agent Era = a new starting line</text>
+          <!-- 赛道一：老工程师 -->
+          <text x="20" y="76" font-size="18" fill="#98A4C0">A ten-year engineer</text>
+          <line x1="20" y1="106" x2="292" y2="106" stroke="#5E6B8C" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+          <text x="150" y="134" text-anchor="middle" font-size="14.5" fill="#5E6B8C">Ten years on the old track</text>
+          <circle cx="300" cy="106" r="10" fill="#1E9BD2" stroke="#0A0F1E" stroke-width="2.5"/>
+          <line x1="318" y1="106" x2="828" y2="106" stroke="#1E9BD2" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M828 106 l-15 -8 v16 z" fill="#1E9BD2"/>
+          <!-- 赛道二：你 -->
+          <text x="20" y="192" font-size="18" fill="#98A4C0">You, today</text>
+          <circle cx="300" cy="222" r="10" fill="#C97A15" stroke="#0A0F1E" stroke-width="2.5"/>
+          <line x1="318" y1="222" x2="828" y2="222" stroke="#C97A15" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M828 222 l-15 -8 v16 z" fill="#C97A15"/>
+          <!-- 右侧终点 -->
+          <text x="845" y="170" text-anchor="middle" font-size="15" fill="#98A4C0" transform="rotate(90 845 170)">The AI era</text>
+        </svg>
+        <p style="font-size:.85em;color:var(--ink-2);margin:.8em 0 0">Miles logged on the old track don't carry over to the new one — the road ahead is the same length for both.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 练习 -->
+<section class="slide">
+  <div class="inner">
+    <div class="no num" style="font-size:clamp(50px,7vw,100px);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3)">06</div>
+    <h2>Hands-on exercises</h2>
+    <p class="lead" style="margin-bottom:1.2em">Five exercises, all driven by the same framework:</p>
+    <div class="steps" style="margin-bottom:20px">
+      <div class="st"><div class="k">Goal</div><p>State in one sentence what you're going to produce</p></div>
+      <div class="st"><div class="k">Tool</div><p>Which AI to use, and how to get started</p></div>
+      <div class="st"><div class="k">Deliverable</div><p>What you hand over for review when you're done</p></div>
+      <div class="st"><div class="k">Review</div><p>Which prompt mattered most? Where did the AI go wrong?</p></div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>Exercise 1 · Data infrastructure</h3><p>Have an agent build a "scrape → clean → store" data pipeline (market data / news / weather — pick one) that runs repeatably.<br><b style="color:var(--ink)">Deliverable</b>: a working script + one clean data file.</p></div>
+      <div class="card"><h3>Exercise 2 · Investment analysis</h3><p>Pick an AI company from today's talk (Zhipu / MiniMax / NVIDIA…), have the AI verify the data online, then produce a one-page investment brief: business, valuation, risks.<br><b style="color:var(--ink)">Deliverable</b>: a shareable one-page web page or document.</p></div>
+      <div class="card"><h3>Exercise 3 · Video transcription</h3><p>Hand the AI a talk or lecture video: transcribe it → turn it into structured notes with subheadings and standout quotes.<br><b style="color:var(--ink)">Deliverable</b>: notes polished enough to publish as-is.</p></div>
+      <div class="card"><h3>Exercise 4 · The Hermes tool</h3><p>Deploy Hermes Agent on your own computer, connect it to a chat app, direct it through one task, and let it distill the task into a skill.<br><b style="color:var(--ink)">Deliverable</b>: a screenshot of the successful conversation + the resulting skill document.</p></div>
+      <div class="card"><h3>Exercise 5 · Your own pick</h3><p>Use any tool you learned today to solve a real problem from your own study or life. The one requirement: <b style="color:var(--ink)">state the goal and acceptance criteria before you start</b>, and afterwards review where the AI went wrong.</p></div>
+      <div class="card" style="border-style:dashed;display:flex;align-items:center"><p style="color:var(--ink-2)">A hint: these exercises don't reward whoever finishes fastest, but whoever <b style="color:var(--ink)">states it most clearly and verifies it most rigorously</b> — question quality = output quality.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 29 结尾 -->
+<section class="slide">
+  <div class="inner" style="text-align:center;align-items:center">
+    <p class="sub" style="letter-spacing:.3em;margin-bottom:2em">One last slide</p>
+    <h1 style="font-size:clamp(30px,4.2vw,58px)">The best way to predict the future<br>is to <span class="hl-us">build it</span>.</h1>
+    <p class="lead" style="margin:2em auto 0;max-width:30em">The curve is still early. Now open a terminal and start Exercise 1.</p>
+  </div>
+</section>
+
+</div>
+
+<div id="hud">
+  <span id="pg" class="num" aria-live="polite"></span>
+  <button id="first" aria-label="First page" title="First page">«</button>
+  <button id="prev" aria-label="Previous" title="Previous">‹</button>
+  <button id="next" aria-label="Next" title="Next">›</button>
+  <button id="last" aria-label="Last page" title="Last page">»</button>
+  <button id="lang" title="Switch to English">EN</button>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),
+      bar=document.getElementById('bar'),pg=document.getElementById('pg'),
+      i=Math.min(Math.max((parseInt(location.hash.slice(1),10)||1)-1,0),slides.length-1);
+  function show(n){
+    n=Math.min(Math.max(n,0),slides.length-1);
+    slides[i].classList.remove('active');
+    i=n;slides[i].classList.add('active');slides[i].scrollTop=0;
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    pg.textContent=String(i+1).padStart(2,'0')+' / '+slides.length;
+    history.replaceState(null,'','#'+(i+1));
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(slides.length-1);}
+    else if(e.key==='f'||e.key==='F'){
+      if(document.fullscreenElement)document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(function(){});
+    }
+  });
+  document.getElementById('next').addEventListener('click',function(){show(i+1)});
+  document.getElementById('prev').addEventListener('click',function(){show(i-1)});
+  document.getElementById('first').addEventListener('click',function(){show(0)});
+  document.getElementById('last').addEventListener('click',function(){show(slides.length-1)});
+  var lb=document.getElementById('lang');
+  if(!/\.html$/.test(location.pathname)){lb.style.display='none';}
+  else{
+    var isEN=/\.en\.html$/.test(location.pathname);
+    lb.textContent=isEN?'中':'EN';
+    lb.title=isEN?'切换到中文':'Switch to English';
+    lb.addEventListener('click',function(){
+      var p=location.pathname;
+      location.href=(isEN?p.replace(/\.en\.html$/,'.html'):p.replace(/\.html$/,'.en.html'))+location.hash;
+    });
+  }
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+  document.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>60)show(i+(dx<0?1:-1));
+    tx=null;
+  });
+  show(i);
+
+  /* 封面背景：缓慢漂移的节点网络 */
+  var cv=document.getElementById('fx');
+  if(cv&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var ctx=cv.getContext('2d'),W,H,pts=[],running=true,seed=7;
+    function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+    function size(){W=cv.width=cv.offsetWidth*devicePixelRatio;H=cv.height=cv.offsetHeight*devicePixelRatio;}
+    size();addEventListener('resize',size);
+    for(var k=0;k<46;k++)pts.push({x:rnd()*1.2-.1,y:rnd()*1.2-.1,vx:(rnd()-.5)*.0004,vy:(rnd()-.5)*.0004});
+    (function tick(){
+      if(slides[i]&&slides[i].classList.contains('cover')){
+        ctx.clearRect(0,0,W,H);
+        for(var a=0;a<pts.length;a++){
+          var p=pts[a];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-.15||p.x>1.15)p.vx*=-1;if(p.y<-.15||p.y>1.15)p.vy*=-1;
+          for(var b=a+1;b<pts.length;b++){
+            var q=pts[b],dx=(p.x-q.x)*W,dy=(p.y-q.y)*H,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<W*.11){ctx.strokeStyle='rgba(86,200,245,'+(0.09*(1-d/(W*.11)))+')';
+              ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x*W,p.y*H);ctx.lineTo(q.x*W,q.y*H);ctx.stroke();}
+          }
+          ctx.fillStyle='rgba(86,200,245,.35)';
+          ctx.beginPath();ctx.arc(p.x*W,p.y*H,1.6*devicePixelRatio,0,7);ctx.fill();
+        }
+      }
+      requestAnimationFrame(tick);
+    })();
+  }
+})();
+</script>
+
+<div id="pv" style="position:fixed;left:2.2vw;bottom:2.4vh;z-index:10;font-size:12px;color:#5E6B8C;font-variant-numeric:tabular-nums"><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> views</span></div>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

@@ -7,22 +7,35 @@
 <style>
   body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
     background:#0A0F1E;color:#E9EDF7;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
-  main{max-width:640px;padding:6vh 6vw}
+  main{max-width:680px;padding:6vh 6vw}
   h1{font-size:clamp(28px,5vw,44px);margin:0 0 .3em}
-  p{color:#98A4C0;margin:0 0 2em}
-  a.deck{display:block;background:#10182E;border:1px solid #1E2A47;border-radius:14px;
-    padding:1.1em 1.4em;margin:14px 0;color:#E9EDF7;text-decoration:none;font-size:1.05em;line-height:1.5}
-  a.deck:hover{border-color:#56C8F5}
-  a.deck small{display:block;color:#5E6B8C;margin-top:.2em}
-  a.deck b{color:#56C8F5}
+  p.sub{color:#98A4C0;margin:0 0 2em}
+  .deck{background:#10182E;border:1px solid #1E2A47;border-radius:14px;
+    padding:1.1em 1.4em;margin:14px 0;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .deck .t{flex:1;min-width:240px;line-height:1.5}
+  .deck b{color:#56C8F5}
+  .deck small{display:block;color:#5E6B8C;margin-top:.2em}
+  .deck a{color:#E9EDF7;text-decoration:none;border:1px solid #1E2A47;border-radius:99px;
+    padding:.35em 1em;font-size:.92em;white-space:nowrap}
+  .deck a:hover{border-color:#56C8F5;color:#56C8F5}
 </style>
 </head>
 <body>
 <main>
   <h1>AI Bootcamp</h1>
-  <p>面向学生的 AI 通识与工具实战培训 · 幻灯片系列</p>
-  <a class="deck" href="ai-training-deck.html"><b>第一讲</b> · AI 革命进行时<small>看懂格局，用好工具 · 36 页</small></a>
-  <a class="deck" href="basic-tools-deck.html"><b>第二讲</b> · 基础工具培训<small>终端 · tmux · Git · Claude Code · Hermes · 39 页</small></a>
+  <p class="sub">面向学生的 AI 通识与工具实战培训 · Slides for an AI literacy &amp; tools bootcamp</p>
+  <div class="deck">
+    <div class="t"><b>第一讲</b> · AI 革命进行时<small>The AI Revolution, Live — 看懂格局，用好工具 · 36 页 / slides</small></div>
+    <a href="ai-training-deck.html">中文</a>
+    <a href="ai-training-deck.en.html">EN</a>
+  </div>
+  <div class="deck">
+    <div class="t"><b>第二讲</b> · 基础工具培训<small>Essential Tools Bootcamp — 终端 · tmux · Git · Claude Code · Hermes · 39 页 / slides</small></div>
+    <a href="basic-tools-deck.html">中文</a>
+    <a href="basic-tools-deck.en.html">EN</a>
+  </div>
+  <p style="color:#5E6B8C;font-size:13px;margin-top:2em"><span id="busuanzi_container_site_pv" style="display:none">本站访问 <span id="busuanzi_value_site_pv"></span> 次 · </span><span id="busuanzi_container_site_uv" style="display:none"><span id="busuanzi_value_site_uv"></span> 位访客</span></p>
 </main>
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </body>
 </html>
