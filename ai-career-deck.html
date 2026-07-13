@@ -1,0 +1,752 @@
+<title>用 AI 找到理想工作 · 培训幻灯片</title>
+<style>
+  :root{
+    --bg:#0A0F1E; --panel:#10182E; --panel-2:#0D1426; --line:#1E2A47;
+    --ink:#E9EDF7; --ink-2:#98A4C0; --ink-3:#5E6B8C;
+    --us:#56C8F5; --us-bar:#1E9BD2; --cn:#F5A340; --cn-bar:#C97A15;
+    --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+    font-size:clamp(17px,1.65vw,36px);line-height:1.6;overflow:hidden}
+  .deck{position:fixed;inset:0}
+  .slide{position:absolute;inset:0;padding:3.5vh 3vw 6vh;overflow-y:auto;
+    opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .38s ease,transform .38s ease,visibility 0s linear .38s}
+  .slide.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  @media (prefers-reduced-motion:reduce){.slide{transition:none;transform:none}}
+  .inner{max-width:94vw;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+  #bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--us-bar),var(--us));z-index:10;transition:width .3s ease}
+  #hud{position:fixed;right:2.2vw;bottom:2.4vh;z-index:10;display:flex;align-items:center;gap:14px;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+  #hud button{background:var(--panel);border:1px solid var(--line);color:var(--ink-2);width:34px;height:34px;border-radius:8px;font-size:15px;cursor:pointer}
+  #hud button:hover{color:var(--ink);border-color:var(--ink-3)}
+  #hud button:focus-visible{outline:2px solid var(--us);outline-offset:2px}
+
+  .eyebrow{font-size:clamp(13px,1vw,21px);letter-spacing:.22em;color:var(--ink-3);text-transform:uppercase;margin-bottom:1.6em;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--ink-3)}
+  h1{font-size:clamp(44px,6.5vw,124px);line-height:1.15;margin:0 0 .3em;font-weight:800;letter-spacing:.01em;text-wrap:balance}
+  h2{font-size:clamp(30px,3.6vw,74px);line-height:1.25;margin:0 0 .8em;font-weight:700;text-wrap:balance}
+  h3{font-size:1.05em;margin:0 0 .5em;font-weight:700}
+  p{margin:.4em 0}
+  .lead{color:var(--ink-2);font-size:1.06em;max-width:34em}
+  .num{font-variant-numeric:tabular-nums}
+  .hl-us{color:var(--us);font-weight:700}
+  .hl-cn{color:var(--cn);font-weight:700}
+  code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:.08em .4em;color:var(--us)}
+  .src{margin-top:auto;padding-top:2em;font-size:clamp(12px,.85vw,18px);color:var(--ink-3);line-height:1.6}
+  .note{font-size:.85em;color:var(--ink-2);background:var(--panel-2);border-left:3px solid var(--cn-bar);padding:.7em 1em;border-radius:0 8px 8px 0;margin-top:1.2em}
+
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media (max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.15em 1.25em}
+  .card h3{display:flex;align-items:baseline;gap:.5em;flex-wrap:wrap}
+  .card p{font-size:.92em;color:var(--ink-2)}
+  .tag{font-size:clamp(12px,.8vw,17px);padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2);letter-spacing:.06em;white-space:nowrap;font-weight:500}
+  .tag.us{color:var(--us);border-color:rgba(86,200,245,.4)}
+  .tag.cn{color:var(--cn);border-color:rgba(245,163,64,.4)}
+  .tag.warn{color:#F58A8A;border-color:rgba(245,138,138,.4)}
+  .tag.ok{color:#6FD9A6;border-color:rgba(111,217,166,.4)}
+
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.2em 1.3em}
+  .stat .v{font-size:clamp(36px,4.6vw,92px);font-weight:800;line-height:1.1;letter-spacing:-.015em}
+  .stat .l{color:var(--ink-2);font-size:.9em;margin-top:.45em}
+  .stat .s{color:var(--ink-3);font-size:.78em;margin-top:.3em}
+
+  table{border-collapse:collapse;width:100%;font-size:.92em}
+  th{color:var(--ink-3);font-weight:600;text-align:left;letter-spacing:.05em;font-size:.85em}
+  th,td{padding:.62em .8em;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:700}
+  .tblwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.4em .6em}
+
+  .term{background:#060A13;border:1px solid var(--line);border-radius:12px;padding:.9em 1.2em 1.1em;font-family:var(--mono);font-size:.8em;line-height:1.8;overflow-x:auto}
+  .term .bar{display:flex;gap:7px;margin-bottom:.7em}
+  .term .bar i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+  .term .bar i:first-child{background:#E0655A}.term .bar i:nth-child(2){background:#E0A33E}.term .bar i:nth-child(3){background:#5FBF6B}
+  .term pre{margin:0;font-family:inherit;white-space:pre-wrap}
+  .term .p{color:var(--us);font-weight:700}
+  .term .o{color:var(--ink-2)}
+  .term .cm{color:var(--ink-3)}
+  .term .k{color:var(--cn)}
+
+  blockquote{margin:0;font-size:clamp(24px,3vw,58px);line-height:1.55;font-weight:700;text-wrap:balance;padding-left:.85em;border-left:4px solid var(--us-bar)}
+  cite{display:block;font-style:normal;color:var(--ink-3);font-size:clamp(14px,1vw,21px);margin-top:1.4em}
+
+  .divider .no{font-size:clamp(70px,11vw,210px);font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);letter-spacing:.02em}
+  .divider h2{font-size:clamp(36px,5.2vw,100px);margin:.25em 0 .4em}
+  .divider .lead{font-size:1.15em}
+
+  .cover{position:relative}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%}
+  .cover .inner{position:relative;align-items:center;text-align:center}
+  .cover .eyebrow::after{content:"";width:22px;height:1px;background:var(--ink-3)}
+  .sub{font-size:clamp(18px,2vw,38px);color:var(--ink-2);font-weight:400;letter-spacing:.12em}
+  .hint{margin-top:5em;color:var(--ink-3);font-size:clamp(13px,.9vw,19px)}
+  kbd{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-family:var(--mono);font-size:.85em}
+
+  .steps{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+  .steps .st{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);padding:1em 1.1em;position:relative}
+  .steps .st:first-child{border-radius:12px 0 0 12px}
+  .steps .st:last-child{border-radius:0 12px 12px 0}
+  .steps .st+.st{border-left:none}
+  .steps .k{font-size:.78em;color:var(--us);letter-spacing:.15em;font-weight:700}
+  .steps .st p{font-size:.85em;color:var(--ink-2)}
+
+  .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch}
+  @media (max-width:820px){.vs{grid-template-columns:1fr}}
+  .vs .mid{display:flex;align-items:center;color:var(--ink-3);font-weight:800;font-size:1.3em}
+  .panel-us{border-top:3px solid var(--us-bar)}
+  .panel-cn{border-top:3px solid var(--cn-bar)}
+
+  .dense{font-size:.88em}
+  .dense h2{font-size:clamp(26px,3vw,58px);margin-bottom:.6em}
+  .dense .grid{gap:12px}
+  .dense .card{padding:.85em 1em}
+  .dense .stat{padding:.9em 1.1em}
+  .dense .stat .v{font-size:clamp(28px,3.4vw,52px)}
+  .dense .note{margin-top:.8em;padding:.55em .9em}
+  .dense .src{padding-top:1.2em}
+
+  ul.tight{margin:.3em 0;padding-left:1.2em}
+  ul.tight li{margin:.42em 0;color:var(--ink-2)}
+  ul.tight li b{color:var(--ink)}
+</style>
+
+<div id="bar"></div>
+<div class="deck" id="deck">
+
+<!-- 1 封面 -->
+<section class="slide cover">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">AI 培训系列 · 第三讲 · 2026 年 7 月</div>
+    <h1>用 AI 找到理想工作</h1>
+    <p class="sub">规则 · 方法 · 两个完整案例 · 三十天行动</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> 或空格翻页 · <kbd>F</kbd> 全屏 · 共 32 页</p>
+  </div>
+</section>
+
+<!-- 2 路线图 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">今天的路线</div>
+    <h2>你的对手不是 AI，<br>是<span class="hl-us">会用 AI 的求职者</span></h2>
+    <p class="lead" style="margin-bottom:1em">第一讲看懂了格局，第二讲学会了工具——这一讲，把它们全部指向你最切身的战场。</p>
+    <div class="steps">
+      <div class="st"><div class="k">01 · 规则变了</div><p>初级岗在缩，AI 技能在涨价，筛你简历的可能不是人</p></div>
+      <div class="st"><div class="k">02 · 方法论</div><p>AI 求职工作流：知识库 → 简历 → 作品 → 面试</p></div>
+      <div class="st"><div class="k">03 · 案例·金融</div><p>小美 的券商行研之路：一条研报流水线</p></div>
+      <div class="st"><div class="k">04 · 案例·软件</div><p>小帅 的 Agent 工程师之路：作品即简历</p></div>
+      <div class="st"><div class="k">05 · 红线与心法</div><p>AI 放大真实的你，而不是伪造一个你</p></div>
+      <div class="st"><div class="k">06 · 行动</div><p>三十天清单，从今晚开始</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 D01 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">01</div>
+    <h2>游戏规则变了</h2>
+    <p class="lead">这是几十年来最难的应届生市场之一，也是普通人杠杆最大的一届——两件事同时为真。先看清楚牌桌。</p>
+  </div>
+</section>
+
+<!-- 4 冰 -->
+<section class="slide dense" style="padding-top:2.2vh;padding-bottom:2.5vh">
+  <div class="inner">
+    <div class="eyebrow" style="margin-bottom:.7em">01 · 规则变了 · 先泼冷水</div>
+    <h2 style="margin-bottom:.5em">冰：入门级岗位，正在被 AI 吃掉</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">−13%</div><div class="l"><b>22–25 岁</b>在 AI 高暴露职业中的就业降幅；<b>同岗位资深员工反增 6–9%</b>——AI 吃掉的是"入门"，不是"岗位"</div><div class="s">斯坦福数字经济实验室，基于 ADP 千万级工资单，2025-08</div></div>
+      <div class="stat"><div class="v num">1/3</div><div class="l">已经用 AI <b>替代入门级岗位</b>而非招人的雇主比例；高盛测算 AI 使美国就业每月净减约 1.6 万个</div><div class="s">GMAC 调查 2026-06 · Goldman Sachs 2026-04</div></div>
+      <div class="stat"><div class="v num">1,270 万</div><div class="l">中国 2026 届高校毕业生规模（同比 +48 万），历史新高</div><div class="s">教育部，2025-11-20</div></div>
+    </div>
+        <div class="note">补一刀：2026 上半年美国科技业裁员超 15 万人，AI 连续 4 个月被列为裁员首因（约 48% 归因于 AI 与自动化——归因口径或有夸大，但方向没有争议）。</div>
+    <div class="card" style="margin-top:26px;margin-bottom:0;padding:.8em 1.2em;width:58%;margin-left:auto;margin-right:auto">
+      <h3 style="font-size:.92em;color:var(--ink-2);font-weight:600">中国高校毕业生人数（万人）<span class="hl-cn">——你的同龄竞争者，一年比一年多</span></h3>
+      <svg viewBox="0 0 900 268" width="100%" style="margin-top:.4em" role="img" aria-label="折线图：中国高校毕业生人数从 2017 年 795 万攀升至 2026 年预计 1270 万，十年增长 60%">
+        <g stroke="#1E2A47" stroke-width="1">
+          <line x1="60" y1="178" x2="840" y2="178"/><line x1="60" y1="109" x2="840" y2="109"/><line x1="60" y1="40" x2="840" y2="40"/>
+        </g>
+        <g font-size="15" fill="#5E6B8C" class="num">
+          <text x="52" y="183" text-anchor="end">900</text><text x="52" y="114" text-anchor="end">1100</text><text x="52" y="45" text-anchor="end">1300</text>
+        </g>
+        <path d="M60 215 L144 206 L229 201 L313 187 L398 175 L482 117 L566 89 L651 82 L735 67 L820 50 L820 230 L60 230 Z" fill="rgba(30,155,210,.14)"/>
+        <path d="M60 215 L144 206 L229 201 L313 187 L398 175 L482 117 L566 89 L651 82 L735 67 L820 50" fill="none" stroke="#1E9BD2" stroke-width="3.5" stroke-linejoin="round"/>
+        <g fill="#1E9BD2">
+          <circle cx="60" cy="215" r="5"/><circle cx="144" cy="206" r="5"/><circle cx="229" cy="201" r="5"/><circle cx="313" cy="187" r="5"/><circle cx="398" cy="175" r="5"/><circle cx="482" cy="117" r="5"/><circle cx="566" cy="89" r="5"/><circle cx="651" cy="82" r="5"/><circle cx="735" cy="67" r="5"/>
+        </g>
+        <circle cx="820" cy="50" r="8" fill="#C97A15" stroke="#0A0F1E" stroke-width="2.5"/>
+        <text x="66" y="241" font-size="16" fill="#98A4C0" class="num">795 万</text>
+        <text x="826" y="33" text-anchor="end" font-size="19" font-weight="800" fill="#F5A340" class="num">1270 万</text>
+        <text x="430" y="64" text-anchor="middle" font-size="18" font-weight="700" fill="#F5A340">10 年 +475 万（+60%）</text>
+        <g font-size="14.5" fill="#5E6B8C" text-anchor="middle" class="num">
+          <text x="60" y="263">2017</text><text x="144" y="263">2018</text><text x="229" y="263">2019</text><text x="313" y="263">2020</text><text x="398" y="263">2021</text><text x="482" y="263">2022</text><text x="566" y="263">2023</text><text x="651" y="263">2024</text><text x="735" y="263">2025</text><text x="820" y="263" fill="#F5A340" font-weight="700">2026E</text>
+        </g>
+      </svg>
+    </div>
+    <p class="src">来源：Stanford Digital Economy Lab · Fortune 2026-04 · 教育部历年公报/新华网 2025-11 · TechTimes 2026-07</p>
+  </div>
+</section>
+
+<!-- 4b 淘汰榜 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">01 · 规则变了 · 那份疯传的榜单</div>
+    <h2>"AI 最先淘汰的职业"，原始榜单长这样</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="card" style="padding:1em 1.3em">
+        <h3 style="font-size:.92em;color:var(--ink-2);font-weight:600">实测版（Anthropic 2026-03）：这些职业的任务，已有多大比例在被 AI 完成</h3>
+        <div style="display:grid;grid-template-columns:9.5em 1fr;gap:.5em 1em;align-items:center;margin-top:.7em" role="img" aria-label="条形图：计算机程序员 75%、客服代表 70%、数据录入员 67%、病历信息专员 67%、市场研究分析师 65%、销售代表 63%、金融投资分析师 57%、软件测试分析师 52%">
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">计算机程序员</div><div style="height:1em;width:74%;background:var(--cn-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;font-weight:700;color:var(--cn)">75%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">客服代表</div><div style="height:1em;width:69%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">70%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">数据录入员</div><div style="height:1em;width:66%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">67%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">病历信息专员</div><div style="height:1em;width:66%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">67%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">市场研究分析师</div><div style="height:1em;width:64%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">65%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">销售代表</div><div style="height:1em;width:62%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">63%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">金融/投资分析师</div><div style="height:1em;width:56%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">57%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">软件测试分析师</div><div style="height:1em;width:51%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">52%</span></div>
+        </div>
+        <p style="font-size:.82em;color:var(--ink-3);margin:.8em 0 0">口径：Claude 真实使用数据中"已在被 AI 自动化"的任务占该职业任务的比例——不是预测，是实测。程序员高居第一，正是小美、小帅要直面的现实。</p>
+      </div>
+      <div style="display:grid;gap:12px">
+        <div class="card"><h3>网传版 · 微软"AI 适用度"Top 10 <span class="tag">20 万条 Copilot 对话</span></h3><p style="line-height:1.9">① 口译与笔译员 ② 历史学家 ③ 作家与撰稿人 ④ 服务业销售代表 ⑤ CNC 刀具编程员 ⑥ 播音员与电台 DJ ⑦ 客服代表 ⑧ 电话推销员 ⑨ 政治学家 ⑩ 数学家<br><span style="color:var(--ink-3);font-size:.85em">共同点：<b style="color:var(--ink-2)">语言与信息处理类</b>——纯执行、可数字化、不需要到场。</span></p></div>
+        <div class="card"><h3>同一研究里，几乎不受影响的</h3><p>抽血员、按摩师、屋顶工、洗碗工、水厂操作员——<b style="color:var(--ink)">手上功夫 + 现场判断</b>，AI 适用度趋近于零。</p></div>
+        <div class="card panel-cn"><h3>中国口径 <span class="tag cn">北大国发院 × 智联</span></h3><p><b style="color:var(--ink)">编辑/翻译</b>是全部职业中大模型影响指数最高的岗位；客服/运营岗位占比两年降超 2 个百分点，销售/商务拓展降超 5 个百分点——且门槛还在悄悄提高。</p></div>
+      </div>
+    </div>
+    <div class="note">冷静剂：微软专门发博客澄清"数据不表明这些工作会被取代"；Anthropic 也注明高暴露职业<b>尚未出现系统性失业、但年轻人招聘在放缓</b>。榜单量的是"任务重叠度"——被淘汰的不是职业，是职业里"纯执行"的那部分。怎么站到剩下那部分？往下看。</div>
+    <p class="src">来源：Anthropic《Labor Market Impacts of AI》2026-03-05 / Euronews 2026-03-14 · 微软研究院 arXiv:2507.07935（官方 GitHub 数据逐条核对）及澄清博客 2025-08-21 · 北大国发院×智联招聘 2024-09</p>
+  </div>
+</section>
+
+<!-- 5 火 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">01 · 规则变了 · 再看火焰</div>
+    <h2>火：会 AI 的人，正在被抢</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num hl-us">+62%</div><div class="l">全球范围内<b>带 AI 技能岗位的平均薪资溢价</b>（2024 版报告还是 25%，两年翻了一倍多）</div><div class="s">PwC AI Jobs Barometer 2026，分析 27 国 10 亿+ 招聘广告</div></div>
+      <div class="stat"><div class="v num hl-us">8 倍</div><div class="l">要求 AI 技能的岗位增速（69%）是整体岗位市场（9%）的倍数；AI Engineer 列 LinkedIn 2026 美国增长最快职位第 1</div><div class="s">PwC 2026 · LinkedIn/Forbes 2026-01</div></div>
+      <div class="stat"><div class="v num hl-cn">+74.1%</div><div class="l">中国 AI 相关岗位 2025 年<b>月均新发职位数同比增速</b>（2023 年才 8.5%）；AI 岗薪资约为普通岗位 2.6 倍</div><div class="s">BOSS 直聘《2026 人才趋势报告》2026-01</div></div>
+    </div>
+    <div class="card" style="margin-top:12px;padding:.9em 1.3em">
+      <h3 style="font-size:.92em;color:var(--ink-2);font-weight:600">岗位发布量增速对比（PwC，27 国 10 亿+ 招聘广告）</h3>
+      <div style="display:grid;grid-template-columns:10.5em 1fr;gap:.7em 1em;align-items:center;margin-top:.7em" role="img" aria-label="条形图：要求 AI 技能的岗位增速 69%，整体岗位市场仅 9%，相差 8 倍">
+        <div style="text-align:right;color:var(--ink-2);font-size:.92em">要求 AI 技能的岗位</div>
+        <div style="height:1.1em;width:74%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);font-size:.9em;font-weight:700;color:var(--us);white-space:nowrap">+69%</span></div>
+        <div style="text-align:right;color:var(--ink-2);font-size:.92em">整体岗位市场</div>
+        <div style="height:1.1em;width:9.7%;background:var(--ink-3);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);font-size:.9em;font-weight:600;color:var(--ink-2);white-space:nowrap">+9%</span></div>
+      </div>
+      <p style="font-size:.85em;color:var(--ink-2);margin:.8em 0 0"><b style="color:var(--ink)" class="num">8 倍速差</b>——"风口"不是比喻，是数据。</p>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">把冰与火放在一起读：<b>AI 没有减少工作，它把工作重新分了类</b>——"执行型"入门岗在消失，"会指挥 AI 的人"在涨价。你要做的不是躲开 AI，而是站到分界线的右边。</div>
+    <p class="src">来源：PwC AI Jobs Barometer 2026 官方新闻稿 · WEF 引 LinkedIn 数据 2026-01 · 新华网/中新网 2026-01-23</p>
+  </div>
+</section>
+
+<!-- 6 对手也在用 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · 规则变了 · 桌子两边都换人了</div>
+    <h2>你的简历，第一个读者可能不是人</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>招聘方的 AI</h3><p><b class="num" style="color:var(--ink)">61%</b> 的雇主用 AI 筛简历，<b class="num" style="color:var(--ink)">96%</b> 的招聘专业人士至少在一个环节用 AI；AI 主导的初轮面试比例两年内从 10% 升到 <b class="num" style="color:var(--ink)">34%</b>——键盘那头打分的，越来越多是算法。</p></div>
+      <div class="card panel-cn"><h3>求职者的 AI</h3><p><b class="num" style="color:var(--ink)">81%</b> 的求职者已在用或计划用 AI 求职；最常见用途不是"代写"，而是 ATS 兼容性检查（64%）。<b style="color:var(--ink)">不用 AI 的求职者，已经是少数派。</b></p></div>
+    </div>
+    <div class="note">两个推论：① 简历首先要过<b>机器关</b>——关键词、结构化、可解析，玄学排版是减分项；② 当 81% 的人都在用 AI，"用 AI"本身不再是优势，<b>"用得比别人好"才是</b>——这正是今天要教的。</div>
+    <p class="src">来源：TestGorilla 2025 · Resume Now / The Interview Guys 2026 · HireVue 2026 Global AI in Hiring Report · Resume Genius 2026 · Kickresume 数据</p>
+  </div>
+</section>
+
+<!-- 7 结论 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · 规则变了 · 一句话总结</div>
+    <blockquote>
+      AI 抹平的是"执行技能"的差距，<br>放大的是"<b class="hl-us">判断 + 作品 + 会用 AI</b>"的差距。
+    </blockquote>
+    <cite>执行（写代码、做表格、画 PPT）AI 越来越便宜；判断（做什么、好不好、为什么）与拿得出手的作品，越来越贵。接下来五章，教你把筹码全押在贵的那一边。</cite>
+  </div>
+</section>
+
+<!-- 8 D02 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">02</div>
+    <h2>方法论：AI 求职工作流</h2>
+    <p class="lead">还记得第一讲的"进阶工作流"吗——知识库、目标书、迭代、审查、落地。求职就是你的第一个正式项目，套同一个流程。</p>
+  </div>
+</section>
+
+<!-- 9 知识库 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 方法论 · 第一步</div>
+    <h2>知识库：把目标行业变成你的主场</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">&gt;</span> <span class="k">这是我收集的 100 份"券商行业研究员"JD（附件）。
+帮我：1) 提炼出现频率最高的 15 项要求，按频次排序；
+2) 区分"硬门槛"（证书/学历）与"可速成技能"；
+3) 输出成 knowledge-base/jd-analysis.md</span>
+<span class="o">✓ 高频要求 Top15 已生成：
+  #1 财务建模（87/100 份提及）
+  #2 行业研究框架（79/100）
+  #3 Python/数据处理（61/100，较去年显著上升）…</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>拆 100 份 JD</h3><p>别猜岗位要什么——<b style="color:var(--ink)">让 AI 数出来</b>。高频要求就是你的复习大纲，逐年对比还能看出行业风向。</p></div>
+        <div class="card"><h3>建目标公司档案</h3><p>每家目标公司一个文档：业务线、最新财报要点、高管公开讲话、校招流程与真题——<b style="color:var(--ink)">面试前夜的弹药库</b>。</p></div>
+        <div class="card"><h3>让情报自己更新</h3><p>cron + Agent 每天盯目标公司动态（新闻、公告、招聘官号），变化自动进知识库——第二讲的定时任务，第一次为你自己打工。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 定位书 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 方法论 · 第二步</div>
+    <h2>定位书：一页写清"我是谁、我要去哪"</h2>
+    <div class="grid g3">
+      <div class="card"><h3>我有什么</h3><p>课程、项目、实习、技能、证书——全部倒给 AI，让它<b style="color:var(--ink)">用招聘方的语言</b>重新归类：哪些是资产，哪些只是经历。</p></div>
+      <div class="card"><h3>我要什么</h3><p>行业 × 岗位 × 城市 × 底线（薪资/加班/发展）。写下来才发现很多"想要"互相打架——<b style="color:var(--ink)">取舍要在投递前做</b>，不是在 Offer 前。</p></div>
+      <div class="card"><h3>差距清单</h3><p>拿"我有什么"对照 JD 高频要求，让 AI 生成差距清单 + <b style="color:var(--ink)">按性价比排序的补课计划</b>：哪些两周能补（工具、题库），哪些别硬追（门槛证书）。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">这就是求职版的"目标与约束说明书"：之后所有会话（改简历、模拟面试、写求职信）都先喂它——<b>AI 对你了解多深，帮你就有多准。</b></div>
+  </div>
+</section>
+
+<!-- 11 简历工程 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 方法论 · 第三步</div>
+    <h2>简历工程：一岗一版，机器人也爱读</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">&gt;</span> <span class="k">对照这份 JD 改写我的简历（简历和定位书在项目里）。
+要求：1) 每处修改标注理由；2) 成果全部量化；
+3) 用 JD 原词但不堆砌；4) 不许编造任何经历。</span>
+<span class="o">✓ 修改 11 处，示例：
+  原文：「参与了社团公众号运营」
+  改为：「独立运营公众号 8 个月，产出 32 篇，
+        单篇最高阅读 1.2 万，粉丝 +40%」
+  理由：JD 第 3 条要求"内容产出能力"，量化后可验证</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>一岗一版</h3><p>通用简历 = 平均分简历。让 AI 按每个 JD 微调重点与关键词——<b style="color:var(--ink)">10 分钟一版</b>，这是 AI 时代才可能的奢侈。</p></div>
+        <div class="card"><h3>成果量化（STAR）</h3><p>"参与/负责/协助"是废词。每段经历逼自己回答：<b style="color:var(--ink)">多少、多快、涨了多少</b>——AI 很会追问，让它当教练。</p></div>
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ 红线</h3><p><b style="color:var(--ink)">润色 ≠ 造假</b>：数字必须真实可背调，没做过的不许写。AI 生成的每一句，你都要能在面试里撑住三层追问。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 作品集 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 方法论 · 第四步 · 本讲最重要的一页</div>
+    <h2>作品 &gt; 证书：AI 时代的硬通货</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">87%</div><div class="l">会查看候选人 GitHub 的科技招聘官比例（行业调查口径）——第二讲说的"GitHub = 新简历"，是真的</div><div class="s">SOLTECH 等行业调查汇总</div></div>
+      <div class="stat"><div class="v num">73%</div><div class="l">认为<b>强作品集比完美简历更重要</b>的招聘经理比例（行业调查口径）</div><div class="s">Stack Overflow 调查口径转引</div></div>
+      <div class="stat"><div class="v num">3 &gt; 10</div><div class="l">3 个精打磨的真项目，胜过 10 个玩具项目——招聘方把 GitHub 当"<b>活的工作样本</b>"看</div><div class="s">招聘方访谈的普遍口径</div></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">为什么 AI 时代作品更值钱？因为<b>简历可以 AI 生成，作品没法伪装</b>——它带着时间戳（commit 历史）、带着过程（README、迭代记录）、可以现场验证。证书证明你"学过"，作品证明你"做成过"。两个案例章将各造一个"杀手锏作品"。</div>
+    <p class="src">注：87%/73% 出自行业博客调查汇总而非原始学术报告，量级可信、精确值仅供参考</p>
+  </div>
+</section>
+
+<!-- 13 投递漏斗 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 方法论 · 第五步</div>
+    <h2>投递漏斗：像管销售线索一样管网申</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="tblwrap">
+        <table>
+          <tr><th>公司/岗位</th><th>状态</th><th>截止</th><th>下一步</th></tr>
+          <tr><td>某证券 · 行研实习</td><td><span class="tag ok">笔试通过</span></td><td class="num">07-20</td><td>面试：准备行业问题</td></tr>
+          <tr><td>某基金 · 研究助理</td><td><span class="tag">已投递</span></td><td class="num">07-18</td><td>3 天未读 → 找内推</td></tr>
+          <tr><td>某银行 · 金科管培</td><td><span class="tag warn">简历挂</span></td><td>—</td><td>让 AI 对照 JD 复盘</td></tr>
+        </table>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>一张表管全部</h3><p>投了哪家、什么状态、几号截止、下一步动作——表格或让 Agent 帮你记；<b style="color:var(--ink)">cron 每天早上提醒今日截止</b>。</p></div>
+        <div class="card"><h3>用漏斗找瓶颈</h3><p>每周复盘转化率：投递→笔试 低？<b style="color:var(--ink)">改简历</b>；笔试→面试 低？<b style="color:var(--ink)">刷题</b>；面试→Offer 低？<b style="color:var(--ink)">练面试</b>。数据告诉你该修哪一段，不用瞎焦虑。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 模拟面试 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 方法论 · 第六步</div>
+    <h2>模拟面试：一位随叫随到、毫不留情的面试官</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">&gt;</span> <span class="k">你是某券商研究所的资深面试官，风格严厉。
+基于我的简历（项目里）逐段深挖提问，
+我每答一题你就追问两层，并在结束后给出：
+1) 逐题点评 2) 我的三个口头禅 3) 改进清单</span>
+<span class="o">面试官：简历里写"独立完成行业研报"——
+  数据来源是什么？口径怎么定的？
+  如果我说你的估值高了 30%，你怎么为它辩护？</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>三类面试，分开练</h3><p><b style="color:var(--ink)">行为面</b>：STAR 深挖追问；<b style="color:var(--ink)">专业面</b>：按 JD 出题；<b style="color:var(--ink)">压力面</b>：让 AI 扮演"不好惹"的面试官——现场不慌，是因为难题都提前见过。</p></div>
+        <div class="card"><h3>录音 → AI 复盘</h3><p>真人模拟或自问自答时录音，转文字后交给 AI：口头禅、逻辑断点、语速——<b style="color:var(--ink)">第二讲的视频转写练习，用在这里</b>。</p></div>
+        <div class="card"><h3>信息不对称武器</h3><p>面试前一晚：让 AI 用公司知识库出 10 道"这家公司最可能问我的题"——多数对手不会做这一步。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 谈 Offer -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · 方法论 · 第七步</div>
+    <h2>谈 Offer：最后一公里，别裸谈</h2>
+    <div class="grid g3">
+      <div class="card"><h3>先查行情</h3><p>让 AI 汇总该岗位薪酬带（平台数据、同侪爆料、年报人均薪酬），<b style="color:var(--ink)">带着区间去谈</b>，而不是被 HR 的第一个数字锚定。</p></div>
+      <div class="card"><h3>预演谈判</h3><p>让 AI 扮演 HR 过三轮："我们薪资标准统一""应届生没有谈的空间"——每句话术都有应对，<b style="color:var(--ink)">谈崩的成本在演练里付掉</b>。</p></div>
+      <div class="card"><h3>多 Offer 决策矩阵</h3><p>薪资、成长、平台、城市、加班——让 AI 帮你建打分矩阵，权重<b style="color:var(--ink)">你自己定</b>（回到定位书）。AI 出结构，人做选择。</p></div>
+    </div>
+    <div class="note">方法论小结，七步一句话：<b>知识库摸清战场 → 定位书对准目标 → 简历过机器关 → 作品过人心关 → 漏斗管进度 → 模拟面试练胆 → 数据护身谈钱。</b>接下来看两个专业的完整走法。</div>
+  </div>
+</section>
+
+<!-- 16 D03 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">03</div>
+    <h2>案例一：Finance 小美</h2>
+    <p class="lead">金融专业大三，目标：券商行业研究 / 投行。传统路径（实习内推 + 证书堆砌）越来越卷——小美 决定换一条路：用作品说话。</p>
+  </div>
+</section>
+
+<!-- 17 小A处境 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 案例·金融 · 先看战场</div>
+    <h2>行业在变，入场券也在变</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>华尔街已经变完了</h3><p>高盛 CEO Solomon："<b style="color:var(--ink)">AI 几分钟就能起草 S-1 招股书的 95%</b>——过去要 6 人团队干两周；有价值的只剩最后 5%。"高盛 AI 助手覆盖全员，摩根大通 LLM Suite 推给 25 万员工。<b style="color:var(--ink)">初级分析师的"苦力活"正是被吃掉的那 95%。</b></p></div>
+      <div class="card panel-cn"><h3>国内券商正在变</h3><p>24 家券商布局大模型：中金"点睛"、国泰君安"君弘灵犀"、中信建投宣称投研效率 +40%。校招同步转向：华泰 Fintech 专场、中信"信 π 计划"、东方财富管培生<b style="color:var(--ink)">明确要求大模型技术 + Python</b>——而传统投行、研究所岗位持续收缩。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">小美 的判断：与其在收缩的旧赛道排队，不如证明自己就是"会用 AI 的新型研究员"——<b>招聘要求变化的方向，就是差异化的方向。</b></div>
+    <p class="src">来源：Fortune 2025-01-17（Solomon 原话）· American Banker · The Digital Banker · 财联社 · 21 经济网 2026-03-15（校招要求实例）</p>
+  </div>
+</section>
+
+<!-- 18 小A知识库 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 案例·金融 · 第 1-2 周</div>
+    <h2>小美 的地基：一个自动更新的投研知识库</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># 小美 的服务器上，两个 cron 任务：</span>
+<span class="o">30 15 * * 1-5  ~/fetch-market.sh</span>
+<span class="cm"># ↑ 每个交易日收盘后抓行情+行业新闻入库</span>
+<span class="o">0 8 * * *  claude -p "读昨日数据，生成一页晨报：
+  三大指数、我跟踪的消费行业异动、3 条要闻
+  及其影响" >> ~/briefs/$(date +%F).md</span>
+<span class="cm"># ↑ 每天 8 点，晨报自动出现在手机上</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>选一个行业深耕</h3><p>不贪大盘，选一个自己有体感的行业（小美 选了消费）。知识库收录：龙头财报、行业数据源、券商公开研报的<b style="color:var(--ink)">分析框架</b>。</p></div>
+        <div class="card"><h3>第一讲练习的完全体</h3><p>练习一（数据基建）+ 练习二（投资分析）拼起来，就是这套系统——<b style="color:var(--ink)">当时的作业，现在是求职武器</b>。</p></div>
+        <div class="card"><h3>两周后的变化</h3><p>和同学聊行业，小美 张口就是最新数据——<b style="color:var(--ink)">不是他记性好，是他的系统每天在替他读盘</b>。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 小A杀手锏 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 案例·金融 · 第 3-4 周 · 杀手锏</div>
+    <h2>杀手锏作品：一条能现场演示的研报流水线</h2>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① 数据</div><p>管道自动拉取目标公司财务数据与行业数据</p></div>
+      <div class="st"><div class="k">② 分析</div><p>AI 按券商研报框架做财务分析 + 可比公司估值</p></div>
+      <div class="st"><div class="k">③ 成稿</div><p>图表 + 正文自动生成初稿，<b style="color:var(--ink)">小美 负责观点与修订</b></p></div>
+      <div class="st"><div class="k">④ 发布</div><p>GitHub 存流水线代码，公众号/知乎发终稿</p></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>产出：1 份深度 + 每周 1 份跟踪</h3><p>一份 30 页深度研报打底，之后每周一份 2 页跟踪简报——<b style="color:var(--ink)">持续更新的作品比一次性大作更能证明系统能力</b>。</p></div>
+      <div class="card"><h3>为什么这是敲门砖</h3><p>面试官问"你会用 AI 吗"，别人答"会用 ChatGPT"，小美 递出链接："这是我的流水线，<b style="color:var(--ink)">数据到今天早上</b>。"——这一刻，他和其他候选人不在同一个类别里。</p></div>
+    </div>
+    <div class="note">诚实标注：报告首页写明"数据与初稿由自建 AI 流水线生成，观点与修订为本人完成"——<b>这行字不是免责声明，是能力声明。</b></div>
+  </div>
+</section>
+
+<!-- 20 小A简历面试 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · 案例·金融 · 第 5-6 周</div>
+    <h2>简历上怎么写，面试里怎么答</h2>
+    <div class="grid g2">
+      <div class="card"><h3>简历措辞（对照）</h3><p>❌ "熟练使用 AI 工具，对行业研究有浓厚兴趣"<br>✅ "自建<b style="color:var(--ink)">自动化投研流水线</b>（数据抓取→财务分析→研报生成），覆盖消费行业 12 家公司，日更行情简报 90 期，深度研报获 XX 阅读"——每个数字都能点开验证。</p></div>
+      <div class="card"><h3>专业面 AI 陪练清单</h3><p>三张报表勾稽关系、DCF 假设被挑战怎么辩护、行业景气度判断依据——让 AI 按目标券商风格<b style="color:var(--ink)">连续追问三层</b>；再用公司知识库押题：最近研报观点、首席的公开判断。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">小美 面试的高光时刻不是背对了概念，而是被追问估值时说："我的模型里这个假设改 1 个点，目标价变 8%——<b>所以我把敏感性分析设成了流水线的默认输出</b>。"面试官记住的是这句。</div>
+  </div>
+</section>
+
+<!-- 21 D04 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">04</div>
+    <h2>案例二：软件小帅</h2>
+    <p class="lead">计算机专业大三，目标：AI 应用 / Agent 工程师。初级程序员岗位在缩，但他瞄准的是扩张最快的那一块——用作品证明自己已经在门里。</p>
+  </div>
+</section>
+
+<!-- 22 小B处境 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 案例·软件 · 先看战场</div>
+    <h2>最冷的冬天，最热的赛道</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">−20%</div><div class="l">22–25 岁软件开发者就业较 2022 年峰值的降幅；新毕业生软件岗位发布量下降 28%——<b>传统初级码农是重灾区</b></div><div class="s">斯坦福 2025-08 · 行业招聘市场报告 2026</div></div>
+      <div class="stat"><div class="v num hl-cn">1,205 / 2,559</div><div class="l">字节 2026 校招官网岗位中 <b>AI 相关岗位占比近半</b>，"AI 智能体应用开发工程师"成为新岗名；阿里校招 AI 岗占比超 60%</div><div class="s">证券时报 · 第一财经 2026</div></div>
+      <div class="stat"><div class="v num">400 万</div><div class="l">麦肯锡预测的 2030 年中国 AI 人才<b>缺口</b>（需求 600 万）——冬天是结构性的，热带也是</div><div class="s">麦肯锡，转引自 2026 校招报道</div></div>
+    </div>
+    <div class="note">JD 已经改写：2026 年初级岗位典型要求——"熟悉 AI 辅助开发工作流、<b>能审查验证 AI 生成的代码</b>、会用至少两种 AI 编程工具"。84% 的开发者已常态使用 AI 编程（Stack Overflow 调查口径）。<b>小帅 要证明的不是"会写代码"，而是"会带着 AI 写代码"。</b></div>
+    <p class="src">来源：Stanford Digital Economy Lab · Final Round AI 2026 · 证券时报 · 第一财经 · daily.dev 2026</p>
+  </div>
+</section>
+
+<!-- 23 小B作品集 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 案例·软件 · 第 1-2 周</div>
+    <h2>小帅 的 GitHub：三个真项目，不要十个玩具</h2>
+    <div class="grid g3">
+      <div class="card"><h3>项目一 · 已有的</h3><p>第二讲部署的 Hermes + 自己沉淀的<b style="color:var(--ink)">技能包</b>（宿舍报修 bot、课表提醒）——整理成独立仓库，README 写清架构与踩坑。<b style="color:var(--ink)">你用过的工具本身就是项目素材。</b></p></div>
+      <div class="card"><h3>项目二 · 练习来的</h3><p>第一讲练习一的数据管道，升级成完整项目：抓取 + 清洗 + API + 一页可视化，<b style="color:var(--ink)">带单元测试和 CI</b>——展示的是工程素养，不只是功能。</p></div>
+      <div class="card"><h3>项目三 · 贡献的</h3><p>给用过的开源项目（龙虾 / Hermes 生态）提 1-2 个<b style="color:var(--ink)">被合并的 PR</b>——哪怕是文档修复。被陌生 maintainer 认可，比自夸一万句都硬。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">每个仓库标配：像样的 README（是什么/怎么跑/效果图）、干净的 commit 历史（AI 时代它就是你的<b>工作过程录像</b>）、一条 CI 绿勾。第二讲教的每一样，这里都在变现。</div>
+  </div>
+</section>
+
+<!-- 24 小B杀手锏 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 案例·软件 · 第 3-4 周 · 杀手锏</div>
+    <h2>杀手锏作品：从零到上线的 Agent 应用</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># 小帅 的项目：「求职漏斗 Agent」——用自己的痛点练手</span>
+<span class="cm"># 功能：网申截止提醒 / 投递状态跟踪 / 面试前
+#       自动汇总该公司知识库并推送到 Telegram</span>
+<span class="p">$</span> git log --oneline | head -4
+<span class="o">e7a12f9 增加面试前公司简报推送（含测试）
+b3c90d1 修复截止日时区 bug，补回归测试
+a1f4e20 接入 Telegram 通知
+9d02c11 初始版本：漏斗数据模型 + CRUD</span>
+<span class="cm"># 完整走了第一讲第 08 章工作流：
+# 知识库 → 目标书 → 写码带测试 → commit → 审查 → 上线</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>为什么选这个题</h3><p>解决<b style="color:var(--ink)">自己的真实痛点</b>（他真的在找工作），需求、迭代、复盘全是真的——面试官一听就知道不是模板项目。</p></div>
+        <div class="card"><h3>面试可以现场演示</h3><p>手机上点开 Telegram："这是它今早提醒我的三个截止日。"然后打开架构图讲技术选型——<b style="color:var(--ink)">Demo + 架构 + 取舍，面试三连击</b>。</p></div>
+        <div class="card"><h3>顺手的复利</h3><p>这个 Agent 本身就在帮他找工作——<b style="color:var(--ink)">作品和求职互相加速</b>，这是选题的最高境界。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 25 小B算法面 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 案例·软件 · 第 5-6 周</div>
+    <h2>算法与系统设计：AI 当陪练，不当枪手</h2>
+    <div class="grid g3">
+      <div class="card"><h3>刷题的正确姿势</h3><p>做不出来先别看答案——让 AI <b style="color:var(--ink)">给提示不给解</b>（"只提示数据结构方向"）；做完让它出<b style="color:var(--ink)">同类变形题</b>验证是真懂还是背过。</p></div>
+      <div class="card"><h3>系统设计模拟</h3><p>让 AI 扮面试官："设计一个课表提醒系统"，步步追问并发、存储、降级——<b style="color:var(--ink)">小帅 的 Agent 项目就是现成谈资</b>，从背题变成聊自己的架构。</p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ 一条硬红线</h3><p><b style="color:var(--ink)">线上笔试不代考</b>。大厂反作弊在升级，被抓进黑名单影响的不止一家公司——用 AI 提升真实水平，别用它伪造水平。</p></div>
+    </div>
+    <div class="note">面试里被问"这题你用 AI 怎么做"，正确答案不是尴尬，而是展示工作流："我会先让它列边界条件，然后自己写核心逻辑，再让它 review——<b>就像我 GitHub 里每个 commit 那样。</b>"</div>
+  </div>
+</section>
+
+<!-- 26 小B定位 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · 案例·软件 · 收口</div>
+    <h2>"会指挥 AI 的工程师"，怎么写才不空洞</h2>
+    <div class="grid g2">
+      <div class="card"><h3>简历措辞（对照）</h3><p>❌ "熟悉 ChatGPT、Claude 等 AI 工具"<br>✅ "以 <b style="color:var(--ink)">AI 结对 + 测试驱动</b>流程独立交付求职漏斗 Agent（Python/FastAPI，34 个 commit，测试覆盖 85%），并向开源项目 Hermes 贡献 2 个被合并的 PR"——工具不值钱，<b style="color:var(--ink)">用工具交付的东西才值钱</b>。</p></div>
+      <div class="card"><h3>面试叙事（三句话）</h3><p>哪些我写（核心逻辑与架构决策）、哪些 AI 写（样板代码与测试用例初稿）、我怎么<b style="color:var(--ink)">保证 AI 写的是对的</b>（review + 测试 + 灰度）——这三句话，就是 2026 年 JD 里"能审查验证 AI 生成代码"的标准答案。</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">两个案例的共同内核：<b>小美 和小帅 卖的都不是"会用 AI"，而是"用 AI 做成了东西"</b>——一个可验证、可演示、可追问的东西。</div>
+  </div>
+</section>
+
+<!-- 27 D05 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">05</div>
+    <h2>红线与心法</h2>
+    <p class="lead">AI 给求职加了杠杆——杠杆放大的是本金，也放大亏空。三条红线守住底线，一个心法守住方向。</p>
+  </div>
+</section>
+
+<!-- 28 红线 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · 红线与心法 · 不可逾越</div>
+    <h2>三条红线，碰一条毁所有</h2>
+    <div class="grid g3">
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>① 简历不造假</h3><p>AI 让编故事变容易，也让<b style="color:var(--ink)">背调变容易</b>。数字、职务、时间段，一查一个准——被标记后行业内共享黑名单。</p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>② 笔试面试不代考</h3><p>AI 代考 = 作弊，反作弊系统（摄像头行为分析、代码指纹）也在用 AI 升级。<b style="color:var(--ink)">你在和 AI 比作弊，赢不了。</b></p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>③ 被问必坦承</h3><p>"这份作品 AI 参与了多少？"——标准答案是打开工作流讲流程。<b style="color:var(--ink)">坦承用法是加分项，掩饰用法是一票否决项。</b></p></div>
+    </div>
+    <div class="note">面试官现在都闻得出"AI 味"：华丽但空洞的形容词、说不出细节的项目、追问两层就塌方。<b>AI 生成的内容你没消化过，比不用 AI 更减分。</b></div>
+  </div>
+</section>
+
+<!-- 29 心法 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · 红线与心法 · 一个心法</div>
+    <blockquote>
+      AI 是放大器：<br>你有作品，它放大作品；<br>你只有空白，它放大<b class="hl-us">空白</b>。
+    </blockquote>
+    <cite>所以顺序不能反：先用 AI 做出真东西（哪怕小），再用 AI 包装和传播它。作品集是复利资产——第一讲说"GitHub = 新简历"，这一讲你应该已经明白：它不是简历的附件，它是简历本身。</cite>
+  </div>
+</section>
+
+<!-- 30 D06+行动清单 -->
+<section class="slide">
+  <div class="inner">
+    <div class="no num" style="font-size:clamp(50px,7vw,100px);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3)">06</div>
+    <h2>三十天行动清单</h2>
+    <div class="grid g4">
+      <div class="card"><h3>第 1 周 · 地基</h3><p>□ 建知识库：拆 50-100 份目标 JD<br>□ 写定位书（一页）<br>□ 差距清单 + 补课计划<br>□ cron 情报站跑起来</p></div>
+      <div class="card"><h3>第 2 周 · 弹药</h3><p>□ 启动杀手锏作品（研报流水线 / Agent 应用）<br>□ 简历 v1 + AI 三轮打磨<br>□ GitHub 仓库整理 + README</p></div>
+      <div class="card"><h3>第 3 周 · 开火</h3><p>□ 投递漏斗表跑起来，每天投 3-5 个<br>□ 每天一场 AI 模拟面试<br>□ 杀手锏作品发布第一版</p></div>
+      <div class="card"><h3>第 4 周 · 迭代</h3><p>□ 用漏斗数据复盘：修最弱一环<br>□ 作品周更一次<br>□ 薪酬调研 + 谈判预演</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">这张清单本身就是一个项目——按第一讲第 08 章的工作流推进它：每晚 git commit 你的求职仓库，每周更新你自己的 CLAUDE.md。<b>找工作，就是你的第一个正式交付。</b></div>
+  </div>
+</section>
+
+<!-- 31 结尾 -->
+<section class="slide">
+  <div class="inner" style="text-align:center;align-items:center">
+    <p class="sub" style="letter-spacing:.3em;margin-bottom:2em">最后一页</p>
+    <h1 style="font-size:clamp(30px,4.2vw,58px)">机会不会先给准备好的人，<br>会先给<span class="hl-us">已经做出东西</span>的人。</h1>
+    <p class="lead" style="margin:2em auto 0;max-width:30em">第一讲说 AI 给了普通人翅膀。现在你知道了：翅膀不是用来等风的——今晚就开始第 1 周的清单。</p>
+  </div>
+</section>
+
+</div>
+
+<div id="hud">
+  <span id="pg" class="num" aria-live="polite"></span>
+  <button id="first" aria-label="首页" title="首页">«</button>
+  <button id="prev" aria-label="上一页" title="上一页">‹</button>
+  <button id="next" aria-label="下一页" title="下一页">›</button>
+  <button id="last" aria-label="末页" title="末页">»</button>
+  <button id="lang" title="Switch to English">EN</button>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),
+      bar=document.getElementById('bar'),pg=document.getElementById('pg'),
+      i=Math.min(Math.max((parseInt(location.hash.slice(1),10)||1)-1,0),slides.length-1);
+  function show(n){
+    n=Math.min(Math.max(n,0),slides.length-1);
+    slides[i].classList.remove('active');
+    i=n;slides[i].classList.add('active');slides[i].scrollTop=0;
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    pg.textContent=String(i+1).padStart(2,'0')+' / '+slides.length;
+    history.replaceState(null,'','#'+(i+1));
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(slides.length-1);}
+    else if(e.key==='f'||e.key==='F'){
+      if(document.fullscreenElement)document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(function(){});
+    }
+  });
+  document.getElementById('next').addEventListener('click',function(){show(i+1)});
+  document.getElementById('prev').addEventListener('click',function(){show(i-1)});
+  document.getElementById('first').addEventListener('click',function(){show(0)});
+  document.getElementById('last').addEventListener('click',function(){show(slides.length-1)});
+  var lb=document.getElementById('lang');
+  if(!/\.html$/.test(location.pathname)){lb.style.display='none';}
+  else{
+    var isEN=/\.en\.html$/.test(location.pathname);
+    lb.textContent=isEN?'中':'EN';
+    lb.title=isEN?'切换到中文':'Switch to English';
+    lb.addEventListener('click',function(){
+      var p=location.pathname;
+      location.href=(isEN?p.replace(/\.en\.html$/,'.html'):p.replace(/\.html$/,'.en.html'))+location.hash;
+    });
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('a,button,#hud'))return;
+    var s=window.getSelection&&window.getSelection();
+    if(s&&s.toString())return;
+    show(i+1);
+  });
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+  document.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>60)show(i+(dx<0?1:-1));
+    tx=null;
+  });
+  show(i);
+
+  var cv=document.getElementById('fx');
+  if(cv&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var ctx=cv.getContext('2d'),W,H,pts=[],seed=7;
+    function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+    function size(){W=cv.width=cv.offsetWidth*devicePixelRatio;H=cv.height=cv.offsetHeight*devicePixelRatio;}
+    size();addEventListener('resize',size);
+    for(var k=0;k<46;k++)pts.push({x:rnd()*1.2-.1,y:rnd()*1.2-.1,vx:(rnd()-.5)*.0004,vy:(rnd()-.5)*.0004});
+    (function tick(){
+      if(slides[i]&&slides[i].classList.contains('cover')){
+        ctx.clearRect(0,0,W,H);
+        for(var a=0;a<pts.length;a++){
+          var p=pts[a];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-.15||p.x>1.15)p.vx*=-1;if(p.y<-.15||p.y>1.15)p.vy*=-1;
+          for(var b=a+1;b<pts.length;b++){
+            var q=pts[b],dx=(p.x-q.x)*W,dy=(p.y-q.y)*H,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<W*.11){ctx.strokeStyle='rgba(86,200,245,'+(0.09*(1-d/(W*.11)))+')';
+              ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x*W,p.y*H);ctx.lineTo(q.x*W,q.y*H);ctx.stroke();}
+          }
+          ctx.fillStyle='rgba(86,200,245,.35)';
+          ctx.beginPath();ctx.arc(p.x*W,p.y*H,1.6*devicePixelRatio,0,7);ctx.fill();
+        }
+      }
+      requestAnimationFrame(tick);
+    })();
+  }
+})();
+</script>

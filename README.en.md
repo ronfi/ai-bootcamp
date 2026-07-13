@@ -12,6 +12,7 @@ Slide decks for a student-facing AI training series. The goal: understand the te
 |---|---------|--------------|--------|--------|
 | 1 | **The AI Revolution, Live** — see the big picture, master the tools | [▶ EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) | [`ai-training-deck.en.html`](ai-training-deck.en.html) | 46 |
 | 2 | **Essential Tools Bootcamp** — terminal · persistent sessions · Git · AI agents | [▶ EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) | [`basic-tools-deck.en.html`](basic-tools-deck.en.html) | 47 |
+| 3 | **Land Your Dream Job with AI** — the rules · the playbook · two full case studies · a 30-day plan | [▶ EN](https://ronfi.github.io/ai-bootcamp/ai-career-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/ai-career-deck.html) | [`ai-career-deck.en.html`](ai-career-deck.en.html) | 32 |
 
 ### Lecture 1 · The AI Revolution, Live
 
@@ -37,6 +38,17 @@ Fully hands-on; every terminal demo can be typed along:
 5. **Claude Code** — install, daily workflow, safety & permissions, CLAUDE.md, official Remote Control from your phone
 6. **Hermes Agent** — deploy a 24/7 resident butler agent on a cloud server, hooked into WeChat/Telegram
 7. **AI for daily life** — an email secretary, a message sentry, a content pipeline
+
+### Lecture 3 · Land Your Dream Job with AI
+
+The capstone application of the first two lectures. Thesis: "Your rival isn't AI — it's the job-seeker who uses AI well."
+
+1. **The rules have changed** — ice-and-fire data on entry-level jobs vs. the AI skill premium, the "jobs AI replaces first" rankings (Anthropic measured / Microsoft viral / China data), recruiters use AI too
+2. **The AI job-hunt workflow** — knowledge base, positioning brief, résumé engineering, portfolio, application funnel, mock interviews, offer negotiation
+3. **Case 1 · Mei (finance)** — targeting equity research: an auto-updating research knowledge base plus a demo-ready report pipeline
+4. **Case 2 · Shuai (software)** — targeting agent engineering: a three-project GitHub plus a job-funnel agent
+5. **Red lines & the mindset** — no fabrication, no proxy tests, full candor; "AI is an amplifier"
+6. **The 30-day action plan** — week by week, starting tonight
 
 ## How to use
 

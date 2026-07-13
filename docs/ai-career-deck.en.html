@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Land Your Dream Job with AI · Lecture 3</title>
+</head>
+<body>
+<title>Find Your Dream Job with AI · Training Slides</title>
+<style>
+  :root{
+    --bg:#0A0F1E; --panel:#10182E; --panel-2:#0D1426; --line:#1E2A47;
+    --ink:#E9EDF7; --ink-2:#98A4C0; --ink-3:#5E6B8C;
+    --us:#56C8F5; --us-bar:#1E9BD2; --cn:#F5A340; --cn-bar:#C97A15;
+    --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+    font-size:clamp(17px,1.65vw,36px);line-height:1.6;overflow:hidden}
+  .deck{position:fixed;inset:0}
+  .slide{position:absolute;inset:0;padding:3.5vh 3vw 6vh;overflow-y:auto;
+    opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .38s ease,transform .38s ease,visibility 0s linear .38s}
+  .slide.active{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  @media (prefers-reduced-motion:reduce){.slide{transition:none;transform:none}}
+  .inner{max-width:94vw;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+  #bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--us-bar),var(--us));z-index:10;transition:width .3s ease}
+  #hud{position:fixed;right:2.2vw;bottom:2.4vh;z-index:10;display:flex;align-items:center;gap:14px;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+  #hud button{background:var(--panel);border:1px solid var(--line);color:var(--ink-2);width:34px;height:34px;border-radius:8px;font-size:15px;cursor:pointer}
+  #hud button:hover{color:var(--ink);border-color:var(--ink-3)}
+  #hud button:focus-visible{outline:2px solid var(--us);outline-offset:2px}
+
+  .eyebrow{font-size:clamp(13px,1vw,21px);letter-spacing:.22em;color:var(--ink-3);text-transform:uppercase;margin-bottom:1.6em;display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--ink-3)}
+  h1{font-size:clamp(44px,6.5vw,124px);line-height:1.15;margin:0 0 .3em;font-weight:800;letter-spacing:.01em;text-wrap:balance}
+  h2{font-size:clamp(30px,3.6vw,74px);line-height:1.25;margin:0 0 .8em;font-weight:700;text-wrap:balance}
+  h3{font-size:1.05em;margin:0 0 .5em;font-weight:700}
+  p{margin:.4em 0}
+  .lead{color:var(--ink-2);font-size:1.06em;max-width:34em}
+  .num{font-variant-numeric:tabular-nums}
+  .hl-us{color:var(--us);font-weight:700}
+  .hl-cn{color:var(--cn);font-weight:700}
+  code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:.08em .4em;color:var(--us)}
+  .src{margin-top:auto;padding-top:2em;font-size:clamp(12px,.85vw,18px);color:var(--ink-3);line-height:1.6}
+  .note{font-size:.85em;color:var(--ink-2);background:var(--panel-2);border-left:3px solid var(--cn-bar);padding:.7em 1em;border-radius:0 8px 8px 0;margin-top:1.2em}
+
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media (max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.15em 1.25em}
+  .card h3{display:flex;align-items:baseline;gap:.5em;flex-wrap:wrap}
+  .card p{font-size:.92em;color:var(--ink-2)}
+  .tag{font-size:clamp(12px,.8vw,17px);padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2);letter-spacing:.06em;white-space:nowrap;font-weight:500}
+  .tag.us{color:var(--us);border-color:rgba(86,200,245,.4)}
+  .tag.cn{color:var(--cn);border-color:rgba(245,163,64,.4)}
+  .tag.warn{color:#F58A8A;border-color:rgba(245,138,138,.4)}
+  .tag.ok{color:#6FD9A6;border-color:rgba(111,217,166,.4)}
+
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.2em 1.3em}
+  .stat .v{font-size:clamp(36px,4.6vw,92px);font-weight:800;line-height:1.1;letter-spacing:-.015em}
+  .stat .l{color:var(--ink-2);font-size:.9em;margin-top:.45em}
+  .stat .s{color:var(--ink-3);font-size:.78em;margin-top:.3em}
+
+  table{border-collapse:collapse;width:100%;font-size:.92em}
+  th{color:var(--ink-3);font-weight:600;text-align:left;letter-spacing:.05em;font-size:.85em}
+  th,td{padding:.62em .8em;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:700}
+  .tblwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.4em .6em}
+
+  .term{background:#060A13;border:1px solid var(--line);border-radius:12px;padding:.9em 1.2em 1.1em;font-family:var(--mono);font-size:.8em;line-height:1.8;overflow-x:auto}
+  .term .bar{display:flex;gap:7px;margin-bottom:.7em}
+  .term .bar i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+  .term .bar i:first-child{background:#E0655A}.term .bar i:nth-child(2){background:#E0A33E}.term .bar i:nth-child(3){background:#5FBF6B}
+  .term pre{margin:0;font-family:inherit;white-space:pre-wrap}
+  .term .p{color:var(--us);font-weight:700}
+  .term .o{color:var(--ink-2)}
+  .term .cm{color:var(--ink-3)}
+  .term .k{color:var(--cn)}
+
+  blockquote{margin:0;font-size:clamp(24px,3vw,58px);line-height:1.55;font-weight:700;text-wrap:balance;padding-left:.85em;border-left:4px solid var(--us-bar)}
+  cite{display:block;font-style:normal;color:var(--ink-3);font-size:clamp(14px,1vw,21px);margin-top:1.4em}
+
+  .divider .no{font-size:clamp(70px,11vw,210px);font-weight:800;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);letter-spacing:.02em}
+  .divider h2{font-size:clamp(36px,5.2vw,100px);margin:.25em 0 .4em}
+  .divider .lead{font-size:1.15em}
+
+  .cover{position:relative}
+  .cover canvas{position:absolute;inset:0;width:100%;height:100%}
+  .cover .inner{position:relative;align-items:center;text-align:center}
+  .cover .eyebrow::after{content:"";width:22px;height:1px;background:var(--ink-3)}
+  .sub{font-size:clamp(18px,2vw,38px);color:var(--ink-2);font-weight:400;letter-spacing:.12em}
+  .hint{margin-top:5em;color:var(--ink-3);font-size:clamp(13px,.9vw,19px)}
+  kbd{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-family:var(--mono);font-size:.85em}
+
+  .steps{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+  .steps .st{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);padding:1em 1.1em;position:relative}
+  .steps .st:first-child{border-radius:12px 0 0 12px}
+  .steps .st:last-child{border-radius:0 12px 12px 0}
+  .steps .st+.st{border-left:none}
+  .steps .k{font-size:.78em;color:var(--us);letter-spacing:.15em;font-weight:700}
+  .steps .st p{font-size:.85em;color:var(--ink-2)}
+
+  .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch}
+  @media (max-width:820px){.vs{grid-template-columns:1fr}}
+  .vs .mid{display:flex;align-items:center;color:var(--ink-3);font-weight:800;font-size:1.3em}
+  .panel-us{border-top:3px solid var(--us-bar)}
+  .panel-cn{border-top:3px solid var(--cn-bar)}
+
+  .dense{font-size:.88em}
+  .dense h2{font-size:clamp(26px,3vw,58px);margin-bottom:.6em}
+  .dense .grid{gap:12px}
+  .dense .card{padding:.85em 1em}
+  .dense .stat{padding:.9em 1.1em}
+  .dense .stat .v{font-size:clamp(28px,3.4vw,52px)}
+  .dense .note{margin-top:.8em;padding:.55em .9em}
+  .dense .src{padding-top:1.2em}
+
+  ul.tight{margin:.3em 0;padding-left:1.2em}
+  ul.tight li{margin:.42em 0;color:var(--ink-2)}
+  ul.tight li b{color:var(--ink)}
+</style>
+
+<div id="bar"></div>
+<div class="deck" id="deck">
+
+<!-- 1 封面 -->
+<section class="slide cover">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">AI Training Series · Session 3 · July 2026</div>
+    <h1>Find Your Dream Job with AI</h1>
+    <p class="sub">Rules · Method · Two Full Case Studies · 30 Days of Action</p>
+    <p class="hint"><kbd>←</kbd> <kbd>→</kbd> or Space to navigate · <kbd>F</kbd> fullscreen · 32 slides</p>
+  </div>
+</section>
+
+<!-- 2 路线图 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">Today's Roadmap</div>
+    <h2>Your rival isn't AI —<br>it's the <span class="hl-us">job-seeker who uses AI well</span></h2>
+    <p class="lead" style="margin-bottom:1em">Session 1 mapped the landscape, Session 2 put the tools in your hands — this session points all of it at the battlefield that matters most: your own career.</p>
+    <div class="steps">
+      <div class="st"><div class="k">01 · New Rules</div><p>Entry-level jobs are shrinking, AI skills are commanding a premium, and your résumé's first screener may not be human</p></div>
+      <div class="st"><div class="k">02 · The Method</div><p>The AI job-search workflow: knowledge base → résumé → portfolio → interviews</p></div>
+      <div class="st"><div class="k">03 · Case · Finance</div><p>Mei's road into sell-side equity research: a report pipeline</p></div>
+      <div class="st"><div class="k">04 · Case · Software</div><p>Shuai's road to Agent engineer: the portfolio is the résumé</p></div>
+      <div class="st"><div class="k">05 · Red Lines & Mindset</div><p>AI amplifies the real you — it doesn't fabricate a fake one</p></div>
+      <div class="st"><div class="k">06 · Action</div><p>A 30-day checklist, starting tonight</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 D01 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">01</div>
+    <h2>The Rules of the Game Have Changed</h2>
+    <p class="lead">This is one of the hardest new-grad markets in decades — and the one where ordinary people hold the most leverage. Both are true at once. First, read the table you're playing at.</p>
+  </div>
+</section>
+
+<!-- 4 冰 -->
+<section class="slide dense" style="padding-top:2.2vh;padding-bottom:2.5vh">
+  <div class="inner">
+    <div class="eyebrow" style="margin-bottom:.7em">01 · New Rules · Cold Water First</div>
+    <h2 style="margin-bottom:.5em">Ice: entry-level jobs are being eaten by AI</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">−13%</div><div class="l">Employment drop for <b>22–25-year-olds</b> in AI-exposed occupations, while <b>senior staff in the same roles grew 6–9%</b> — AI is eating the "entry", not the "job"</div><div class="s">Stanford Digital Economy Lab, on ADP payroll data covering tens of millions, 2025-08</div></div>
+      <div class="stat"><div class="v num">1/3</div><div class="l">Share of employers already using AI to <b>replace entry-level hires</b> instead of recruiting; Goldman Sachs estimates AI trims US employment by ~16,000 jobs a month</div><div class="s">GMAC survey 2026-06 · Goldman Sachs 2026-04</div></div>
+      <div class="stat"><div class="v num">12.7M</div><div class="l">China's college graduating class of 2026 (up 480K year on year), an all-time high</div><div class="s">Ministry of Education, 2025-11-20</div></div>
+    </div>
+        <div class="note">One more cut: US tech shed over 150,000 jobs in H1 2026, with AI listed as the No. 1 cause of layoffs for 4 straight months (~48% attributed to AI and automation — the attribution may be inflated, but the direction is not in dispute).</div>
+    <div class="card" style="margin-top:26px;margin-bottom:0;padding:.8em 1.2em;width:58%;margin-left:auto;margin-right:auto">
+      <h3 style="font-size:.92em;color:var(--ink-2);font-weight:600">New college graduates in China (×10,000)<span class="hl-cn"> — your same-age competition grows every single year</span></h3>
+      <svg viewBox="0 0 900 268" width="100%" style="margin-top:.4em" role="img" aria-label="Line chart: China's annual college graduates climbed from 7.95 million in 2017 to a projected 12.7 million in 2026, up 60% in ten years">
+        <g stroke="#1E2A47" stroke-width="1">
+          <line x1="60" y1="178" x2="840" y2="178"/><line x1="60" y1="109" x2="840" y2="109"/><line x1="60" y1="40" x2="840" y2="40"/>
+        </g>
+        <g font-size="15" fill="#5E6B8C" class="num">
+          <text x="52" y="183" text-anchor="end">900</text><text x="52" y="114" text-anchor="end">1100</text><text x="52" y="45" text-anchor="end">1300</text>
+        </g>
+        <path d="M60 215 L144 206 L229 201 L313 187 L398 175 L482 117 L566 89 L651 82 L735 67 L820 50 L820 230 L60 230 Z" fill="rgba(30,155,210,.14)"/>
+        <path d="M60 215 L144 206 L229 201 L313 187 L398 175 L482 117 L566 89 L651 82 L735 67 L820 50" fill="none" stroke="#1E9BD2" stroke-width="3.5" stroke-linejoin="round"/>
+        <g fill="#1E9BD2">
+          <circle cx="60" cy="215" r="5"/><circle cx="144" cy="206" r="5"/><circle cx="229" cy="201" r="5"/><circle cx="313" cy="187" r="5"/><circle cx="398" cy="175" r="5"/><circle cx="482" cy="117" r="5"/><circle cx="566" cy="89" r="5"/><circle cx="651" cy="82" r="5"/><circle cx="735" cy="67" r="5"/>
+        </g>
+        <circle cx="820" cy="50" r="8" fill="#C97A15" stroke="#0A0F1E" stroke-width="2.5"/>
+        <text x="66" y="241" font-size="16" fill="#98A4C0" class="num">795</text>
+        <text x="826" y="33" text-anchor="end" font-size="19" font-weight="800" fill="#F5A340" class="num">1,270</text>
+        <text x="430" y="64" text-anchor="middle" font-size="18" font-weight="700" fill="#F5A340">+475 (×10k) in 10 yrs — up 60%</text>
+        <g font-size="14.5" fill="#5E6B8C" text-anchor="middle" class="num">
+          <text x="60" y="263">2017</text><text x="144" y="263">2018</text><text x="229" y="263">2019</text><text x="313" y="263">2020</text><text x="398" y="263">2021</text><text x="482" y="263">2022</text><text x="566" y="263">2023</text><text x="651" y="263">2024</text><text x="735" y="263">2025</text><text x="820" y="263" fill="#F5A340" font-weight="700">2026E</text>
+        </g>
+      </svg>
+    </div>
+    <p class="src">Sources: Stanford Digital Economy Lab · Fortune 2026-04 · Ministry of Education annual bulletins / Xinhua 2025-11 · TechTimes 2026-07</p>
+  </div>
+</section>
+
+<!-- 4b 淘汰榜 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">01 · New Rules · That Viral Ranking</div>
+    <h2>"The jobs AI eliminates first" — the original list looks like this</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="card" style="padding:1em 1.3em">
+        <h3 style="font-size:.92em;color:var(--ink-2);font-weight:600">Measured (Anthropic 2026-03): the share of each occupation's tasks already being done by AI</h3>
+        <div style="display:grid;grid-template-columns:9.5em 1fr;gap:.5em 1em;align-items:center;margin-top:.7em" role="img" aria-label="Bar chart: computer programmers 75%, customer service reps 70%, data entry clerks 67%, medical records specialists 67%, market research analysts 65%, sales representatives 63%, financial and investment analysts 57%, software QA analysts 52%">
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">Computer programmers</div><div style="height:1em;width:74%;background:var(--cn-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;font-weight:700;color:var(--cn)">75%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">Customer service reps</div><div style="height:1em;width:69%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">70%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">Data entry clerks</div><div style="height:1em;width:66%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">67%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">Medical records specialists</div><div style="height:1em;width:66%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">67%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">Market research analysts</div><div style="height:1em;width:64%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">65%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">Sales representatives</div><div style="height:1em;width:62%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">63%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">Financial/investment analysts</div><div style="height:1em;width:56%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">57%</span></div>
+          <div style="text-align:right;color:var(--ink-2);font-size:.88em">Software QA analysts</div><div style="height:1em;width:51%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);font-size:.85em;color:var(--ink)">52%</span></div>
+        </div>
+        <p style="font-size:.82em;color:var(--ink-3);margin:.8em 0 0">Method: the share of an occupation's tasks "already being automated by AI" in real Claude usage data — not a forecast, a measurement. Programmers rank first: exactly the reality Mei and Shuai have to face.</p>
+      </div>
+      <div style="display:grid;gap:12px">
+        <div class="card"><h3>The viral version · Microsoft's "AI applicability" Top 10 <span class="tag">200K Copilot conversations</span></h3><p style="line-height:1.9">① Interpreters & translators ② Historians ③ Writers & authors ④ Service sales representatives ⑤ CNC tool programmers ⑥ Broadcast announcers & radio DJs ⑦ Customer service reps ⑧ Telemarketers ⑨ Political scientists ⑩ Mathematicians<br><span style="color:var(--ink-3);font-size:.85em">The common thread: <b style="color:var(--ink-2)">language and information processing</b> — pure execution, fully digital, no physical presence required.</span></p></div>
+        <div class="card"><h3>In the same study, barely affected</h3><p>Phlebotomists, massage therapists, roofers, dishwashers, water plant operators — <b style="color:var(--ink)">hands-on skill + on-site judgment</b>: AI applicability near zero.</p></div>
+        <div class="card panel-cn"><h3>The China picture <span class="tag cn">PKU NSD × Zhaopin</span></h3><p><b style="color:var(--ink)">Editors/translators</b> score highest of all occupations on the LLM impact index; customer service/operations postings fell over 2 percentage points in two years, sales/BD over 5 — and the bar keeps quietly rising.</p></div>
+      </div>
+    </div>
+    <div class="note">A sedative: Microsoft published a clarification blog stating the data "does not indicate these jobs will be replaced"; Anthropic likewise notes high-exposure occupations show <b>no systematic unemployment yet, though hiring of young workers is slowing</b>. The rankings measure "task overlap" — what gets eliminated isn't the occupation, it's the "pure execution" slice of it. How do you stand on the surviving side? Read on.</div>
+    <p class="src">Sources: Anthropic "Labor Market Impacts of AI" 2026-03-05 / Euronews 2026-03-14 · Microsoft Research arXiv:2507.07935 (checked line by line against official GitHub data) and clarification blog 2025-08-21 · PKU National School of Development × Zhaopin 2024-09</p>
+  </div>
+</section>
+
+<!-- 5 火 -->
+<section class="slide dense">
+  <div class="inner">
+    <div class="eyebrow">01 · New Rules · Now the Fire</div>
+    <h2>Fire: people who can use AI are being fought over</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num hl-us">+62%</div><div class="l">Average <b>salary premium for jobs requiring AI skills</b> worldwide (the 2024 edition said 25% — it more than doubled in two years)</div><div class="s">PwC AI Jobs Barometer 2026, analyzing 1B+ job ads across 27 countries</div></div>
+      <div class="stat"><div class="v num hl-us">8×</div><div class="l">Jobs requiring AI skills grew (69%) at eight times the overall market (9%); AI Engineer ranks No. 1 on LinkedIn's 2026 fastest-growing US jobs</div><div class="s">PwC 2026 · LinkedIn/Forbes 2026-01</div></div>
+      <div class="stat"><div class="v num hl-cn">+74.1%</div><div class="l">China's 2025 year-on-year growth in <b>average monthly new AI-related postings</b> (just 8.5% in 2023); AI roles pay about 2.6× ordinary roles</div><div class="s">BOSS Zhipin "2026 Talent Trends Report" 2026-01</div></div>
+    </div>
+    <div class="card" style="margin-top:12px;padding:.9em 1.3em">
+      <h3 style="font-size:.92em;color:var(--ink-2);font-weight:600">Job posting growth compared (PwC, 1B+ ads across 27 countries)</h3>
+      <div style="display:grid;grid-template-columns:10.5em 1fr;gap:.7em 1em;align-items:center;margin-top:.7em" role="img" aria-label="Bar chart: jobs requiring AI skills grew 69%, the overall job market only 9% — an eightfold gap">
+        <div style="text-align:right;color:var(--ink-2);font-size:.92em">Jobs requiring AI skills</div>
+        <div style="height:1.1em;width:74%;background:var(--us-bar);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);font-size:.9em;font-weight:700;color:var(--us);white-space:nowrap">+69%</span></div>
+        <div style="text-align:right;color:var(--ink-2);font-size:.92em">Overall job market</div>
+        <div style="height:1.1em;width:9.7%;background:var(--ink-3);border-radius:0 4px 4px 0;position:relative"><span class="num" style="position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);font-size:.9em;font-weight:600;color:var(--ink-2);white-space:nowrap">+9%</span></div>
+      </div>
+      <p style="font-size:.85em;color:var(--ink-2);margin:.8em 0 0"><b style="color:var(--ink)" class="num">An 8× speed gap</b> — "tailwind" isn't a metaphor here, it's data.</p>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Read the ice and the fire together: <b>AI hasn't reduced work — it has re-sorted it</b>. "Execution-type" entry jobs are disappearing; "people who can direct AI" are getting more expensive. Your move is not to dodge AI, but to stand on the right side of the dividing line.</div>
+    <p class="src">Sources: PwC AI Jobs Barometer 2026 official press release · WEF citing LinkedIn data 2026-01 · Xinhua / China News Service 2026-01-23</p>
+  </div>
+</section>
+
+<!-- 6 对手也在用 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · New Rules · Both Sides of the Table Have Changed</div>
+    <h2>Your résumé's first reader may not be human</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>The recruiter's AI</h3><p><b class="num" style="color:var(--ink)">61%</b> of employers screen résumés with AI, and <b class="num" style="color:var(--ink)">96%</b> of recruiting professionals use AI in at least one step; AI-led first-round interviews rose from 10% to <b class="num" style="color:var(--ink)">34%</b> in two years — more and more, the one scoring you across the keyboard is an algorithm.</p></div>
+      <div class="card panel-cn"><h3>The candidate's AI</h3><p><b class="num" style="color:var(--ink)">81%</b> of job-seekers already use or plan to use AI in their search; the most common use isn't "ghostwriting" but ATS compatibility checks (64%). <b style="color:var(--ink)">Job-seekers who don't use AI are already the minority.</b></p></div>
+    </div>
+    <div class="note">Two corollaries: ① Your résumé must first pass the <b>machine gate</b> — keywords, structure, parseability; artsy layouts cost you points. ② When 81% of candidates use AI, "using AI" is no longer an edge — <b>"using it better than the rest" is</b> — and that's exactly what today teaches.</div>
+    <p class="src">Sources: TestGorilla 2025 · Resume Now / The Interview Guys 2026 · HireVue 2026 Global AI in Hiring Report · Resume Genius 2026 · Kickresume data</p>
+  </div>
+</section>
+
+<!-- 7 结论 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">01 · New Rules · In One Sentence</div>
+    <blockquote>
+      AI levels the gap in "execution skills" —<br>and widens the gap in "<b class="hl-us">judgment + portfolio + using AI well</b>".
+    </blockquote>
+    <cite>Execution (writing code, building spreadsheets, making decks) keeps getting cheaper with AI; judgment (what to build, is it good, why) and work you can actually show keep getting more expensive. The next five chapters teach you to put every chip on the expensive side.</cite>
+  </div>
+</section>
+
+<!-- 8 D02 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">02</div>
+    <h2>The Method: an AI Job-Search Workflow</h2>
+    <p class="lead">Remember Session 1's "advanced workflow" — knowledge base, brief, iterate, review, ship? Your job search is your first real project. Run the exact same playbook.</p>
+  </div>
+</section>
+
+<!-- 9 知识库 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · The Method · Step 1</div>
+    <h2>Knowledge base: make the target industry your home turf</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">&gt;</span> <span class="k">Here are 100 JDs for "sell-side equity research analyst" I collected (attached).
+Help me: 1) extract the 15 most frequent requirements, ranked by frequency;
+2) split them into "hard gates" (certificates/degrees) vs "fast-learnable skills";
+3) write the output to knowledge-base/jd-analysis.md</span>
+<span class="o">✓ Top 15 high-frequency requirements generated:
+  #1 Financial modeling (mentioned in 87/100)
+  #2 Industry research frameworks (79/100)
+  #3 Python / data processing (61/100, up sharply from last year)…</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Mine 100 JDs</h3><p>Don't guess what the job wants — <b style="color:var(--ink)">let AI count it</b>. The high-frequency requirements are your study syllabus, and year-over-year comparison even shows where the industry is heading.</p></div>
+        <div class="card"><h3>Build target-company dossiers</h3><p>One document per target company: business lines, latest earnings highlights, executives' public remarks, campus-hiring process and past questions — <b style="color:var(--ink)">your ammo depot for the night before the interview</b>.</p></div>
+        <div class="card"><h3>Let the intel update itself</h3><p>cron + Agent watches your target companies daily (news, filings, recruiting accounts); every change flows into the knowledge base automatically — Session 2's scheduled tasks, working for you for the first time.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 定位书 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · The Method · Step 2</div>
+    <h2>Positioning brief: one page on "who I am, where I'm going"</h2>
+    <div class="grid g3">
+      <div class="card"><h3>What I have</h3><p>Courses, projects, internships, skills, certificates — dump it all on the AI and have it re-sort everything <b style="color:var(--ink)">in the recruiter's language</b>: which are assets, which are merely experiences.</p></div>
+      <div class="card"><h3>What I want</h3><p>Industry × role × city × bottom lines (pay/overtime/growth). Only once written down do you notice how many "wants" fight each other — <b style="color:var(--ink)">make the trade-offs before applying</b>, not at the offer stage.</p></div>
+      <div class="card"><h3>Gap list</h3><p>Match "what I have" against the high-frequency JD requirements and have AI produce a gap list plus a <b style="color:var(--ink)">catch-up plan ranked by ROI</b>: what can be closed in two weeks (tools, question banks), and what not to chase (gatekeeping certificates).</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">This is the job-search version of the "goals & constraints spec": feed it first into every later session (résumé edits, mock interviews, cover letters) — <b>the deeper AI knows you, the sharper its help.</b></div>
+  </div>
+</section>
+
+<!-- 11 简历工程 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · The Method · Step 3</div>
+    <h2>Résumé engineering: one résumé per job, robots love it too</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">&gt;</span> <span class="k">Rewrite my résumé against this JD (résumé and positioning brief are in the project).
+Rules: 1) annotate the reason for every change; 2) quantify every result;
+3) use the JD's own wording without keyword stuffing; 4) never invent any experience.</span>
+<span class="o">✓ 11 changes made. Example:
+  Before: "Helped run the student club's social media account"
+  After: "Ran the account solo for 8 months, published 32 posts,
+        top post 12K reads, followers +40%"
+  Reason: JD item 3 asks for "content production skills"; quantified = verifiable</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>One résumé per job</h3><p>A generic résumé is an average-score résumé. Have AI re-tune the emphasis and keywords for each JD — <b style="color:var(--ink)">10 minutes per version</b>, a luxury only the AI era makes possible.</p></div>
+        <div class="card"><h3>Quantify results (STAR)</h3><p>"Participated / responsible for / assisted" are dead words. For every experience, force yourself to answer: <b style="color:var(--ink)">how many, how fast, up by how much</b> — AI is great at pressing, so make it your coach.</p></div>
+        <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ Red line</h3><p><b style="color:var(--ink)">Polishing ≠ fabricating</b>: every number must survive a background check; never list what you didn't do. Every sentence AI writes, you must be able to defend through three levels of follow-up questions.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 作品集 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · The Method · Step 4 · The Most Important Slide Today</div>
+    <h2>Portfolio &gt; Certificates: the hard currency of the AI era</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">87%</div><div class="l">Share of tech recruiters who look at candidates' GitHub (industry survey figures) — Session 2's "GitHub = the new résumé" is real</div><div class="s">SOLTECH and other industry survey roundups</div></div>
+      <div class="stat"><div class="v num">73%</div><div class="l">Share of hiring managers who say a <b>strong portfolio beats a perfect résumé</b> (industry survey figures)</div><div class="s">Cited from Stack Overflow survey figures</div></div>
+      <div class="stat"><div class="v num">3 &gt; 10</div><div class="l">3 well-polished real projects beat 10 toy projects — recruiters read GitHub as a "<b>living work sample</b>"</div><div class="s">A common refrain in recruiter interviews</div></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Why is work worth more in the AI era? Because <b>a résumé can be AI-generated, but work can't be faked</b> — it carries timestamps (commit history), process (README, iteration logs), and can be verified on the spot. Certificates prove you "studied"; work proves you "shipped". Each case-study chapter will build one killer project.</div>
+    <p class="src">Note: the 87%/73% figures come from industry blog survey roundups, not primary academic reports — the magnitude is credible; treat exact values as indicative</p>
+  </div>
+</section>
+
+<!-- 13 投递漏斗 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · The Method · Step 5</div>
+    <h2>Application funnel: manage applications like a sales pipeline</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="tblwrap">
+        <table>
+          <tr><th>Company / Role</th><th>Status</th><th>Deadline</th><th>Next step</th></tr>
+          <tr><td>Brokerage · ER intern</td><td><span class="tag ok">Test passed</span></td><td class="num">07-20</td><td>Interview: prep industry questions</td></tr>
+          <tr><td>Fund · Research asst.</td><td><span class="tag">Applied</span></td><td class="num">07-18</td><td>Unread 3 days → find a referral</td></tr>
+          <tr><td>Bank · Fintech trainee</td><td><span class="tag warn">Rejected</span></td><td>—</td><td>Have AI post-mortem vs the JD</td></tr>
+        </table>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>One table rules them all</h3><p>Where you applied, current status, deadlines, next action — a spreadsheet, or let an Agent keep it; <b style="color:var(--ink)">cron pings you every morning with today's deadlines</b>.</p></div>
+        <div class="card"><h3>Find the bottleneck with the funnel</h3><p>Review conversion weekly: application→test low? <b style="color:var(--ink)">Fix the résumé</b>; test→interview low? <b style="color:var(--ink)">Drill problems</b>; interview→offer low? <b style="color:var(--ink)">Practice interviews</b>. The data tells you which stage to repair — no need for blind anxiety.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 模拟面试 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · The Method · Step 6</div>
+    <h2>Mock interviews: an on-call interviewer who shows no mercy</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="p">&gt;</span> <span class="k">You are a stern senior interviewer at a brokerage research institute.
+Dig into my résumé (in the project) section by section;
+after every answer, press me with two follow-ups, and at the end give:
+1) per-question feedback 2) my three verbal tics 3) an improvement list</span>
+<span class="o">Interviewer: you wrote "independently produced an industry report" —
+  what were the data sources? How did you define the scope?
+  If I say your valuation is 30% too high, how do you defend it?</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Three interview types, drilled separately</h3><p><b style="color:var(--ink)">Behavioral</b>: STAR deep-dive follow-ups; <b style="color:var(--ink)">technical</b>: questions set from the JD; <b style="color:var(--ink)">stress</b>: have AI play the "hard-to-please" interviewer — you stay calm in the room because you've met the hard questions before.</p></div>
+        <div class="card"><h3>Record → AI review</h3><p>Record live mocks or self-Q&A, transcribe, hand it to AI: verbal tics, broken logic, pacing — <b style="color:var(--ink)">Session 2's video-transcription exercise, put to work here</b>.</p></div>
+        <div class="card"><h3>The information-asymmetry weapon</h3><p>The night before: have AI use the company knowledge base to write 10 "questions this company is most likely to ask me" — most of your rivals never take this step.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 谈 Offer -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">02 · The Method · Step 7</div>
+    <h2>Negotiating the offer: don't walk the last mile unarmed</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Check the market first</h3><p>Have AI compile the role's salary band (platform data, peer disclosures, per-capita pay in annual reports), and <b style="color:var(--ink)">negotiate with a range in hand</b> instead of being anchored to HR's first number.</p></div>
+      <div class="card"><h3>Rehearse the negotiation</h3><p>Have AI play HR for three rounds: "our pay bands are standardized", "new grads have no room to negotiate" — a comeback for every script, and <b style="color:var(--ink)">the cost of blowing up paid in rehearsal</b>.</p></div>
+      <div class="card"><h3>Multi-offer decision matrix</h3><p>Pay, growth, platform, city, overtime — have AI build the scoring matrix, with weights <b style="color:var(--ink)">you set yourself</b> (back to the positioning brief). AI supplies structure; the human makes the choice.</p></div>
+    </div>
+    <div class="note">The method in one line, seven steps: <b>knowledge base to scout the field → positioning brief to lock the target → résumé to pass the machine gate → work to win the human gate → funnel to track progress → mock interviews to build nerve → data as armor when talking money.</b> Now watch two majors run the full play.</div>
+  </div>
+</section>
+
+<!-- 16 D03 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">03</div>
+    <h2>Case One: Mei, Finance</h2>
+    <p class="lead">Finance major, junior year. Target: sell-side equity research / investment banking. The traditional path (internship referrals + certificate stacking) keeps getting more crowded — so Mei picks a different road: let the work do the talking.</p>
+  </div>
+</section>
+
+<!-- 17 小A处境 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Case: Finance · The Battlefield First</div>
+    <h2>The industry is changing — so is the ticket in</h2>
+    <div class="grid g2">
+      <div class="card panel-us"><h3>Wall Street has already changed</h3><p>Goldman CEO Solomon: "<b style="color:var(--ink)">AI can draft 95% of an S-1 in minutes</b> — work that used to take a six-person team two weeks; the value now lies in the last 5%." Goldman's AI assistant covers all staff; JPMorgan's LLM Suite is rolled out to 250,000 employees. <b style="color:var(--ink)">The junior analyst's grunt work is precisely the 95% being eaten.</b></p></div>
+      <div class="card panel-cn"><h3>Chinese brokerages are changing now</h3><p>24 brokerages are deploying LLMs: CICC's "Dianjing", Guotai Junan's "Junhong Lingxi", China Securities claims +40% research productivity. Campus hiring is pivoting too: Huatai's fintech track, CITIC's "Xin-Pi Program", East Money's management trainees <b style="color:var(--ink)">explicitly require LLM tech + Python</b> — while traditional IBD and research-desk openings keep shrinking.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Mei's read: rather than queue on a shrinking old track, prove she already is the "AI-native new-model researcher" — <b>the direction job requirements are moving is the direction to differentiate.</b></div>
+    <p class="src">Sources: Fortune 2025-01-17 (Solomon's own words) · American Banker · The Digital Banker · Cailian Press · 21jingji 2026-03-15 (campus-hiring requirement examples)</p>
+  </div>
+</section>
+
+<!-- 18 小A知识库 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Case: Finance · Weeks 1–2</div>
+    <h2>Mei's foundation: a self-updating research knowledge base</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># Two cron jobs on Mei's server:</span>
+<span class="o">30 15 * * 1-5  ~/fetch-market.sh</span>
+<span class="cm"># ↑ after each close, pull quotes + sector news into the base</span>
+<span class="o">0 8 * * *  claude -p "Read yesterday's data and write a one-page
+  morning brief: the 3 major indexes, moves in the consumer names
+  I track, 3 headlines and their impact" >> ~/briefs/$(date +%F).md</span>
+<span class="cm"># ↑ every day at 8:00, the brief shows up on her phone</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Pick one industry, go deep</h3><p>Don't chase the whole market; pick an industry you have a feel for (Mei chose consumer). The base holds: leaders' financials, industry data sources, and the <b style="color:var(--ink)">analytical frameworks</b> from published sell-side reports.</p></div>
+        <div class="card"><h3>Session 1's exercises, fully assembled</h3><p>Exercise 1 (data infrastructure) + Exercise 2 (investment analysis) bolted together are exactly this system — <b style="color:var(--ink)">what was homework then is a job-hunting weapon now</b>.</p></div>
+        <div class="card"><h3>Two weeks later</h3><p>Talking shop with classmates, Mei quotes the latest numbers cold — <b style="color:var(--ink)">not because her memory is great, but because her system reads the market for her every day</b>.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 小A杀手锏 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Case: Finance · Weeks 3–4 · The Killer Project</div>
+    <h2>The killer project: a report pipeline she can demo live</h2>
+    <div class="steps" style="margin-bottom:18px">
+      <div class="st"><div class="k">① Data</div><p>The pipeline auto-pulls the target company's financials and industry data</p></div>
+      <div class="st"><div class="k">② Analysis</div><p>AI runs financial analysis + comparable-company valuation on a sell-side framework</p></div>
+      <div class="st"><div class="k">③ Draft</div><p>Charts + prose auto-generate a first draft; <b style="color:var(--ink)">Mei owns the views and revisions</b></p></div>
+      <div class="st"><div class="k">④ Publish</div><p>Pipeline code on GitHub, final reports on WeChat / Zhihu</p></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>Output: 1 deep dive + 1 weekly tracker</h3><p>One 30-page deep-dive report as the anchor, then a 2-page tracking brief every week — <b style="color:var(--ink)">a continuously updated body of work proves systematic ability better than a one-off magnum opus</b>.</p></div>
+      <div class="card"><h3>Why this opens doors</h3><p>Asked "can you use AI?", other candidates say "I use ChatGPT". Mei hands over a link: "Here's my pipeline — <b style="color:var(--ink)">data as of this morning</b>." In that moment, she's no longer in the same category as the rest.</p></div>
+    </div>
+    <div class="note">Honest labeling: the report's front page states "data and first draft generated by my own AI pipeline; views and revisions are mine" — <b>that line isn't a disclaimer, it's a statement of capability.</b></div>
+  </div>
+</section>
+
+<!-- 20 小A简历面试 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">03 · Case: Finance · Weeks 5–6</div>
+    <h2>What to write on the résumé, how to answer in the room</h2>
+    <div class="grid g2">
+      <div class="card"><h3>Résumé wording (before / after)</h3><p>❌ "Proficient with AI tools; strong interest in industry research"<br>✅ "Built an <b style="color:var(--ink)">automated research pipeline</b> (data ingestion → financial analysis → report generation) covering 12 consumer companies; 90 daily market briefs; deep-dive report read XX times" — every number clicks through and verifies.</p></div>
+      <div class="card"><h3>Technical-round AI sparring list</h3><p>How the three financial statements tie together, defending DCF assumptions under attack, the evidence behind an industry-cycle call — have AI grill you <b style="color:var(--ink)">three levels deep</b> in the target brokerage's style; then use the company knowledge base to predict questions: recent report views, the chief analyst's public calls.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Mei's highlight in the interview wasn't reciting concepts. Pressed on valuation, she said: "Move this assumption one point in my model and the target price moves 8% — <b>which is why I made sensitivity analysis a default output of the pipeline</b>." That's the line the interviewer remembered.</div>
+  </div>
+</section>
+
+<!-- 21 D04 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">04</div>
+    <h2>Case Two: Shuai, Software</h2>
+    <p class="lead">CS major, junior year. Target: AI application / Agent engineer. Junior programmer jobs are shrinking, but he's aiming at the fastest-expanding slice — using work to prove he's already inside the door.</p>
+  </div>
+</section>
+
+<!-- 22 小B处境 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Case: Software · The Battlefield First</div>
+    <h2>The coldest winter, the hottest track</h2>
+    <div class="grid g3">
+      <div class="stat"><div class="v num">−20%</div><div class="l">Employment drop for software developers aged 22–25 from the 2022 peak; new-grad software postings down 28% — <b>traditional junior coders are the hardest hit</b></div><div class="s">Stanford 2025-08 · industry hiring-market reports 2026</div></div>
+      <div class="stat"><div class="v num hl-cn">1,205 / 2,559</div><div class="l">Of ByteDance's 2026 campus-hiring roles, <b>nearly half are AI-related</b>; "AI Agent Application Engineer" is a brand-new job title; AI roles top 60% of Alibaba's campus openings</div><div class="s">Securities Times · Yicai 2026</div></div>
+      <div class="stat"><div class="v num">4M</div><div class="l">McKinsey's projected 2030 <b>gap</b> in China's AI talent (demand: 6M) — the winter is structural, and so are the tropics</div><div class="s">McKinsey, cited in 2026 campus-hiring coverage</div></div>
+    </div>
+    <div class="note">The JD has already been rewritten. A typical 2026 junior role asks for: "familiarity with AI-assisted development workflows, <b>the ability to review and verify AI-generated code</b>, and fluency in at least two AI coding tools". 84% of developers already use AI coding routinely (Stack Overflow survey figures). <b>What Shuai must prove isn't "I can write code" — it's "I can write code with AI in harness".</b></div>
+    <p class="src">Sources: Stanford Digital Economy Lab · Final Round AI 2026 · Securities Times · Yicai · daily.dev 2026</p>
+  </div>
+</section>
+
+<!-- 23 小B作品集 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Case: Software · Weeks 1–2</div>
+    <h2>Shuai's GitHub: three real projects, not ten toys</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Project 1 · Already built</h3><p>The Hermes deployed in Session 2 plus his own accumulated <b style="color:var(--ink)">skill packs</b> (dorm-repair bot, timetable reminders) — organized into a standalone repo, with a README covering architecture and pitfalls. <b style="color:var(--ink)">The tools you've used are themselves project material.</b></p></div>
+      <div class="card"><h3>Project 2 · From the exercises</h3><p>Session 1's Exercise-1 data pipeline, upgraded into a full project: scraping + cleaning + API + a one-page dashboard, <b style="color:var(--ink)">with unit tests and CI</b> — showing engineering discipline, not just features.</p></div>
+      <div class="card"><h3>Project 3 · Contributed</h3><p>1–2 <b style="color:var(--ink)">merged PRs</b> to open-source projects he actually uses (OpenClaw / the Hermes ecosystem) — even doc fixes count. Recognition from a stranger maintainer beats ten thousand lines of self-praise.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">Standard kit for every repo: a proper README (what it is / how to run it / screenshots), a clean commit history (in the AI era it's the <b>recording of your work process</b>), and one green CI check. Everything Session 2 taught is cashing out here.</div>
+  </div>
+</section>
+
+<!-- 24 小B杀手锏 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Case: Software · Weeks 3–4 · The Killer Project</div>
+    <h2>The killer project: an Agent app from zero to production</h2>
+    <div class="grid g2" style="align-items:center">
+      <div class="term">
+        <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="cm"># Shuai's project: the "Job-Funnel Agent" — built on his own pain point</span>
+<span class="cm"># Features: application-deadline alerts / status tracking / pre-interview
+#       auto-summary of the company knowledge base, pushed to Telegram</span>
+<span class="p">$</span> git log --oneline | head -4
+<span class="o">e7a12f9 Add pre-interview company brief push (with tests)
+b3c90d1 Fix deadline timezone bug, add regression test
+a1f4e20 Wire up Telegram notifications
+9d02c11 Initial version: funnel data model + CRUD</span>
+<span class="cm"># Ran the full Session 1 Chapter 08 workflow:
+# knowledge base → brief → code with tests → commit → review → ship</span></pre>
+      </div>
+      <div style="display:grid;gap:14px">
+        <div class="card"><h3>Why this topic</h3><p>It solves <b style="color:var(--ink)">his own real pain point</b> (he really is job-hunting), so the requirements, iterations, and retrospectives are all real — one look and the interviewer knows it's no template project.</p></div>
+        <div class="card"><h3>Demo-able in the interview</h3><p>He opens Telegram on his phone: "These are the three deadlines it flagged for me this morning." Then the architecture diagram and the tech choices — <b style="color:var(--ink)">demo + architecture + trade-offs, the interview triple strike</b>.</p></div>
+        <div class="card"><h3>Compounding for free</h3><p>The Agent is itself helping him land a job — <b style="color:var(--ink)">the project and the search accelerate each other</b>. That's topic selection at its finest.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 25 小B算法面 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Case: Software · Weeks 5–6</div>
+    <h2>Algorithms & system design: AI as sparring partner, not hired gun</h2>
+    <div class="grid g3">
+      <div class="card"><h3>The right way to grind problems</h3><p>Stuck? Don't peek at the answer — have AI <b style="color:var(--ink)">give hints, not solutions</b> ("only hint at the data-structure direction"); once solved, have it generate <b style="color:var(--ink)">variant problems</b> to test whether you understood or memorized.</p></div>
+      <div class="card"><h3>System design simulation</h3><p>Have AI play interviewer: "design a timetable-reminder system", pressing step by step on concurrency, storage, degradation — <b style="color:var(--ink)">Shuai's Agent project is ready-made material</b>, turning recital into a conversation about his own architecture.</p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>⚠️ One hard red line</h3><p><b style="color:var(--ink)">No proxies in online assessments</b>. Big-tech anti-cheat keeps upgrading, and one blacklist flag follows you far beyond a single company — use AI to raise your real level, not to fake one.</p></div>
+    </div>
+    <div class="note">Asked in an interview "how would you solve this with AI?", the right answer isn't embarrassment — it's showing the workflow: "I'd have it enumerate the edge cases first, write the core logic myself, then have it review — <b>exactly like every commit in my GitHub</b>."</div>
+  </div>
+</section>
+
+<!-- 26 小B定位 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">04 · Case: Software · Wrapping Up</div>
+    <h2>"An engineer who directs AI" — how to write it without sounding hollow</h2>
+    <div class="grid g2">
+      <div class="card"><h3>Résumé wording (before / after)</h3><p>❌ "Familiar with ChatGPT, Claude and other AI tools"<br>✅ "Independently delivered a Job-Funnel Agent via an <b style="color:var(--ink)">AI-pairing + test-driven</b> workflow (Python/FastAPI, 34 commits, 85% test coverage), plus 2 merged PRs to the open-source project Hermes" — tools are worthless; <b style="color:var(--ink)">what you deliver with the tools is what's worth money</b>.</p></div>
+      <div class="card"><h3>Interview narrative (three sentences)</h3><p>What I wrote (core logic and architecture decisions), what AI wrote (boilerplate and first-draft test cases), and how I <b style="color:var(--ink)">made sure AI's code was right</b> (review + tests + staged rollout) — those three sentences are the model answer to "can review and verify AI-generated code" in 2026 JDs.</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">The shared core of both cases: <b>Mei and Shuai aren't selling "I can use AI" — they're selling "I built something with AI"</b> — something verifiable, demonstrable, and able to survive cross-examination.</div>
+  </div>
+</section>
+
+<!-- 27 D05 -->
+<section class="slide divider">
+  <div class="inner">
+    <div class="no num">05</div>
+    <h2>Red Lines & Mindset</h2>
+    <p class="lead">AI adds leverage to your job search — and leverage amplifies both your equity and your losses. Three red lines to hold the floor, one mindset to hold the direction.</p>
+  </div>
+</section>
+
+<!-- 28 红线 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Red Lines & Mindset · Do Not Cross</div>
+    <h2>Three red lines — cross one, lose everything</h2>
+    <div class="grid g3">
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>① No résumé fraud</h3><p>AI makes inventing stories easy — and makes <b style="color:var(--ink)">background checks easy too</b>. Numbers, titles, dates: one lookup and you're caught — and flagged candidates land on industry-shared blacklists.</p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>② No proxies in tests or interviews</h3><p>AI proxy-taking = cheating, and anti-cheat systems (camera behavior analysis, code fingerprinting) are upgrading with AI too. <b style="color:var(--ink)">You'd be competing with AI at cheating. You can't win.</b></p></div>
+      <div class="card" style="border-color:rgba(245,138,138,.5)"><h3>③ Full candor when asked</h3><p>"How much of this work was AI?" — the model answer is to open the workflow and walk through it. <b style="color:var(--ink)">Owning your usage is a plus; concealing it is an instant veto.</b></p></div>
+    </div>
+    <div class="note">Interviewers can smell "AI flavor" now: ornate but hollow adjectives, projects with no details, collapse after two follow-ups. <b>AI content you haven't digested scores worse than using no AI at all.</b></div>
+  </div>
+</section>
+
+<!-- 29 心法 -->
+<section class="slide">
+  <div class="inner">
+    <div class="eyebrow">05 · Red Lines & Mindset · One Mindset</div>
+    <blockquote>
+      AI is an amplifier:<br>if you have work, it amplifies the work;<br>if all you have is blankness, it amplifies the <b class="hl-us">blankness</b>.
+    </blockquote>
+    <cite>So the order cannot be reversed: first use AI to make something real (however small), then use AI to package and spread it. A portfolio is a compounding asset — Session 1 said "GitHub = the new résumé"; by now you should see it isn't the résumé's attachment. It is the résumé.</cite>
+  </div>
+</section>
+
+<!-- 30 D06+行动清单 -->
+<section class="slide">
+  <div class="inner">
+    <div class="no num" style="font-size:clamp(50px,7vw,100px);font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--ink-3)">06</div>
+    <h2>The 30-Day Action Checklist</h2>
+    <div class="grid g4">
+      <div class="card"><h3>Week 1 · Foundation</h3><p>□ Build the knowledge base: mine 50–100 target JDs<br>□ Write the positioning brief (one page)<br>□ Gap list + catch-up plan<br>□ Get the cron intel station running</p></div>
+      <div class="card"><h3>Week 2 · Ammunition</h3><p>□ Start the killer project (report pipeline / Agent app)<br>□ Résumé v1 + three rounds of AI polish<br>□ Tidy the GitHub repos + READMEs</p></div>
+      <div class="card"><h3>Week 3 · Open Fire</h3><p>□ Application funnel live; apply to 3–5 a day<br>□ One AI mock interview per day<br>□ Ship v1 of the killer project</p></div>
+      <div class="card"><h3>Week 4 · Iterate</h3><p>□ Post-mortem on funnel data: fix the weakest stage<br>□ Update the project weekly<br>□ Salary research + negotiation rehearsal</p></div>
+    </div>
+    <div class="note" style="border-left-color:var(--us-bar)">This checklist is itself a project — drive it with Session 1 Chapter 08's workflow: git commit your job-search repo every night, update your own CLAUDE.md every week. <b>The job search is your first real delivery.</b></div>
+  </div>
+</section>
+
+<!-- 31 结尾 -->
+<section class="slide">
+  <div class="inner" style="text-align:center;align-items:center">
+    <p class="sub" style="letter-spacing:.3em;margin-bottom:2em">One Last Slide</p>
+    <h1 style="font-size:clamp(30px,4.2vw,58px)">Opportunity doesn't go first to the prepared —<br>it goes first to those who've <span class="hl-us">already built something</span>.</h1>
+    <p class="lead" style="margin:2em auto 0;max-width:30em">Session 1 said AI gave ordinary people wings. Now you know: wings aren't for waiting on the wind — start the Week 1 checklist tonight.</p>
+  </div>
+</section>
+
+</div>
+
+<div id="hud">
+  <span id="pg" class="num" aria-live="polite"></span>
+  <button id="first" aria-label="First slide" title="First slide">«</button>
+  <button id="prev" aria-label="Previous slide" title="Previous slide">‹</button>
+  <button id="next" aria-label="Next slide" title="Next slide">›</button>
+  <button id="last" aria-label="Last slide" title="Last slide">»</button>
+  <button id="lang" title="Switch to English">EN</button>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),
+      bar=document.getElementById('bar'),pg=document.getElementById('pg'),
+      i=Math.min(Math.max((parseInt(location.hash.slice(1),10)||1)-1,0),slides.length-1);
+  function show(n){
+    n=Math.min(Math.max(n,0),slides.length-1);
+    slides[i].classList.remove('active');
+    i=n;slides[i].classList.add('active');slides[i].scrollTop=0;
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    pg.textContent=String(i+1).padStart(2,'0')+' / '+slides.length;
+    history.replaceState(null,'','#'+(i+1));
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(slides.length-1);}
+    else if(e.key==='f'||e.key==='F'){
+      if(document.fullscreenElement)document.exitFullscreen();
+      else document.documentElement.requestFullscreen().catch(function(){});
+    }
+  });
+  document.getElementById('next').addEventListener('click',function(){show(i+1)});
+  document.getElementById('prev').addEventListener('click',function(){show(i-1)});
+  document.getElementById('first').addEventListener('click',function(){show(0)});
+  document.getElementById('last').addEventListener('click',function(){show(slides.length-1)});
+  var lb=document.getElementById('lang');
+  if(!/\.html$/.test(location.pathname)){lb.style.display='none';}
+  else{
+    var isEN=/\.en\.html$/.test(location.pathname);
+    lb.textContent=isEN?'中':'EN';
+    lb.title=isEN?'切换到中文':'Switch to English';
+    lb.addEventListener('click',function(){
+      var p=location.pathname;
+      location.href=(isEN?p.replace(/\.en\.html$/,'.html'):p.replace(/\.html$/,'.en.html'))+location.hash;
+    });
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('a,button,#hud'))return;
+    var s=window.getSelection&&window.getSelection();
+    if(s&&s.toString())return;
+    show(i+1);
+  });
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+  document.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>60)show(i+(dx<0?1:-1));
+    tx=null;
+  });
+  show(i);
+
+  var cv=document.getElementById('fx');
+  if(cv&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var ctx=cv.getContext('2d'),W,H,pts=[],seed=7;
+    function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+    function size(){W=cv.width=cv.offsetWidth*devicePixelRatio;H=cv.height=cv.offsetHeight*devicePixelRatio;}
+    size();addEventListener('resize',size);
+    for(var k=0;k<46;k++)pts.push({x:rnd()*1.2-.1,y:rnd()*1.2-.1,vx:(rnd()-.5)*.0004,vy:(rnd()-.5)*.0004});
+    (function tick(){
+      if(slides[i]&&slides[i].classList.contains('cover')){
+        ctx.clearRect(0,0,W,H);
+        for(var a=0;a<pts.length;a++){
+          var p=pts[a];p.x+=p.vx;p.y+=p.vy;
+          if(p.x<-.15||p.x>1.15)p.vx*=-1;if(p.y<-.15||p.y>1.15)p.vy*=-1;
+          for(var b=a+1;b<pts.length;b++){
+            var q=pts[b],dx=(p.x-q.x)*W,dy=(p.y-q.y)*H,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<W*.11){ctx.strokeStyle='rgba(86,200,245,'+(0.09*(1-d/(W*.11)))+')';
+              ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x*W,p.y*H);ctx.lineTo(q.x*W,q.y*H);ctx.stroke();}
+          }
+          ctx.fillStyle='rgba(86,200,245,.35)';
+          ctx.beginPath();ctx.arc(p.x*W,p.y*H,1.6*devicePixelRatio,0,7);ctx.fill();
+        }
+      }
+      requestAnimationFrame(tick);
+    })();
+  }
+})();
+</script>
+
+<div id="pv" style="position:fixed;left:2.2vw;bottom:2.4vh;z-index:10;font-size:12px;color:#5E6B8C;font-variant-numeric:tabular-nums"><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> views · </span><a href="https://github.com/ronfi/ai-bootcamp" target="_blank" rel="noopener" style="color:#5E6B8C;text-decoration:none;border-bottom:1px dotted #5E6B8C">GitHub</a></div>
+<script async src="https://cn.vercount.one/js"></script>
+</body>
+</html>

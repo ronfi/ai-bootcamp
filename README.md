@@ -12,6 +12,7 @@
 |---|------|----------|--------|------|
 | 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) | [`ai-training-deck.html`](ai-training-deck.html) | 46 |
 | 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) | [`basic-tools-deck.html`](basic-tools-deck.html) | 47 |
+| 3 | **用 AI 找到理想工作** —— 规则 · 方法论 · 双案例 · 30 天行动 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-career-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-career-deck.en.html) | [`ai-career-deck.html`](ai-career-deck.html) | 32 |
 
 ### 第一讲《AI 革命进行时》
 
@@ -37,6 +38,17 @@
 5. **Claude Code** — 安装、日常操作、安全与权限申请、CLAUDE.md、官方 Remote Control 手机接管
 6. **Hermes Agent** — 云服务器部署 7×24 常驻管家，接入微信/Telegram
 7. **AI 日常管理** — 邮件秘书、消息哨兵、内容账号流水线
+
+### 第三讲《用 AI 找到理想工作》
+
+前两讲的收官应用篇，核心论点："你的对手不是 AI，是会用 AI 的求职者"：
+
+1. **游戏规则变了** — 入门岗收缩与 AI 技能溢价的冰火数据、AI 淘汰职业榜（Anthropic 实测/微软网传/中国口径）、招聘方也在用 AI
+2. **AI 求职工作流** — 知识库、定位书、简历工程、作品集、投递漏斗、模拟面试、谈 Offer 七步法
+3. **案例一 · 金融小美** — 目标券商行研：自动投研知识库 + 可现场演示的研报流水线
+4. **案例二 · 软件小帅** — 目标 Agent 工程师：三个真项目的 GitHub + 求职漏斗 Agent
+5. **红线与心法** — 不造假/不代考/被问必坦承；"AI 是放大器"
+6. **三十天行动清单** — 按周拆解，从今晚开始
 
 ## 使用方式
 

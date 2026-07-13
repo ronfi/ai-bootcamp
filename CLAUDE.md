@@ -19,6 +19,12 @@
 - 结构：01 Terminal（含 WSL、vi 生存指南、ssh 进阶：密钥/config/ssh-add、PowerShell 对照、20 条速查小抄）→ 02 tmux → 03 定时任务（crontab/cron×AI）→ 04 Git/GitHub → 05 Claude Code（安装/斜杠命令/安全与权限申请页/CLAUDE.md/官方 Remote Control/组合拳）→ 06 Hermes（安装/配置接微信/技能记忆，v0.18 口径）→ 07 AI 日常（邮件/消息社交/内容账号）→ 回家作业 7 件事
 - 新组件：`.term` 仿终端窗口（红黄绿点+`$`提示符青色+注释灰色），实操命令均用它展示；技术命令均经官方文档核实（Claude Code 来自 code.claude.com/docs，Hermes 来自 hermes-agent.nousresearch.com/docs，2026-07-04）
 
+**第三讲《用 AI 找到理想工作》**（求职方法论 + 金融/软件双案例，32 页，favicon 💼）
+- 源文件：`ai-career-deck.html`
+- 线上版：https://claude.ai/code/artifact/b4e418b0-84ad-4161-bfa2-68b8b715841b
+- 结构：01 规则变了（冰火数据/AI 淘汰职业榜/招聘方也用 AI）→ 02 七步求职工作流 → 03 金融案例小美（研报流水线）→ 04 软件案例小帅（求职漏斗 Agent）→ 05 红线与心法 → 06 三十天行动清单
+- 案例主角固定叫小美（金融）/小帅（软件，英文版 Mei/Shuai），不用"小A/小B"
+
 第一讲相关：
   - 更新方式：修改本目录源文件后用 Artifact 工具发布，并**传 `url` 参数指向上面的线上地址**以复用同一 URL（同一会话内从同一路径重发布可省略 url）；favicon 固定为 🚀，label 用 `vN-一句话改动` 格式递增
 - 当前 46 页；结构：01 真实的革命（含四次工业革命对比、马斯克等预言、"普通人翅膀"页）→ 02 中美国运之赌 → 03 大模型竞争（开头有"AI 是什么/训练是什么"原理两页）→ 04 资本市场（含字节跳动专题页）与六小虎 → 05 Agent（Claude Code / 龙虾 OpenClaw / Hermes）→ 06 AGI 与具身智能（AGI 时间表/VLA/人形机器人格局/灵巧手）→ 07 练习 → 08 进阶工作流（开工三件套/测试+git 迭代/审查/落地运维）
@@ -29,6 +35,7 @@
 - 深色科技风。色板 token 在 `:root`：底色 `#0A0F1E`，面板 `#10182E`，文字三级 `#E9EDF7/#98A4C0/#5E6B8C`
 - **国别对照色是全片视觉语言**：美国=青蓝（文本 `--us:#56C8F5`、图表 `--us-bar:#1E9BD2`），中国=暖橙（文本 `--cn:#F5A340`、图表 `--cn-bar:#C97A15`）。图表色 `#1E9BD2/#C97A15` 已通过 dataviz 色板验证器（深色面 OKLCH L 0.48–0.67 区间 + CVD ΔE≈90），换色需重跑 `validate_palette.js --mode dark --surface "#0A0F1E"`
 - **字号必须随屏幕缩放**：正文 `clamp(17px,1.65vw,36px)`，一切新增文字用 vw-clamp 或 em，**禁止小上限的固定 px**（曾因 24px 上限被用户投诉全屏字小）；内容区宽度 94vw
+- **flex 纵向容器里居中卡片要用显式 `width` + `margin:auto`，不能用 `max-width`**：auto 边距会取消 flex 拉伸、元素退化为按内容收缩，max-width 形同虚设（第三讲毕业生图曾因此改三次无效）；布局类修改用 playwright 无头截图验证后再发布
 - 条形图值标签放在条外右侧，最长条宽度**不得超过 ~74%**，否则标签与相邻栏重叠（第 5 页曾踩坑）
 - 点图（LMArena 页）标签用 `bottom:38%/62%` 两行交错防碰撞
 - 无外部资源：字体用系统中文栈，图用手写 SVG / CSS，禁止 CDN
