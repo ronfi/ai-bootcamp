@@ -54,7 +54,7 @@ The capstone application of the first two lectures. Thesis: "Your rival isn't AI
 
 - **Online**: click the "Watch online" links above — nothing to install
 - **Local playback**: clone the repo and open the HTML files in any browser
-- **Controls**: click anywhere, or `←` `→`/Space to navigate · `F` for fullscreen · `Home`/`End` for first/last slide · swipe on mobile · jump to any slide via `#N` in the URL
+- **Controls**: click anywhere, or `←` `→` `↑` `↓`/Space to navigate (presenter-remote friendly) · `F` for fullscreen · `Home`/`End` for first/last slide · swipe on mobile · jump to any slide via `#N` in the URL
 - **Language toggle**: the `EN` / `中` button at the bottom-right corner switches language and stays on the current slide
 
 ## Technical notes
