@@ -10,7 +10,7 @@
 
 | # | 讲次 | 在线演示 | 源文件 | 页数 |
 |---|------|----------|--------|------|
-| 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) | [`ai-training-deck.html`](ai-training-deck.html) | 46 |
+| 1 | **AI 革命进行时** —— 看懂格局，用好工具 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) | [`ai-training-deck.html`](ai-training-deck.html) | 47 |
 | 2 | **基础工具培训** —— 终端 · 持久会话 · Git · AI 智能体 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) | [`basic-tools-deck.html`](basic-tools-deck.html) | 47 |
 | 3 | **用 AI 找到理想工作** —— 规则 · 方法论 · 双案例 · 30 天行动 | [▶ 中文](https://ronfi.github.io/ai-bootcamp/ai-career-deck.html) · [EN](https://ronfi.github.io/ai-bootcamp/ai-career-deck.en.html) | [`ai-career-deck.html`](ai-career-deck.html) | 32 |
 
@@ -22,7 +22,7 @@
 2. **国运之赌** — 中美两国的 AI 国家战略对照（Stargate vs "人工智能+"行动）
 3. **模型之战** — AI 原理两页（大模型是什么/训练是怎么回事）+ 中美大模型竞争格局、开源 vs 闭源、价格战
 4. **资本市场** — 已上市与排队上市的 AI 公司、字节跳动专题、中国大模型"六小虎"分化
-5. **Agent 智能体** — Claude Code、龙虾 OpenClaw、Hermes 三个案例
+5. **Agent 智能体** — Claude Code、龙虾 OpenClaw、Hermes 三个案例 + 巨头行业插件竞赛专题
 6. **AGI 与具身智能** — AGI 时间表、VLA 模型、人形机器人格局与灵巧手
 7. **实战练习** — 五道动手题
 8. **进阶工作流** — 开工三件套（知识库/数据基建/目标约束书）、测试与 git 迭代节奏、代码审查、落地与日常自动运维

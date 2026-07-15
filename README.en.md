@@ -10,7 +10,7 @@ Slide decks for a student-facing AI training series. The goal: understand the te
 
 | # | Lecture | Watch online | Source | Slides |
 |---|---------|--------------|--------|--------|
-| 1 | **The AI Revolution, Live** — see the big picture, master the tools | [▶ EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) | [`ai-training-deck.en.html`](ai-training-deck.en.html) | 46 |
+| 1 | **The AI Revolution, Live** — see the big picture, master the tools | [▶ EN](https://ronfi.github.io/ai-bootcamp/ai-training-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/ai-training-deck.html) | [`ai-training-deck.en.html`](ai-training-deck.en.html) | 47 |
 | 2 | **Essential Tools Bootcamp** — terminal · persistent sessions · Git · AI agents | [▶ EN](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/basic-tools-deck.html) | [`basic-tools-deck.en.html`](basic-tools-deck.en.html) | 47 |
 | 3 | **Land Your Dream Job with AI** — the rules · the playbook · two full case studies · a 30-day plan | [▶ EN](https://ronfi.github.io/ai-bootcamp/ai-career-deck.en.html) · [中文](https://ronfi.github.io/ai-bootcamp/ai-career-deck.html) | [`ai-career-deck.en.html`](ai-career-deck.en.html) | 32 |
 
@@ -22,7 +22,7 @@ A complete narrative arc from macro trends to hands-on practice:
 2. **A Bet of National Destiny** — US vs. China national AI strategies (Stargate vs. the "AI+" Initiative)
 3. **The Model Wars** — two primer slides (what an LLM is / what training means) + the US-China frontier-model race, open vs. closed source, the price war
 4. **Capital Markets** — listed and soon-to-list AI companies, a ByteDance deep-dive, China's "Six Little Tigers" and their divergence
-5. **Agents** — three case studies: Claude Code, the "Lobster" (OpenClaw), and Hermes
+5. **Agents** — three case studies: Claude Code, the "Lobster" (OpenClaw), and Hermes, plus the industry-plugin race
 6. **AGI & Embodied AI** — AGI timelines, VLA models, the humanoid-robot race, dexterous hands
 7. **Exercises** — five hands-on assignments
 8. **The Pro Workflow** — the prep kit (knowledge base / data infra / goals brief), test-and-git iteration rhythm, code review, shipping and autonomous operations
